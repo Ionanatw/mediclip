@@ -24,7 +24,8 @@
 - **EmailGate**：email 輸入 → 呼叫 `/api/check-email`
 - **Uploader**：相簿選圖（≤3 張，`accept="image/*"`，不支援拍照）+ 補充文字欄；前端壓縮縮放圖片
 - **Processing**：步驟進度動畫（辨識中 → 結構化 → 整理完成）
-- **Results**：結果總覽 + 藥品識別卡（SVG + 專業版注意事項）+ 行事曆列表（僅檢視）+ 鎖住功能遮罩 + 最後 CTA
+- **Results**：結果總覽 + 藥品識別卡（SVG + 專業版注意事項）+ 行事曆列表（僅檢視）+ **每日 Checklist** + **🌿 快樂花園（體驗版）** + 鎖住功能遮罩 + 最後 CTA
+  - Results 內提供「**＋ 補充新文件**」入口（滾動更新，限 1 次）
 - 全域：底部固定免責聲明「⚠️ AI 輔助整理，請與原始醫療文件核對」
 
 ### 3.2 API routes（Next.js server，取代 Supabase Edge Function）
@@ -33,8 +34,9 @@
   - 用 `SUPABASE_SERVICE_ROLE_KEY`（僅伺服器端）查 `sns_usage`
   - email 沒用過 → 寫入並回 `{ allowed: true }`；用過 → `{ allowed: false }`
 - `POST /api/process`
-  - 入：`{ images: [{type, data(base64)}], text }`
+  - 入：`{ images: [{type, data(base64)}], text, priorResult? }`
   - 伺服器端帶 `ANTHROPIC_API_KEY` + `anthropic-version: 2023-06-01` 呼叫 Claude（model `claude-sonnet-4-20250514`，max_tokens 4000）
+  - **滾動更新**：帶 `priorResult`（前一份結構化 JSON）時，system/user prompt 要求 Claude **把新文件合併進現有總覽**（補充、更新、去重），回完整合併後 JSON，而非重來
   - **不記錄 request body**；解析 Claude 回傳 → 抽出 JSON → 回前端
   - 非 JSON / 失敗 → 重試 1 次 → 回友善錯誤
 
@@ -53,6 +55,25 @@ create table if not exists sns_usage (
 依 Claude 輸出的 `shape` / `color` 對照 handoff §5 規則表生 SVG：
 - 形狀：圓形→`<circle>`、橢圓→`<ellipse>`、膠囊→雙色`<rect rx>`、粉包→`<rect>`+虛線
 - 顏色：白 `#F8F8F5`、粉紅 `#F5D0C8`、黃 `#FDF8EC`、綠 `#D0E8D4`、膚 `#F0E8D8`
+
+### 3.5 🌿 快樂花園（體驗版，純前端、記憶體）
+進度只存在 React state，refresh 歸零（符合 session 結束全消失）。不耗任何 API。
+- 場景：**1 棵櫻花樹**（可澆灌成長）+ **1 朵蓮花種子**（顯示為「下一棵即將解鎖 🪷」teaser，demo 不可養）
+- 快樂任務（任一即可體驗澆灌）：**478 呼吸練習**（動畫圓圈隨節奏縮放）+ **感恩日記**（寫一件感恩的事）
+- 完成任務 → +陽光值 → 櫻花從種子/發芽往上一階，播放澆灌動畫
+- 成長階段沿用 PRD：🌰0 → 🌱20 → 🌿60 → 🪴120 → 🌸200（demo 內可快速體驗前幾階，不要求真養滿）
+- 底部 CTA：「下載 App 種完整的快樂森林 🌸」
+- 品種以 JSON config 定義（sakura、lotus），新增品種 = 加一筆，沿用 PRD §4.4 架構
+
+### 3.6 每日 Checklist（前端，記憶體）
+- 項目來源：**AI 結果生成** — 從結構化輸出抽出「今天要做的事」（`precautions` 中 severity=必做、`medication` 今天要吃的藥、`schedule` 今天/近期回診）
+- **＋ 自由輸入框**：使用者可打字新增單子上沒有的項目（例如護理站口頭交代）
+- 可勾選打勾，顯示完成進度條；勾選狀態只存記憶體，refresh 歸零
+
+### 3.7 滾動更新（限 1 次）
+- 第一次結果後出現「＋ 補充新文件」；使用者再上傳一次 → 帶 `priorResult` 呼叫 `/api/process` → Claude 合併 → 更新整個 Results
+- 用完這 1 次後按鈕鎖住，顯示「下載 App 無限滾動更新 →」
+- 次數以前端 state 計（demo 體驗用）
 
 ## 4. Claude 輸出契約
 
@@ -86,9 +107,9 @@ create table if not exists sns_usage (
 
 ## 8. 範圍（YAGNI）
 
-**做**：landing、email gate、upload、processing、結果總覽、藥品卡（SVG + 專業版）、行事曆列表（僅檢視）、鎖住功能遮罩（.ics/白話版/海報）、最後 CTA、免責聲明。
+**做**：landing、email gate、upload、processing、結果總覽、藥品卡（SVG + 專業版）、行事曆列表（僅檢視）、**每日 Checklist（AI 生成 + 自由輸入）**、**🌿 快樂花園體驗版（櫻花樹 + 蓮花種子，呼吸/感恩任務）**、**滾動更新（限 1 次）**、鎖住功能遮罩（.ics/白話版/海報）、最後 CTA、免責聲明。
 
-**延後**：真實食藥署 API、實際 .ics 匯出、白話版翻譯、海報生圖、快樂花園、Checklist、歷史、滾動更新、RevenueCat、付費。
+**延後**：真實食藥署 API、實際 .ics 匯出、白話版翻譯、海報生圖、Checklist/花園的跨 session 永久保存、歷史紀錄、RevenueCat、付費。
 
 ## 9. 測試
 
