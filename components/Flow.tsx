@@ -51,7 +51,7 @@ export default function Flow() {
           onRollingUpdate={(imgs, text) => runProcess(imgs, text, result)}
         />
       )}
-      <p className="disclaimer">⚠️ AI 輔助整理，請與原始醫療文件核對</p>
+      <p className="disclaimer" style={{ paddingBottom: 80 }}>⚠️ AI 輔助整理，請與原始醫療文件核對</p>
     </main>
   );
 }

@@ -5,7 +5,15 @@ export default function DrugCard({ med }: { med: Medication }) {
   return (
     <div className="card" style={{ borderLeft: "4px solid var(--purple)" }}>
       <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-        <span dangerouslySetInnerHTML={{ __html: drugSvg(med.shape, med.color) }} />
+        <div
+          aria-label={`${med.name_zh} 外觀`}
+          style={{
+            flex: "0 0 auto", width: 120, height: 80, display: "flex",
+            alignItems: "center", justifyContent: "center",
+            background: "var(--bg2)", border: "1px solid var(--bg3)", borderRadius: 12,
+          }}
+          dangerouslySetInnerHTML={{ __html: drugSvg(med.shape, med.color) }}
+        />
         <div>
           <div style={{ fontWeight: 700 }}>
             {med.name_zh}{" "}

@@ -20,6 +20,8 @@ export interface LifestyleNote { icon?: string; title: string; description: stri
 export interface CareDocResult {
   document_type?: string;
   summary?: string;
+  patient_name?: string;   // 病人姓名
+  doctor_name?: string;    // 主治醫師姓名
   medication: Medication[];
   schedule: ScheduleItem[];
   precautions: Precaution[];

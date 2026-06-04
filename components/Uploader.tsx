@@ -15,7 +15,7 @@ export default function Uploader({
   const [busy, setBusy] = useState(false);
 
   async function onPick(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(e.target.files || []).slice(0, 3 - imgs.length);
+    const files = Array.from(e.target.files || []).slice(0, 8 - imgs.length);
     setBusy(true);
     for (const f of files) {
       const c = await fileToCompressedBase64(f);
@@ -29,7 +29,10 @@ export default function Uploader({
   return (
     <section style={{ paddingTop: 24 }}>
       <h2 className="h2">上傳醫療文件</h2>
-      <p className="muted" style={{ margin: "6px 0 16px", fontSize: 16 }}>最多 3 張，從相簿選擇。</p>
+      <p className="muted" style={{ margin: "6px 0 12px", fontSize: 16 }}>最多 8 張，從相簿選擇。</p>
+      <div className="card" style={{ background: "var(--amberBg)", borderLeft: "4px solid var(--amber)", fontSize: 15 }}>
+        💡 體驗版只能上傳一次，建議在看診結束後把所有單據一併上傳，效果最佳。
+      </div>
       {error && <div className="card" style={{ color: "var(--coral)" }}>{error}</div>}
       <div className="card">
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
@@ -38,9 +41,9 @@ export default function Uploader({
             <img key={i} src={src} alt="" style={{ width: 88, height: 88, objectFit: "cover", borderRadius: 12 }} />
           ))}
         </div>
-        {imgs.length < 3 && (
+        {imgs.length < 8 && (
           <label className="btn-secondary" style={{ display: "block", textAlign: "center" }}>
-            🖼️ 從相簿選擇（{imgs.length}/3）
+            🖼️ 從相簿選擇（{imgs.length}/8）
             <input type="file" accept="image/*" multiple hidden onChange={onPick} />
           </label>
         )}
