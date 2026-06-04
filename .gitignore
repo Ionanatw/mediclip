@@ -9,3 +9,6 @@ dist/
 ios/
 android/
 .vercel
+.gstack/
+.next/
+next-env.d.ts
