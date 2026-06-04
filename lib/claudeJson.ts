@@ -1,7 +1,7 @@
 import type { CareDocResult } from "@/lib/types";
 
 const EMPTY: CareDocResult = {
-  medication: [], schedule: [], precautions: [], lab_tests: [],
+  documents: [], treatments: [], medication: [], schedule: [], precautions: [], lab_tests: [],
   symptoms: [], doctor_responses: [], followup_questions: [],
   lifestyle_notes: [], warnings: [],
 };

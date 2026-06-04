@@ -6,6 +6,19 @@ export interface Medication {
   timing?: string[];          // 服用時段：早 / 中 / 晚 / 睡前（可多個）
   meal_relation?: string;     // 飯前 / 飯後 / 睡前 / 空腹
 }
+export interface DocumentItem {
+  title?: string;   // 文件標題或類型，例：化療衛教單、轉診單
+  date?: string;    // 文件上的日期（有才填）
+  summary?: string; // 一句話摘要
+}
+export interface Treatment {
+  name: string;          // 例：化學治療、放射線治療
+  type?: string;         // 化療 | 電療 | 物理治療 | 其他療程
+  schedule?: string;     // 療程安排，例：每 3 週一次、共 6 次
+  frequency?: string;
+  location?: string;
+  notes?: string;
+}
 export interface ScheduleItem {
   date?: string; time?: string; event: string; location?: string; notes?: string;
   department?: string;        // 科別（以轉診單為準）
@@ -25,7 +38,9 @@ export interface CareDocResult {
   summary?: string;
   patient_name?: string;   // 病人姓名
   doctor_name?: string;    // 主治醫師姓名
-  medication: Medication[];
+  documents: DocumentItem[]; // 每張上傳文件的標題/日期/摘要
+  treatments: Treatment[]; // 院內療程：化療/電療/物理治療等
+  medication: Medication[];// 帶回家自行服用的藥物
   schedule: ScheduleItem[];
   precautions: Precaution[];
   lab_tests: LabTest[];

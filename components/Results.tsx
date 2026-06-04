@@ -2,6 +2,8 @@
 import { useState } from "react";
 import type { CareDocResult } from "@/lib/types";
 import OverviewCards from "./OverviewCards";
+import DocumentList from "./DocumentList";
+import TreatmentList from "./TreatmentList";
 import DosingSchedule from "./DosingSchedule";
 import DrugCard from "./DrugCard";
 import CalendarList from "./CalendarList";
@@ -69,18 +71,22 @@ export default function Results({
           )}
           <LockedFeature title="📋 照護海報" cta="下載 App 列印海報 →" />
           <FinalCTA />
+          <DocumentList items={result.documents} />
         </div>
       )}
 
       {tab === "meds" && (
         <div>
-          {result.medication.length > 0 ? (
+          <TreatmentList items={result.treatments} />
+          {result.medication.length > 0 && (
             <>
+              <div className="h2" style={{ fontSize: 19, margin: "8px 0" }}>💊 帶回家的藥物</div>
               <DosingSchedule meds={result.medication} />
               {result.medication.map((m, i) => <DrugCard key={i} med={m} />)}
             </>
-          ) : (
-            <div className="card muted">此次未擷取到用藥資訊。</div>
+          )}
+          {result.treatments.length === 0 && result.medication.length === 0 && (
+            <div className="card muted">此次未擷取到療程或用藥資訊。</div>
           )}
           <LockedFeature title="💊 白話版用藥注意事項" cta="下載 App 看白話翻譯 →" />
         </div>
