@@ -3,9 +3,12 @@ export interface Medication {
   duration?: string; route?: "口服" | "注射" | "外用" | string; notes?: string;
   shape?: "圓形" | "橢圓" | "膠囊" | "粉包" | string;   // 供生 SVG
   color?: string;                                       // 供生 SVG，例：白色/粉紅色
+  timing?: string[];          // 服用時段：早 / 中 / 晚 / 睡前（可多個）
+  meal_relation?: string;     // 飯前 / 飯後 / 睡前 / 空腹
 }
 export interface ScheduleItem {
   date?: string; time?: string; event: string; location?: string; notes?: string;
+  department?: string;        // 科別（以轉診單為準）
 }
 export interface Precaution {
   category: "飲食" | "活動" | "傷口" | "用藥" | "其他" | string;

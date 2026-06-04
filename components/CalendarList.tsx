@@ -17,7 +17,7 @@ export default function CalendarList({ items }: { items: ScheduleItem[] }) {
             {e.date || "—"}{e.time ? ` ${e.time}` : ""}
           </div>
           <div style={{ fontSize: 16 }}>
-            <div>{e.event}</div>
+            <div>{e.event}{e.department && <span style={{ color: "var(--greenDk)", fontWeight: 600 }}>（{e.department}）</span>}</div>
             {e.location && <div className="muted" style={{ fontSize: 15 }}>📍 {e.location}</div>}
           </div>
         </div>

@@ -33,6 +33,9 @@ export default function Uploader({
       <div className="card" style={{ background: "var(--amberBg)", borderLeft: "4px solid var(--amber)", fontSize: 15 }}>
         💡 體驗版只能上傳一次，建議在看診結束後把所有單據一併上傳，效果最佳。
       </div>
+      <div className="card" style={{ background: "var(--greenBg)", borderLeft: "4px solid var(--green)", fontSize: 15 }}>
+        ✍️ 現正測試手寫辨識：寫在紙上的手寫筆記也可以一併拍照上傳。為確保辨識正確，書寫時請盡量以<strong>正楷</strong>為主。
+      </div>
       {error && <div className="card" style={{ color: "var(--coral)" }}>{error}</div>}
       <div className="card">
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>

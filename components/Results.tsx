@@ -2,6 +2,7 @@
 import { useState } from "react";
 import type { CareDocResult } from "@/lib/types";
 import OverviewCards from "./OverviewCards";
+import DosingSchedule from "./DosingSchedule";
 import DrugCard from "./DrugCard";
 import CalendarList from "./CalendarList";
 import TodoTab from "./TodoTab";
@@ -74,7 +75,10 @@ export default function Results({
       {tab === "meds" && (
         <div>
           {result.medication.length > 0 ? (
-            result.medication.map((m, i) => <DrugCard key={i} med={m} />)
+            <>
+              <DosingSchedule meds={result.medication} />
+              {result.medication.map((m, i) => <DrugCard key={i} med={m} />)}
+            </>
           ) : (
             <div className="card muted">此次未擷取到用藥資訊。</div>
           )}

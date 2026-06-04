@@ -22,13 +22,13 @@ export default function DrugCard({ med }: { med: Medication }) {
           <div className="muted" style={{ fontSize: 16 }}>
             {[med.dosage, med.frequency, med.duration].filter(Boolean).join(" · ")}
           </div>
+          {(med.timing?.length || med.meal_relation) && (
+            <div style={{ fontSize: 15, color: "var(--greenDk)", marginTop: 4 }}>
+              服用方式：{[med.timing?.join("・"), med.meal_relation].filter(Boolean).join("｜")}
+            </div>
+          )}
         </div>
       </div>
-      {med.notes && (
-        <div style={{ marginTop: 10, background: "var(--purpleBg)", padding: 10, borderRadius: 10, fontSize: 16 }}>
-          <strong>專業版注意事項：</strong>{med.notes}
-        </div>
-      )}
     </div>
   );
 }
