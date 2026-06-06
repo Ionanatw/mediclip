@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import type { CareDocResult } from "@/lib/types";
 import OverviewCards from "./OverviewCards";
 import DocumentList from "./DocumentList";
@@ -15,12 +15,46 @@ import { fileToCompressedBase64 } from "@/lib/imageResize";
 
 type Tab = "overview" | "meds" | "calendar" | "todo" | "garden";
 
-const TABS: { key: Tab; icon: string; label: string }[] = [
-  { key: "overview", icon: "📋", label: "總覽" },
-  { key: "meds", icon: "💊", label: "用藥" },
-  { key: "calendar", icon: "📅", label: "行事曆" },
-  { key: "todo", icon: "✅", label: "待辦" },
-  { key: "garden", icon: "🌿", label: "快樂" },
+const TAB_ICONS: Record<Tab, React.ReactNode> = {
+  overview: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+      <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+    </svg>
+  ),
+  meds: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10.5 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v2.5"/>
+      <circle cx="17" cy="17" r="5"/><path d="m15 17 2 2 3-3"/>
+    </svg>
+  ),
+  calendar: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+      <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+      <line x1="3" y1="10" x2="21" y2="10"/>
+    </svg>
+  ),
+  todo: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="9 11 12 14 22 4"/>
+      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+    </svg>
+  ),
+  garden: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22V12"/><path d="M5 3a7 7 0 0 0 7 7 7 7 0 0 0-7-7"/>
+      <path d="M19 3a7 7 0 0 1-7 7 7 7 0 0 1 7-7"/>
+    </svg>
+  ),
+};
+
+const TABS: { key: Tab; label: string }[] = [
+  { key: "overview", label: "總覽" },
+  { key: "meds", label: "用藥" },
+  { key: "calendar", label: "行事曆" },
+  { key: "todo", label: "待辦" },
+  { key: "garden", label: "快樂" },
 ];
 
 export default function Results({
@@ -48,7 +82,23 @@ export default function Results({
 
   return (
     <section style={{ paddingBottom: 88 }}>
-      <h2 className="h2" style={{ marginBottom: 12 }}>你的照護懶人包 🌿</h2>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+        <div style={{
+          width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+          background: "linear-gradient(135deg, #7FB69E, #5A9A7D)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          boxShadow: "0 2px 8px rgba(90,154,125,.2)",
+        }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </div>
+        <h2 className="h2">你的照護懶人包</h2>
+      </div>
 
       {/* 病人 / 醫師 名牌（總是顯示，方便核對） */}
       {(result.patient_name || result.doctor_name) && (
@@ -124,14 +174,14 @@ export default function Results({
                 onClick={() => setTab(t.key)}
                 style={{
                   flex: 1, border: 0, cursor: "pointer", background: "transparent",
-                  padding: "8px 0 10px", display: "flex", flexDirection: "column",
-                  alignItems: "center", gap: 2,
+                  padding: "9px 0 10px", display: "flex", flexDirection: "column",
+                  alignItems: "center", gap: 3,
                   color: active ? "var(--greenDk)" : "var(--text3)",
                   fontWeight: active ? 700 : 400,
                 }}
               >
-                <span style={{ fontSize: 22, filter: active ? "none" : "grayscale(.4)" }}>{t.icon}</span>
-                <span style={{ fontSize: 13 }}>{t.label}</span>
+                {TAB_ICONS[t.key]}
+                <span style={{ fontSize: 11 }}>{t.label}</span>
               </button>
             );
           })}
