@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareDoc Moodboard — Health & Medical App Design References</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans TC', -apple-system, sans-serif;
+    background: #F5F2ED;
+    color: #2D3436;
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #7FB69E 0%, #5A9A7D 50%, #4A8B6F 100%);
+    padding: 48px 40px 40px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    top: -60%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+  .header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .header p {
+    font-size: 16px;
+    opacity: 0.85;
+    font-weight: 300;
+    max-width: 600px;
+    line-height: 1.6;
+  }
+  .header .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin-top: 16px;
+    backdrop-filter: blur(4px);
+  }
+
+  /* Grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 28px;
+    padding: 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* Card */
+  .card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+  }
+
+  .card-img-wrap {
+    position: relative;
+    background: #f8f8f8;
+    display: flex;
+    justify-content: center;
+    padding: 16px 0 0;
+    height: 440px;
+    overflow: hidden;
+  }
+  .card-img-wrap img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+    border-radius: 12px 12px 0 0;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.08));
+  }
+  .card-img-wrap .number {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: #7FB69E;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .card-img-wrap .category {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .card-body {
+    padding: 20px 24px 24px;
+  }
+  .card-body .app-name {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-body .app-name .platform {
+    background: #f0f0f0;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #888;
+  }
+  .card-body .screen-type {
+    font-size: 13px;
+    color: #7FB69E;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  .card-body .description {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+  }
+  .card-body .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+  }
+  .card-body .tag {
+    background: #F0F7F4;
+    color: #5A9A7D;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  /* CTA footer */
+  .cta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #7FB69E;
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 12px;
+    text-decoration: none;
+  }
+  .cta-link:hover { text-decoration: underline; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 40px;
+    color: #aaa;
+    font-size: 13px;
+  }
+
+  /* Color palette section */
+  .palette-section {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px 20px;
+  }
+  .palette-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #2D3436;
+  }
+  .palette-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .palette-chip {
+    width: 100px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  /* Image error fallback */
+  .card-img-wrap .fallback {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #ccc;
+    font-size: 14px;
+    gap: 8px;
+  }
+  .card-img-wrap .fallback .icon { font-size: 48px; }
+  .card-img-wrap img.error + .fallback { display: flex; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>CareDoc Design Moodboard</h1>
+  <p>10 款健康管理 / 醫療 App 的 Onboarding 與註冊畫面參考。<br>來源：Mobbin — 點擊卡片可直接在 Mobbin 查看完整流程。</p>
+  <span class="badge">Health & Medical App References &middot; 2026.06</span>
+</div>
+
+<div class="grid">
+
+  <!-- 1. Alan -->
+  <a class="card" href="https://mobbin.com/screens/71e53214-cb50-4566-aa9e-de155a561011" target="_blank">
+    <div class="card-img-wrap" style="background: linear-gradient(180deg, #F5E6D8 0%, #f8f0e8 100%);">
+      <span class="number">1</span>
+      <span class="category">Wellness</span>
+      <img src="https://mobbin.com/api/mcp/short/fdqY7Ge9" alt="Alan onboarding" onerror="this.classList.add('error'); this.style.display='none';">
+      <div class="fallback"><span class="icon">🐻</span>Alan — 3D Mascot Welcome</div>
+    </div>
+    <div class="card-body">
+      <div class="app-name">Alan <span class="platform">iOS</span></div>
+      <div class="screen-type">Onboarding Welcome</div>
+      <div class="description">3D 吉祥物角色引導，溫暖的桃色/紫色漸層。「Your health journey starts now」— 親切感十足。</div>
+      <div class="tags">
+        <span class="tag">3D 吉祥物</span>
+        <span class="tag">暖色漸層</span>
+        <span class="tag">情感連結</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- 2. MyFitnessPal -->
+  <a class="card" href="https://mobbin.com/screens/d5aa715a-85a7-4f73-9f16-a39da3340cf4" target="_blank">
+    <div class="card-img-wrap" style="background: linear-gradient(180deg, #E8F0FC 0%, #f0f4ff 100%);">
+      <span class="number">2</span>
+      <span class="category">Medication</span>
+      <img src="https://mobbin.com/api/mcp/short/KMRICr7K" alt="MyFitnessPal medication" onerror="this.classList.add('error'); this.style.display='none';">
+      <div class="fallback"><span class="icon">💊</span>MyFitnessPal — Medication Tracking</div>
+    </div>
+    <div class="card-body">
+      <div class="app-name">MyFitnessPal <span class="platform">iOS</span></div>
+      <div class="screen-type">Medication Onboarding</div>
+      <div class="description">GLP-1 藥物追蹤引導頁。乾淨的藍色 UI + 藥瓶插圖，「Log your meds」CTA 清楚。最接近 CareDoc 的用藥場景。</div>
+      <div class="tags">
+        <span class="tag">用藥追蹤</span>
+        <span class="tag">插圖引導</span>
+        <span class="tag">藍色調</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- 3. Yuka -->
+  <a class="card" href="https://mobbin.com/screens/9e8f5f21-20bf-4f95-bc42-8d623c54b691" target="_blank">
+    <div class="card-img-wrap" style="background: #f4f7f5;">
+      <span class="number">3</span>
+      <span class="category">Health Scanner</span>
+      <img src="https://mobbin.com/api/mcp/short/u1x6YZK6" alt="Yuka welcome" onerror="this.classList.add('error'); this.style.display='none';">
+      <div class="fallback"><span class="icon">🥕</span>Yuka — Health Food Scanner</div>
+    </div>
+    <div class="card-body">
+      <div class="app-name">Yuka <span class="platform">iOS</span></div>
+      <div class="screen-type">Welcome / Sign In</div>
+      <div class="description">「Root for good health!」可愛胡蘿蔔吉祥物 + 鼠尾草綠 CTA 按鈕。與 CareDoc 的療癒綠色系非常接近。</div>
+      <div class="tags">
+        <span class="tag">綠色系</span>
+        <span class="tag">可愛吉祥物</span>
+        <span class="tag">極簡</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- 4. Apple Health -->
+  <a class="card" href="https://mobbin.com/screens/4e9ba466-1bb7-442d-adaa-ce7052ddb12f" target="_blank">
+    <div class="card-img-wrap" style="background: #f8f9fb;">
+      <span class="number">4</span>
+      <span class="category">Medical</span>
+      <img src="https://mobbin.com/api/mcp/short/tJfYVWPf" alt="Apple Health medical" onerror="this.classList.add('error'); this.style.display='none';">
+      <div class="fallback"><span class="icon">🏥</span>Apple Health — Medical Center</div>
+    </div>
+    <div class="card-body">
+      <div class="app-name">Apple Health <span class="platform">iOS</span></div>
+      <div class="screen-type">Medical Center Connection</div>
+      <div class="description">醫療中心連結頁面。Patient Portal 卡片設計，「Download Clinical Records」— 專業醫療感十足。CareDoc 的臨床風格參考。</div>
+      <div class="tags">
+        <span class="tag">醫療專業</span>
+        <span class="tag">卡片式</span>
+        <span class="tag">信任感</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- 5. Clue -->
+  <a class="card" href="https://mobbin.com/screens/f36e5cf9-9e66-41a7-9e5e-69a05bb8a593" target="_blank">
+    <div class="card-img-wrap" style="background: #FFF0EC;">
+      <span class="number">5</span>
+      <span class="category">Health Tracking</span>
+      <img src="https://mobbin.com/api/mcp/short/rMbwZleX" alt="Clue onboarding" onerror="this.classList.add('error'); this.style.display='none';">
+      <div class="fallback"><span class="icon">🎨</span>Clue — Colorful Health Tracking</div>
+    </div>
+    <div class="card-body">
+      <div class="app-name">Clue <span class="platform">iOS</span></div>
+      <div class="screen-type">Onboarding / Create Account</div>
+      <div class="description">「Beyond bleeding. The more you track, the more you know.」色彩豐富的圖標矩陣，溫暖鮭魚色背景。多維度健康追蹤的視覺表達。</div>
+      <div class="tags">
+        <span class="tag">彩色圖標</span>
+        <span class="tag">暖色背景</span>
+        <span class="tag">多維追蹤</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- 6. Calm -->
+  <a class="card" href="https://mobbin.com/screens/1c39558d-3f43-42bf-b2f6-3f2c37b495e3" target="_blank">
+    <div class="card-img-wrap" style="background: linear-gradient(180deg, #1B3A5C 0%, #2C5282 100%);">
+      <span class="number">6</span>
+      <span class="category">Wellness</span>
+      <img src="https://mobbin.com/api/mcp/short/inuWE1EE" alt="Calm goals" onerror="this.classList.add('error'); this.style.display='none';">
+      <div class="fallback"><span class="icon">🧘</span>Calm — Wellness Goals</div>
+    </div>
+    <div class="card-body">
+      <div class="app-name">Calm <span class="platform">iOS</span></div>
+      <div class="screen-type">Goal Selection</div>
+      <div class="description">「What brings you to Calm?」深藍漸層背景 + 圓角膠囊按鈕列表。圖標 + 文字組合清晰，選擇互動直覺。目標引導的典範。</div>
+      <div class="tags">
+        <span class="tag">深藍漸層</span>
+        <span class="tag">目標選擇</span>
+        <span class="tag">膠囊按鈕</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- 7. Liven -->
+  <a class="card" href="https://mobbin.com/screens/29461a02-f081-44c2-ac3d-27cb25e22d30" target="_blank">
+    <div class="card-img-wrap" style="background: linear-gradient(180deg, #fce4ec 0%, #f3e5f5 50%, #e8eaf6 100%);">
+      <span class="number">7</span>
+      <span class="category">Mental Health</span>
+      <img src="https://mobbin.com/api/mcp/short/PkgEzKJ5" alt="Liven onboarding" onerror="this.classList.add('error'); this.style.display='none';">
+      <div class="fallback"><span class="icon">🧠</span>Liven — Behavior Science</div>
+    </div>
+    <div class="card-body">
+      <div class="app-name">Liven <span class="platform">iOS</span></div>
+      <div class="screen-type">Onboarding — Science Proof</div>
+      <div class="description">行為科學佐證頁。大腦插圖 + 統計數據（「2X more effective」「92% of users」），用數據建立信任。CareDoc 可參考的信任建構方式。</div>
+      <div class="tags">
+        <span class="tag">數據佐證</span>
+        <span class="tag">柔和漸層</span>
+        <span class="tag">信任建構</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- 8. Apple Fitness -->
+  <a class="card" href="https://mobbin.com/screens/879a15bb-425e-4161-a194-ac71715ba5a6" target="_blank">
+    <div class="card-img-wrap" style="background: #1C1C1E;">
+      <span class="number">8</span>
+      <span class="category">Fitness</span>
+      <img src="https://mobbin.com/api/mcp/short/NtZDgi7K" alt="Apple Fitness setup" onerror="this.classList.add('error'); this.style.display='none';">
+      <div class="fallback"><span class="icon">⌚</span>Apple Fitness — Health Data</div>
+    </div>
+    <div class="card-body">
+      <div class="app-name">Apple Fitness <span class="platform">iOS</span></div>
+      <div class="screen-type">Health Data Personalization</div>
+      <div class="description">「Personalize Fitness and Health」表單卡片（生日、性別、身高、體重），暗色背景 + 螢光綠 CTA。簡潔資料蒐集的標竿。</div>
+      <div class="tags">
+        <span class="tag">暗色主題</span>
+        <span class="tag">資料蒐集</span>
+        <span class="tag">表單卡片</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- 9. Alma -->
+  <a class="card" href="https://mobbin.com/screens/4190b7df-ce50-48b2-bd2c-b9f473bb64f7" target="_blank">
+    <div class="card-img-wrap" style="background: #f5f2ed;">
+      <span class="number">9</span>
+      <span class="category">Health Sync</span>
+      <img src="https://mobbin.com/api/mcp/short/tM4oio12" alt="Alma health sync" onerror="this.classList.add('error'); this.style.display='none';">
+      <div class="fallback"><span class="icon">🍃</span>Alma — Health Sync</div>
+    </div>
+    <div class="card-body">
+      <div class="app-name">Alma <span class="platform">iOS</span></div>
+      <div class="screen-type">Apple Health Sync</div>
+      <div class="description">「Stay in sync using Apple Health」多 App 圖標堆疊 + 功能清單。橄欖綠色 CTA 按鈕，大地色系。與 CareDoc 的鼠尾草綠高度契合。</div>
+      <div class="tags">
+        <span class="tag">橄欖綠</span>
+        <span class="tag">大地色系</span>
+        <span class="tag">整合引導</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- 10. Calm Sleep -->
+  <a class="card" href="https://mobbin.com/screens/4af0f8ff-e26c-4a23-8756-756b3949ec2a" target="_blank">
+    <div class="card-img-wrap" style="background: linear-gradient(180deg, #1a1a3e 0%, #2d2d6e 100%);">
+      <span class="number">10</span>
+      <span class="category">Sleep Health</span>
+      <img src="https://mobbin.com/api/mcp/short/1VDRYsZI" alt="Calm Sleep data" onerror="this.classList.add('error'); this.style.display='none';">
+      <div class="fallback"><span class="icon">🌙</span>Calm Sleep — Data Visualization</div>
+    </div>
+    <div class="card-body">
+      <div class="app-name">Calm Sleep <span class="platform">iOS</span></div>
+      <div class="screen-type">Health Data Visualization</div>
+      <div class="description">「Your sleep plan could get even smarter.」深色背景 + 數據圖表卡片（Duration、Weekly chart）。健康數據視覺化的最佳參考。</div>
+      <div class="tags">
+        <span class="tag">數據圖表</span>
+        <span class="tag">深色 UI</span>
+        <span class="tag">資料卡片</span>
+      </div>
+    </div>
+  </a>
+
+</div>
+
+<!-- Design Direction Summary -->
+<div class="palette-section">
+  <div class="palette-title">CareDoc 設計方向摘要</div>
+  <div style="background: white; border-radius: 16px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); line-height: 1.8; margin-bottom: 20px;">
+    <p style="font-size: 15px; color: #555;">
+      <strong style="color: #2D3436;">最適合 CareDoc 的風格方向：</strong><br><br>
+      <strong>色彩：</strong>Yuka + Alma 的綠色系（與 CareDoc 鼠尾草綠 #7FB69E 一致），搭配 Liven 的柔和漸層<br>
+      <strong>吉祥物：</strong>Alan 的 3D 風格 或 Yuka 的 2D 插畫風格，傳達療癒感<br>
+      <strong>信任感：</strong>Apple Health 的醫療專業卡片 + Liven 的數據佐證<br>
+      <strong>資料蒐集：</strong>Apple Fitness 的表單卡片模式，乾淨不壓迫<br>
+      <strong>數據呈現：</strong>Calm Sleep 的圖表卡片，用於用藥/回診追蹤<br>
+      <strong>引導模式：</strong>Calm 的目標選擇膠囊按鈕，適合「照護情境選擇」
+    </p>
+  </div>
+
+  <div class="palette-title">CareDoc 現有色票</div>
+  <div class="palette-row">
+    <div class="palette-chip" style="background: #7FB69E;">主色<br>#7FB69E</div>
+    <div class="palette-chip" style="background: #5A9A7D;">深綠<br>#5A9A7D</div>
+    <div class="palette-chip" style="background: #FDFBF7; color: #999; text-shadow: none; border: 1px solid #e5e5e5;">背景<br>#FDFBF7</div>
+    <div class="palette-chip" style="background: #D4816B;">警告<br>#D4816B</div>
+    <div class="palette-chip" style="background: #9B8BBF;">用藥<br>#9B8BBF</div>
+    <div class="palette-chip" style="background: #7BA7C9;">行程<br>#7BA7C9</div>
+  </div>
+</div>
+
+<div class="footer">
+  CareDoc Moodboard &middot; Generated via Mobbin MCP &middot; 2026.06
+</div>
+
+</body>
+</html>

@@ -5,42 +5,58 @@
   --coral:#D4816B; --coralBg:#FDF0EC; --blue:#7BA7C9; --blueBg:#EDF3F9;
   --amber:#C9A862; --amberBg:#FDF8EC; --purple:#9B8BBF; --purpleBg:#F3F0F8;
   --border:#E8EDE9;
-  --radius-card:16px; --radius-btn:14px;
-  --shadow:0 1px 3px rgba(0,0,0,.04), 0 4px 16px rgba(0,0,0,.03);
+  --radius-card:18px; --radius-btn:50px;
+  --shadow:0 1px 4px rgba(0,0,0,.05), 0 6px 20px rgba(0,0,0,.05);
+  --shadow-lg:0 4px 12px rgba(0,0,0,.08), 0 16px 40px rgba(0,0,0,.06);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{
-  background:linear-gradient(175deg, #EDF5F0 0%, #F5FAF7 30%, #FAFCFB 60%, #FFFFFF 100%);
-  background-attachment:fixed;
+  background:#F5FAF7;
   color:var(--text);
   font-family:"Noto Sans TC",system-ui,sans-serif;font-size:17px;line-height:1.65;
-  -webkit-font-smoothing:antialiased}
-.container{max-width:480px;margin:0 auto;padding:24px 20px;min-height:100vh;
-  display:flex;flex-direction:column}
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior:none}
+.container{max-width:480px;margin:0 auto;padding:0;min-height:100vh;
+  display:flex;flex-direction:column;overflow:hidden}
 .card{background:var(--card);border-radius:var(--radius-card);
   border:1px solid var(--border);
-  box-shadow:var(--shadow);padding:20px;margin-bottom:16px}
-.btn-primary{font-size:17px;font-weight:600;color:#fff;border:0;cursor:pointer;
-  border-radius:var(--radius-btn);padding:15px 24px;width:100%;
+  box-shadow:var(--shadow);padding:20px;margin-bottom:14px}
+.btn-primary{font-size:17px;font-weight:700;color:#fff;border:0;cursor:pointer;
+  border-radius:var(--radius-btn);padding:16px 24px;width:100%;
   background:linear-gradient(135deg,#7FB69E,#5A9A7D);
-  box-shadow:0 2px 8px rgba(90,154,125,.25);
-  transition:opacity .2s, transform .15s}
-.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(90,154,125,.3)}
-.btn-primary:active{transform:translateY(0)}
-.btn-primary:disabled{opacity:.5;cursor:default;transform:none}
+  box-shadow:0 4px 16px rgba(90,154,125,.3);
+  letter-spacing:.1px;
+  transition:transform .15s, box-shadow .15s}
+.btn-primary:active{transform:scale(.97)}
+.btn-primary:disabled{opacity:.5;cursor:default;transform:none;box-shadow:none}
 .btn-secondary{font-size:16px;font-weight:600;color:var(--greenDk);cursor:pointer;
-  background:var(--card);border:1px solid var(--border);
-  border-radius:var(--radius-btn);padding:13px 18px;width:100%;
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:var(--radius-btn);padding:14px 18px;width:100%;
   transition:border-color .2s}
 .btn-secondary:hover{border-color:var(--green)}
 .btn-secondary:disabled{opacity:.5;cursor:default}
-.h1{font-size:26px;font-weight:800;line-height:1.35;letter-spacing:-0.3px}
+.h1{font-size:28px;font-weight:800;line-height:1.3;letter-spacing:-0.4px}
 .h2{font-size:20px;font-weight:700;letter-spacing:-0.2px}
 .muted{color:var(--text2)}
-.disclaimer{font-size:13px;color:var(--text3);text-align:center;padding:18px 12px}
-@keyframes orbPulse{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
-.orb-glow{animation:orbPulse 3s ease-in-out infinite}
+.disclaimer{font-size:12px;color:var(--text3);text-align:center;padding:12px}
 .blur-lock{filter:blur(6px);pointer-events:none;user-select:none}
 .lock-wrap{position:relative}
 .lock-cta{position:absolute;inset:0;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:10px;text-align:center}
+
+/* Entry animations */
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.a0{animation:fadeSlideUp .4s ease both}
+.a1{animation:fadeSlideUp .4s .07s ease both}
+.a2{animation:fadeSlideUp .4s .14s ease both}
+.a3{animation:fadeSlideUp .4s .21s ease both}
+.a4{animation:fadeSlideUp .4s .28s ease both}
+.a5{animation:fadeSlideUp .4s .35s ease both}
+
+/* Orb */
+@keyframes orbPulse{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+.orb-glow{animation:orbPulse 3s ease-in-out infinite}
+
+/* Page content area (below hero) */
+.page-body{flex:1;padding:28px 22px 32px;display:flex;flex-direction:column}
