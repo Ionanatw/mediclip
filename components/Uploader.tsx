@@ -2,12 +2,32 @@
 import { useState } from "react";
 import { fileToCompressedBase64 } from "@/lib/imageResize";
 
+const IcBack = (c: string) => <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke={c} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+const IcPlus = (c: string, s = 20) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke={c} strokeWidth="1.8" strokeLinecap="round" /></svg>;
+const IcClose = (c: string) => <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 3l8 8M11 3l-8 8" stroke={c} strokeWidth="2" strokeLinecap="round" /></svg>;
+const IcCheck = (c: string) => <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill={c} /><path d="M7 12.5l3 3 7-7" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+const IcDoc = (c: string) => <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="4" y="2" width="16" height="20" rx="2.5" stroke={c} strokeWidth="1.8" /><path d="M8 7h8M8 11h6M8 15h8" stroke={c} strokeWidth="1.5" strokeLinecap="round" /></svg>;
+const IcChat = (c: string) => <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+const IcMic = (c: string) => <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="8" y="2" width="8" height="13" rx="4" stroke={c} strokeWidth="2" /><path d="M5 11a7 7 0 0014 0M12 18v4M9 22h6" stroke={c} strokeWidth="2" strokeLinecap="round" /></svg>;
+const IcBulb = (c: string) => <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2a7 7 0 00-3 13.3V18h6v-2.7A7 7 0 0012 2z" stroke={c} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /><path d="M9 22h6" stroke={c} strokeWidth="1.8" strokeLinecap="round" /></svg>;
+const IcLeaf = (c: string) => <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 21c3-3 2-9 6-12s9-3 9-3-1 6-5 9-7 3-10 6z" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /><path d="M6 21c0-5 4-9 8-12" stroke={c} strokeWidth="2" strokeLinecap="round" /></svg>;
+const IcSpin = (c: string) => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style={{ animation: "cdSpin .8s linear infinite" }}><circle cx="12" cy="12" r="9" stroke={c} strokeOpacity=".25" strokeWidth="3" /><path d="M12 3a9 9 0 016.364 2.636" stroke={c} strokeWidth="3" strokeLinecap="round" /></svg>;
+
+const PHOTO_COLORS = ["#C4D8CC", "#D6C9A8", "#B8C9D6", "#D4C4D8", "#C8D4C4", "#D8C8B8"];
+const TOTAL_SLOTS = 6;
+
+function Badge({ label, color, bg }: { label: string; color: string; bg: string }) {
+  return <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11.5, fontWeight: 700, color, background: bg, padding: "2px 8px", borderRadius: 6, marginLeft: 8 }}>{label}</span>;
+}
+
 export default function Uploader({
   error,
   onSubmit,
+  onBack,
 }: {
   error?: string;
   onSubmit: (imgs: { type: string; data: string }[], text: string) => void;
+  onBack?: () => void;
 }) {
   const [previews, setPreviews] = useState<string[]>([]);
   const [imgs, setImgs] = useState<{ type: string; data: string }[]>([]);
@@ -15,7 +35,7 @@ export default function Uploader({
   const [busy, setBusy] = useState(false);
 
   async function onPick(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(e.target.files || []).slice(0, 8 - imgs.length);
+    const files = Array.from(e.target.files || []).slice(0, TOTAL_SLOTS - imgs.length);
     setBusy(true);
     for (const f of files) {
       const c = await fileToCompressedBase64(f);
@@ -26,173 +46,152 @@ export default function Uploader({
     e.target.value = "";
   }
 
+  function removePhoto(idx: number) {
+    setImgs((p) => p.filter((_, i) => i !== idx));
+    setPreviews((p) => p.filter((_, i) => i !== idx));
+  }
+
+  const canStart = imgs.length > 0 && !busy;
+
   return (
-    <section style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-
-      {/* ── Mini hero ─────────────────────────── */}
-      <div className="a0" style={{
-        background: "linear-gradient(155deg, #2E6B52 0%, #4A8C72 45%, #7FB69E 100%)",
-        padding: "48px 24px 32px",
-        position: "relative", overflow: "hidden",
-      }}>
-        <div style={{ position: "absolute", top: -40, right: -40, width: 130, height: 130, borderRadius: "50%", background: "rgba(255,255,255,0.07)" }} />
-
-        {/* Step dots */}
-        <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 20 }}>
-          {[1, 2, 3].map((n) => (
-            <div key={n} style={{
-              width: n === 2 ? 20 : 6, height: 6, borderRadius: 3,
-              background: n <= 2 ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.3)",
-            }} />
-          ))}
+    <section style={{
+      flex: 1, display: "flex", flexDirection: "column", alignItems: "center",
+      background: "var(--bg)", minHeight: "100dvh", paddingTop: 12,
+    }}>
+      {/* Nav */}
+      <div style={{ width: "100%", maxWidth: 480, padding: "0 24px", boxSizing: "border-box", display: "flex", alignItems: "center", height: 50, flexShrink: 0, position: "relative" }}>
+        <div onClick={onBack} style={{ width: 38, height: 38, borderRadius: "50%", background: "rgba(127,182,158,0.12)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+          {IcBack("#5A9A7D")}
         </div>
-
-        <div style={{ textAlign: "center" }}>
-          <div style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center",
-            width: 56, height: 56, borderRadius: 18,
-            background: "rgba(255,255,255,0.18)",
-            border: "1.5px solid rgba(255,255,255,0.28)",
-            backdropFilter: "blur(10px)",
-            marginBottom: 14,
-          }}>
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-              <circle cx="12" cy="13" r="4"/>
-            </svg>
-          </div>
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: "#fff", letterSpacing: -0.3, marginBottom: 6 }}>
-            上傳醫療文件
-          </h1>
-          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.82)" }}>
-            最多 8 張，從相簿選擇
-          </p>
-        </div>
+        <div style={{ position: "absolute", left: 0, right: 0, textAlign: "center", fontWeight: 700, fontSize: 18, pointerEvents: "none" }}>上傳醫療文件</div>
       </div>
 
-      {/* ── Body ─────────────────────────────── */}
-      <div className="page-body">
+      {/* Content */}
+      <div style={{ flex: 1, width: "100%", maxWidth: 480, padding: "0 24px", boxSizing: "border-box", overflow: "auto", display: "flex", flexDirection: "column", gap: 16, paddingTop: 8, paddingBottom: 96 }}>
 
-        {/* Upload zone */}
-        <div className="a1" style={{ marginBottom: 14 }}>
-          {previews.length > 0 ? (
-            /* Photo grid */
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gap: 8, marginBottom: 10,
-            }}>
-              {previews.map((src, i) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img key={i} src={src} alt="" style={{
-                  width: "100%", aspectRatio: "1", objectFit: "cover",
-                  borderRadius: 12, border: "1px solid var(--border)",
-                }} />
-              ))}
-              {imgs.length < 8 && (
-                <label style={{
-                  display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-                  aspectRatio: "1", borderRadius: 12,
-                  border: "1.5px dashed var(--border)", background: "var(--bg2)",
-                  cursor: "pointer", gap: 4,
-                }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-                  </svg>
-                  <span style={{ fontSize: 10, color: "var(--text3)" }}>{imgs.length}/8</span>
-                  <input type="file" accept="image/*" multiple hidden onChange={onPick} />
-                </label>
-              )}
+        {/* Photo grid card */}
+        <div className="a0" style={{ background: "var(--card)", borderRadius: 20, padding: "16px 18px 18px", border: "1px solid var(--card-border)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              {IcDoc("var(--text2)")}
+              <span style={{ fontWeight: 700, fontSize: 16 }}>照片與文件</span>
+              {imgs.length > 0 && <span style={{ fontSize: 12, color: "var(--text3)" }}>{imgs.length}/{TOTAL_SLOTS}</span>}
             </div>
-          ) : (
-            /* Empty upload zone */
-            <label style={{
-              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-              gap: 14, padding: "40px 20px",
-              border: "1.5px dashed rgba(127,182,158,0.45)", borderRadius: 20,
-              cursor: "pointer", background: "var(--greenBg)",
-              transition: "background .2s",
-            }}>
-              <div style={{
-                width: 60, height: 60, borderRadius: 18,
-                background: "rgba(90,154,125,0.12)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--greenDk)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="17 8 12 3 7 8"/>
-                  <line x1="12" y1="3" x2="12" y2="15"/>
-                </svg>
-              </div>
-              <div style={{ textAlign: "center" }}>
-                <p style={{ fontSize: 16, fontWeight: 700, color: "var(--greenDk)" }}>選擇照片</p>
-                <p style={{ fontSize: 13, color: "var(--text3)", marginTop: 4 }}>從相簿選擇 · 最多 8 張</p>
-              </div>
-              <input type="file" accept="image/*" multiple hidden onChange={onPick} />
-            </label>
+            <div style={{ fontSize: 12, color: "var(--text3)", whiteSpace: "nowrap", flexShrink: 0 }}>最多 {TOTAL_SLOTS} 張</div>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: "4px 0" }}>
+            {Array.from({ length: TOTAL_SLOTS }).map((_, i) => {
+              if (i < previews.length) {
+                return (
+                  <div key={i} style={{ position: "relative", aspectRatio: "1", borderRadius: 14, overflow: "hidden" }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={previews[i]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    <div onClick={() => removePhoto(i)} style={{ position: "absolute", top: 4, right: 4, width: 22, height: 22, borderRadius: "50%", background: "rgba(0,0,0,0.35)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+                      {IcClose("#fff")}
+                    </div>
+                  </div>
+                );
+              }
+              if (i === previews.length && imgs.length < TOTAL_SLOTS) {
+                return (
+                  <label key={i} style={{ aspectRatio: "1", borderRadius: 14, border: "2px dashed var(--surface3)", background: "transparent", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+                    {IcPlus("var(--surface3)", 24)}
+                    <input type="file" accept="image/*,.pdf" multiple hidden onChange={onPick} />
+                  </label>
+                );
+              }
+              return (
+                <div key={i} style={{ aspectRatio: "1", borderRadius: 14, border: "2px dashed var(--surface3)", background: "transparent", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  {IcPlus("var(--surface3)", 24)}
+                </div>
+              );
+            })}
+          </div>
+
+          {imgs.length > 0 && (
+            <div style={{ marginTop: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "10px 16px", borderRadius: 999, background: "var(--brand-bg)" }}>
+              {IcCheck("var(--brand)")}
+              <span style={{ fontSize: 14, fontWeight: 600, color: "var(--brand-dk)" }}>已選擇 {imgs.length} 張文件</span>
+            </div>
           )}
         </div>
 
         {error && (
-          <div className="a2" style={{ padding: "12px 14px", borderRadius: 12, background: "var(--coralBg)", border: "1px solid rgba(212,129,107,0.2)", marginBottom: 12 }}>
-            <p style={{ fontSize: 14, color: "var(--coral)" }}>{error}</p>
+          <div style={{ padding: "12px 14px", borderRadius: 12, background: "var(--warning-bg)", marginBottom: 0 }}>
+            <p style={{ fontSize: 14, color: "var(--warning)" }}>{error}</p>
           </div>
         )}
 
-        {/* Inline tip chips */}
-        <div className="a2" style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
-          <span style={{
-            display: "flex", alignItems: "center", gap: 6,
-            padding: "7px 12px", borderRadius: 20,
-            background: "var(--amberBg)", border: "1px solid rgba(201,168,98,0.2)",
-            fontSize: 12, color: "var(--text2)",
-          }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="8" x2="12" y2="12"/>
-              <line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
-            體驗版限上傳一次，建議看診結束後再上傳
-          </span>
-          <span style={{
-            display: "flex", alignItems: "center", gap: 6,
-            padding: "7px 12px", borderRadius: 20,
-            background: "var(--greenBg)", border: "1px solid rgba(127,182,158,0.2)",
-            fontSize: 12, color: "var(--text2)",
-          }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--greenDk)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-            </svg>
-            支援手寫正楷筆記辨識
-          </span>
+        {/* Supplementary text */}
+        <div className="a1">
+          <div style={{ display: "flex", alignItems: "center", marginBottom: 10 }}>
+            {IcChat("var(--text2)")}
+            <span style={{ fontSize: 15, fontWeight: 700, marginLeft: 6 }}>補充說明</span>
+            <Badge label="選填" color="var(--brand-dk)" bg="var(--brand-bg)" />
+          </div>
+          <textarea
+            placeholder="護理師口頭交代的重點、醫師的回覆…"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            style={{
+              width: "100%", height: 72, resize: "none", boxSizing: "border-box",
+              background: "var(--surface2)", border: "1.5px solid var(--surface3)", borderRadius: 14,
+              padding: "12px 14px", fontFamily: "inherit", fontSize: 15, color: "var(--text)",
+              lineHeight: 1.5, outline: "none",
+            }}
+          />
+          <div style={{ fontSize: 12, color: "var(--text3)", marginTop: 6, display: "flex", alignItems: "center", gap: 4 }}>
+            {IcBulb("var(--text3)")} 補充越詳細，AI 整理越完整
+          </div>
         </div>
 
-        {/* Note textarea */}
-        <textarea
-          className="a3"
-          value={text}
-          placeholder="補充說明（選填）：護理站口頭交代、想問的問題…"
-          onChange={(e) => setText(e.target.value)}
-          style={{
-            width: "100%", minHeight: 80, fontSize: 15, padding: "14px 16px",
-            border: "1.5px solid var(--border)", borderRadius: 16,
-            fontFamily: "inherit", background: "var(--card)", color: "var(--text)",
-            resize: "none", outline: "none", marginBottom: 20,
-            boxShadow: "0 1px 4px rgba(0,0,0,.04)",
-          }}
-          onFocus={(e) => (e.target.style.borderColor = "var(--greenDk)")}
-          onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
-        />
+        {/* Voice section */}
+        <div className="a2">
+          <div style={{ display: "flex", alignItems: "center", marginBottom: 10 }}>
+            {IcMic("var(--text2)")}
+            <span style={{ fontSize: 15, fontWeight: 700, marginLeft: 6 }}>錄音紀錄</span>
+            <Badge label="Coming Soon" color="var(--text3)" bg="#EFEBE3" />
+          </div>
+          <button disabled style={{
+            width: "100%", height: 44, borderRadius: 12, border: "1.5px solid var(--surface3)",
+            background: "var(--surface2)", color: "var(--text3)", fontFamily: "inherit", fontWeight: 600,
+            fontSize: 14, opacity: 0.5, cursor: "not-allowed", marginBottom: 10,
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+          }}>{IcMic("var(--text3)")} 上傳錄音檔（即將推出）</button>
+          <textarea
+            placeholder="或直接貼上語音轉文字的內容…"
+            style={{
+              width: "100%", height: 56, resize: "none", boxSizing: "border-box",
+              background: "var(--surface2)", border: "1.5px solid var(--surface3)", borderRadius: 14,
+              padding: "12px 14px", fontFamily: "inherit", fontSize: 14, color: "var(--text)",
+              lineHeight: 1.5, outline: "none",
+            }}
+          />
+        </div>
+      </div>
 
-        <div style={{ flex: 1 }} />
-
+      {/* Fixed bottom CTA */}
+      <div style={{
+        position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 10,
+        display: "flex", justifyContent: "center",
+        padding: "12px 0 28px", background: "linear-gradient(transparent, var(--bg) 30%)",
+      }}>
         <button
-          className="btn-primary a4"
-          disabled={busy || (!imgs.length && !text)}
+          disabled={!canStart}
           onClick={() => onSubmit(imgs, text)}
-          style={{ fontSize: 18, padding: "18px 24px" }}
+          style={{
+            width: "calc(100% - 48px)", maxWidth: 432,
+            height: 52, borderRadius: 14, border: "none",
+            background: "var(--brand)", color: "#fff", fontFamily: "inherit",
+            fontWeight: 700, fontSize: 17, letterSpacing: 1,
+            cursor: canStart ? "pointer" : "not-allowed",
+            opacity: canStart ? 1 : 0.45,
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+            boxShadow: canStart ? "0 8px 20px rgba(127,182,158,0.35)" : "none",
+          }}
         >
-          {busy ? "處理圖片中…" : "開始 AI 整理"}
+          {busy ? IcSpin("#fff") : <>{IcLeaf("#fff")} 開始 AI 整理</>}
         </button>
       </div>
     </section>

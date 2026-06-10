@@ -12,3 +12,5 @@ android/
 .gstack/
 .next/
 next-env.d.ts
+.vscode/
+*.tsbuildinfo

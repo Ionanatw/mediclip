@@ -1,136 +1,137 @@
 "use client";
 import { useEffect, useState } from "react";
+import ToastMascot from "./ToastMascot";
 
 const STEPS = [
-  { text: "辨識文件中", sub: "掃描醫療單據內容" },
-  { text: "提取醫療資訊", sub: "整理用藥、行程、注意事項" },
-  { text: "整理成懶人包", sub: "生成你專屬的照護指南" },
+  "辨識文件內容",
+  "提取用藥資訊",
+  "整理注意事項與行程",
+  "生成照護懶人包",
 ];
 
-export default function Processing() {
-  const [i, setI] = useState(0);
-  const [visible, setVisible] = useState(true);
-  const [done, setDone] = useState<boolean[]>([false, false, false]);
+function DoneIcon({ c }: { c: string }) {
+  return (
+    <div style={{ width: 26, height: 26, borderRadius: "50%", background: c, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
+    </div>
+  );
+}
+function SpinnerIcon({ c }: { c: string }) {
+  return (
+    <div style={{ width: 26, height: 26, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style={{ animation: "cdSpin .8s linear infinite" }}>
+        <circle cx="12" cy="12" r="9" stroke={c} strokeOpacity=".2" strokeWidth="3" />
+        <path d="M12 3a9 9 0 016.364 2.636" stroke={c} strokeWidth="3" strokeLinecap="round" />
+      </svg>
+    </div>
+  );
+}
+function PendingIcon({ c }: { c: string }) {
+  return <div style={{ width: 26, height: 26, borderRadius: "50%", border: `2px solid ${c}`, flexShrink: 0 }} />;
+}
+function ErrorIcon() {
+  return (
+    <div style={{ width: 26, height: 26, borderRadius: "50%", background: "#D97757", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+      <svg width="12" height="12" viewBox="0 0 12 12"><path d="M3 3l6 6M9 3l-6 6" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" /></svg>
+    </div>
+  );
+}
+
+export default function Processing({ error, onRetry }: { error?: string; onRetry?: () => void }) {
+  const [step, setStep] = useState(0);
 
   useEffect(() => {
-    const t = setInterval(() => {
-      setVisible(false);
-      setTimeout(() => {
-        setI((p) => {
-          const next = (p + 1) % STEPS.length;
-          if (p < STEPS.length - 1) {
-            setDone((d) => { const n = [...d]; n[p] = true; return n; });
-          }
-          return next;
-        });
-        setVisible(true);
-      }, 300);
-    }, 2600);
-    return () => clearInterval(t);
-  }, []);
+    if (error) return;
+    const timers = [
+      setTimeout(() => setStep(1), 3000),
+      setTimeout(() => setStep(2), 7000),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, [error]);
+
+  const isError = !!error;
+  const progress = isError ? (step / 4) : Math.min(step / 4, 1);
 
   return (
-    <section style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+    <section style={{
+      flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+      background: "var(--bg)", minHeight: "100dvh",
+    }}>
+      <div style={{ width: "100%", maxWidth: 420, padding: "0 32px", boxSizing: "border-box", display: "flex", flexDirection: "column", alignItems: "center", gap: 24 }}>
 
-      {/* ── Orb hero ─────────────────────────── */}
-      <div style={{
-        background: "linear-gradient(155deg, #2E6B52 0%, #4A8C72 45%, #9DCDB8 100%)",
-        flex: "0 0 52vh",
-        display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center",
-        position: "relative", overflow: "hidden",
-      }}>
-        {/* Orb */}
-        <div className="orb-glow" style={{
-          width: 200, height: 200, borderRadius: "50%",
-          background: "radial-gradient(circle at 40% 38%, rgba(200,240,220,0.55) 0%, rgba(160,210,190,0.35) 35%, rgba(120,180,160,0.18) 65%, transparent 100%)",
-          filter: "blur(16px)",
-          position: "absolute",
-        }} />
-        {/* Brand icon inside orb */}
-        <div style={{
-          width: 72, height: 72, borderRadius: 22,
-          background: "rgba(255,255,255,0.2)",
-          border: "1.5px solid rgba(255,255,255,0.35)",
-          backdropFilter: "blur(12px)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          zIndex: 1,
-        }}>
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-          </svg>
+        {/* Toast MaiMai */}
+        <div style={{ animation: "cdFloat 2.5s ease-in-out infinite" }}>
+          <ToastMascot size={64} />
         </div>
 
-        {/* Step text */}
-        <div style={{
-          position: "absolute", bottom: 36,
-          opacity: visible ? 1 : 0,
-          transition: "opacity 0.3s ease",
-          textAlign: "center",
-        }}>
-          <p style={{ fontSize: 18, fontWeight: 700, color: "#fff", marginBottom: 4 }}>{STEPS[i].text}</p>
-          <p style={{ fontSize: 13, color: "rgba(255,255,255,0.75)" }}>{STEPS[i].sub}</p>
+        {/* Title */}
+        <div style={{ fontWeight: 900, fontSize: 22, textAlign: "center", letterSpacing: 0.5, whiteSpace: "nowrap" }}>
+          {isError ? "處理時發生問題" : step >= 4 ? "整理完成！" : "AI 正在整理你的文件"}
         </div>
 
-        {/* Step dots */}
-        <div style={{ position: "absolute", bottom: 14, display: "flex", gap: 7 }}>
-          {STEPS.map((_, idx) => (
-            <div key={idx} style={{
-              width: idx === i ? 22 : 6, height: 6, borderRadius: 3,
-              background: idx === i ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.35)",
-              transition: "all 0.35s ease",
+        {/* Pulsing dots */}
+        {!isError && step < 4 && (
+          <div style={{ display: "flex", gap: 8, marginTop: -12 }}>
+            {[0, 1, 2].map((i) => (
+              <div key={i} style={{
+                width: 10, height: 10, borderRadius: "50%", background: "var(--brand)",
+                animation: "cdPulse 1.2s ease-in-out infinite",
+                animationDelay: `${i * 0.2}s`,
+              }} />
+            ))}
+          </div>
+        )}
+
+        {/* Step list */}
+        <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 14 }}>
+          {STEPS.map((label, i) => {
+            const idx = i + 1;
+            const isDone = idx <= step;
+            const isActive = idx === step + 1 && !isError && step < 4;
+            const isStepError = isError && idx === step + 1;
+            const textColor = isDone ? "var(--brand-dk)" : isActive ? "var(--text)" : isStepError ? "var(--warning)" : "var(--text3)";
+            const icon = isDone ? <DoneIcon c="var(--brand)" />
+              : isActive ? <SpinnerIcon c="var(--amber)" />
+              : isStepError ? <ErrorIcon />
+              : <PendingIcon c="var(--surface3)" />;
+
+            return (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                {icon}
+                <div style={{ fontWeight: isDone || isActive ? 600 : 400, fontSize: 15, color: textColor, lineHeight: 1.3, whiteSpace: "nowrap" }}>
+                  {label}{isActive ? "..." : ""}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Progress bar */}
+        <div style={{ width: "100%" }}>
+          <div style={{ width: "100%", height: 6, borderRadius: 3, background: "var(--surface3)", overflow: "hidden" }}>
+            <div style={{
+              width: `${Math.max(progress * 100, 2)}%`, height: "100%", borderRadius: 3,
+              background: isError ? "var(--warning)" : "linear-gradient(90deg, var(--brand), var(--brand-dk))",
+              transition: "width 0.5s ease-out",
             }} />
-          ))}
+          </div>
         </div>
-      </div>
 
-      {/* ── Step checklist ─────────────────────── */}
-      <div className="page-body" style={{ paddingTop: 24 }}>
-        <p style={{ fontSize: 12, fontWeight: 700, color: "var(--text3)", letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 16 }}>
-          進度
-        </p>
-
-        {STEPS.map((step, idx) => {
-          const isActive = idx === i;
-          const isDone = done[idx];
-          return (
-            <div key={idx} style={{
-              display: "flex", alignItems: "center", gap: 14,
-              padding: "14px 16px", borderRadius: 14,
-              marginBottom: 10,
-              background: isActive ? "var(--greenBg)" : "var(--card)",
-              border: `1px solid ${isActive ? "rgba(127,182,158,0.3)" : "var(--border)"}`,
-              transition: "all 0.4s ease",
-            }}>
-              <div style={{
-                width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                background: isDone ? "var(--greenDk)" : isActive ? "var(--green)" : "var(--bg3)",
-                transition: "background 0.4s ease",
-              }}>
-                {isDone ? (
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12"/>
-                  </svg>
-                ) : isActive ? (
-                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#fff" }} />
-                ) : (
-                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--text3)" }} />
-                )}
-              </div>
-              <div>
-                <p style={{ fontSize: 15, fontWeight: isActive ? 700 : 500, color: isActive ? "var(--greenDk)" : "var(--text2)" }}>
-                  {step.text}
-                </p>
-                <p style={{ fontSize: 12, color: "var(--text3)", marginTop: 1 }}>{step.sub}</p>
-              </div>
-            </div>
-          );
-        })}
-
-        <p style={{ textAlign: "center", fontSize: 13, color: "var(--text3)", marginTop: 8 }}>
-          約需 10–20 秒 · 照片不會被儲存
-        </p>
+        {/* Bottom hint */}
+        {isError ? (
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 14, color: "var(--text3)", marginBottom: 16 }}>網路不穩，請再試一次</div>
+            <button onClick={onRetry} style={{
+              height: 44, padding: "0 28px", borderRadius: 999,
+              border: "1.5px solid var(--surface3)", background: "transparent",
+              color: "var(--text)", fontFamily: "inherit", fontWeight: 600, fontSize: 15, cursor: "pointer",
+            }}>重新整理</button>
+          </div>
+        ) : step >= 4 ? (
+          <div style={{ fontSize: 14, color: "var(--brand)", fontWeight: 600 }}>即將跳轉...</div>
+        ) : (
+          <div style={{ fontSize: 13, color: "var(--text3)" }}>通常需要 10-20 秒</div>
+        )}
       </div>
     </section>
   );
