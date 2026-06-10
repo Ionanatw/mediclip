@@ -7,8 +7,11 @@ import Uploader from "./Uploader";
 import Processing from "./Processing";
 import Followup from "./Followup";
 import Results from "./Results";
+import TabBar from "./TabBar";
 
 type Step = "splash" | "landing" | "upload" | "processing" | "followup" | "results";
+
+const SHOW_TABBAR: Step[] = ["landing", "upload", "results"];
 
 export default function Flow() {
   const [step, setStep] = useState<Step>("splash");
@@ -70,6 +73,8 @@ export default function Flow() {
     setStep("results");
   }
 
+  const activeTab = step === "landing" ? "home" : step === "upload" ? "home" : step === "results" ? "library" : "home";
+
   return (
     <main className="container">
       {step === "splash" && <Splash onDone={() => setStep("landing")} />}
@@ -99,8 +104,14 @@ export default function Flow() {
           onRollingUpdate={(imgs, text) => runProcess(imgs, text, result)}
         />
       )}
-      {step !== "results" && step !== "splash" && step !== "processing" && (
-        <p className="disclaimer" style={{ padding: "8px 22px 20px" }}>AI 輔助整理，請以原始醫療文件為準</p>
+
+      {SHOW_TABBAR.includes(step) && (
+        <TabBar
+          active={activeTab}
+          onTabChange={(tab) => {
+            if (tab === "home") setStep("landing");
+          }}
+        />
       )}
     </main>
   );
