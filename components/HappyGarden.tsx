@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { SAKURA, DAILY_CAP, stageFor } from "@/lib/gardenConfig";
+import { useEffect, useState } from "react";
+import { SAKURA, stageFor, loadSun, addSun, SUN_EVENT } from "@/lib/gardenConfig";
 
 export default function HappyGarden() {
   const [sun, setSun] = useState(0);
@@ -8,8 +8,15 @@ export default function HappyGarden() {
   const [gratitude, setGratitude] = useState("");
   const [breathing, setBreathing] = useState(false);
 
+  useEffect(() => {
+    setSun(loadSun());
+    const onSun = (e: Event) => setSun((e as CustomEvent<number>).detail);
+    window.addEventListener(SUN_EVENT, onSun);
+    return () => window.removeEventListener(SUN_EVENT, onSun);
+  }, []);
+
   const water = (amount: number) => {
-    setSun((s) => Math.min(s + amount, DAILY_CAP * 20)); // demo 體驗用，放寬上限讓人看到成長
+    addSun(amount); // 寫入共享 ☀️ 並透過事件同步 state
     setSplash(true);
     setTimeout(() => setSplash(false), 900);
   };

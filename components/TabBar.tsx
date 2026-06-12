@@ -2,7 +2,7 @@
 
 const TABS = [
   { key: "home", label: "首頁" },
-  { key: "library", label: "文件庫" },
+  { key: "library", label: "筆記" },
   { key: "garden", label: "花園" },
   { key: "profile", label: "我的" },
 ] as const;

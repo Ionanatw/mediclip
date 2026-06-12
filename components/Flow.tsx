@@ -8,10 +8,11 @@ import Processing from "./Processing";
 import Followup from "./Followup";
 import Results from "./Results";
 import TabBar from "./TabBar";
+import GardenTab from "./GardenTab";
 
-type Step = "splash" | "landing" | "upload" | "processing" | "followup" | "results";
+type Step = "splash" | "landing" | "upload" | "processing" | "followup" | "results" | "garden";
 
-const SHOW_TABBAR: Step[] = ["landing", "upload", "results"];
+const SHOW_TABBAR: Step[] = ["landing", "upload", "results", "garden"];
 
 export default function Flow() {
   const [step, setStep] = useState<Step>("splash");
@@ -73,7 +74,8 @@ export default function Flow() {
     setStep("results");
   }
 
-  const activeTab = step === "landing" ? "home" : step === "upload" ? "home" : step === "results" ? "library" : "home";
+  const activeTab =
+    step === "garden" ? "garden" : step === "results" ? "library" : "home";
 
   return (
     <main className="container">
@@ -98,6 +100,7 @@ export default function Flow() {
           onSkip={handleFollowupSkip}
         />
       )}
+      {step === "garden" && <GardenTab />}
       {step === "results" && result && (
         <Results
           result={result}
@@ -110,6 +113,7 @@ export default function Flow() {
           active={activeTab}
           onTabChange={(tab) => {
             if (tab === "home") setStep("landing");
+            if (tab === "garden") setStep("garden");
           }}
         />
       )}
