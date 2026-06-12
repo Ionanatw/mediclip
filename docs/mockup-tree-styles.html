@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>櫻花樹風格試畫 — CareDoc × Phantom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFDF8; --surface:#FDFCFE; --surface2:#F4F2F4;
+  --text:#3C315B; --text2:#86848D;
+  --lavender:#AB9FF2; --lav-light:#E2DFFE; --plum:#3C315B; --plum-deep:#2C2250;
+  --lemon:#F1FF52; --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"SF Pro Rounded",ui-rounded,"Nunito","Noto Sans TC",sans-serif;min-height:100vh}
+.wrap{max-width:1320px;margin:0 auto;padding:48px 32px 80px}
+h1{font-size:30px;font-weight:900;letter-spacing:-.025em}
+.sub{color:var(--text2);font-size:15px;margin-top:6px;line-height:1.7}
+.grid{display:flex;gap:28px;flex-wrap:wrap;justify-content:center;margin-top:40px;align-items:stretch}
+.opt{
+  width:380px;background:var(--surface);border:1px solid rgba(60,49,91,.09);border-radius:24px;
+  padding:22px;display:flex;flex-direction:column;gap:14px;position:relative;
+  animation:rise .8s var(--ease) both;
+}
+.opt:nth-child(2){animation-delay:.12s}.opt:nth-child(3){animation-delay:.24s}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.opt h2{font-size:19px;font-weight:900;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+.opt .letter{width:30px;height:30px;border-radius:50%;background:var(--plum);color:#FFFDF8;display:grid;place-items:center;font-size:15px;font-weight:900;flex-shrink:0}
+.stage{border-radius:18px;overflow:hidden;display:grid;place-items:center;height:320px}
+.stage svg{display:block;width:100%;height:100%}
+.desc{font-size:13.5px;color:var(--text2);line-height:1.75}
+.desc b{color:var(--text)}
+.fit{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:9999px;font-size:12px;font-weight:800;align-self:flex-start}
+.fit.best{background:var(--lemon);color:var(--plum-deep)}
+.fit.ok{background:var(--surface2);color:var(--text2)}
+.badge{position:absolute;top:-12px;right:18px;background:var(--lavender);color:var(--plum-deep);font-size:11.5px;font-weight:900;padding:6px 14px;border-radius:9999px;box-shadow:0 8px 22px rgba(171,159,242,.45)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>櫻花樹 — 三種風格試畫</h1>
+  <p class="sub">同一棵「茁壯期櫻花樹」，用你給的三張參考圖風格各畫一次。選一個，整個快樂花園（5 個成長階段 × 3 個樹種）都會用這個風格延伸。</p>
+
+  <div class="grid">
+
+  <!-- ============ A. 描邊錯位塗鴉風 ============ -->
+  <div class="opt">
+    <div class="badge">最貼近 Phantom</div>
+    <h2><span class="letter">A</span>描邊錯位塗鴉風</h2>
+    <div class="stage" style="background:#FFFDF8">
+      <svg viewBox="0 0 300 260" fill="none">
+        <defs>
+          <path id="canopyA" d="M70,120 C58,96 76,72 100,74 C104,48 140,40 156,58 C172,38 212,44 216,68 C242,66 256,92 240,110 C252,132 228,148 206,140 C192,158 152,158 138,144 C112,156 78,146 70,120 Z"/>
+        </defs>
+        <!-- sparkles -->
+        <g stroke="#AB9FF2" stroke-width="3" stroke-linecap="round">
+          <path d="M44,52v-9M44,69v-5M33,58h-7M62,58h-7M36,48l-4,-4M55,48l4,-4M36,68l-4,4M55,68l4,4"/>
+          <path d="M258,30v-7M258,44v-4M249,35h-5M272,35h-5"/>
+        </g>
+        <circle cx="270" cy="120" r="4" stroke="#AB9FF2" stroke-width="2.6"/>
+        <path d="M30,140 h10 M35,135 v10" stroke="#AB9FF2" stroke-width="2.6" stroke-linecap="round"/>
+        <!-- trunk -->
+        <path d="M150,236 C151,210 147,188 142,160 C140,148 142,134 146,124" stroke="#3C315B" stroke-width="10" stroke-linecap="round"/>
+        <path d="M145,180 C132,168 120,162 104,160" stroke="#3C315B" stroke-width="7" stroke-linecap="round"/>
+        <path d="M146,164 C162,150 176,144 194,144" stroke="#3C315B" stroke-width="7" stroke-linecap="round"/>
+        <!-- canopy: offset fill behind outline -->
+        <use href="#canopyA" fill="#FFB7D5" transform="translate(10,-9)"/>
+        <use href="#canopyA" fill="none" stroke="#3C315B" stroke-width="5" stroke-linejoin="round"/>
+        <!-- inner light blob -->
+        <path d="M118,100 C116,82 142,72 158,82 C176,72 198,84 192,102 C200,118 178,132 162,124 C146,136 120,124 118,100 Z" fill="#FFD9E8" transform="translate(7,-7)"/>
+        <!-- blossoms -->
+        <g stroke="#3C315B" stroke-width="2.6" fill="#FFFDF8">
+          <g transform="translate(108,98)"><circle cx="0" cy="-6" r="4.6"/><circle cx="5.7" cy="-1.9" r="4.6"/><circle cx="3.5" cy="4.9" r="4.6"/><circle cx="-3.5" cy="4.9" r="4.6"/><circle cx="-5.7" cy="-1.9" r="4.6"/><circle cx="0" cy="0" r="2.4" fill="#F1FF52"/></g>
+          <g transform="translate(170,66)"><circle cx="0" cy="-6" r="4.6"/><circle cx="5.7" cy="-1.9" r="4.6"/><circle cx="3.5" cy="4.9" r="4.6"/><circle cx="-3.5" cy="4.9" r="4.6"/><circle cx="-5.7" cy="-1.9" r="4.6"/><circle cx="0" cy="0" r="2.4" fill="#F1FF52"/></g>
+          <g transform="translate(212,108)"><circle cx="0" cy="-6" r="4.6"/><circle cx="5.7" cy="-1.9" r="4.6"/><circle cx="3.5" cy="4.9" r="4.6"/><circle cx="-3.5" cy="4.9" r="4.6"/><circle cx="-5.7" cy="-1.9" r="4.6"/><circle cx="0" cy="0" r="2.4" fill="#F1FF52"/></g>
+        </g>
+        <circle cx="140" cy="120" r="3.4" fill="#FF7EB0"/>
+        <circle cx="186" cy="92" r="3.4" fill="#FF7EB0"/>
+        <circle cx="124" cy="74" r="3.4" fill="#FF7EB0"/>
+        <!-- falling petals -->
+        <path d="M236,168 c6,-2 10,2 8,8 c-6,2 -10,-2 -8,-8Z" fill="#FFB7D5"/>
+        <path d="M64,186 c6,-2 10,2 8,8 c-6,2 -10,-2 -8,-8Z" fill="#FFB7D5" transform="rotate(40 68 190)"/>
+        <path d="M256,210 c5,-2 8,2 6,7 c-5,2 -8,-2 -6,-7Z" fill="#FFD9E8"/>
+        <!-- ground -->
+        <path d="M76,238 Q150,246 226,238" stroke="#3C315B" stroke-width="4" stroke-linecap="round"/>
+        <path d="M96,232 q4,-8 8,0 M204,234 q4,-8 8,0" stroke="#45E863" stroke-width="3.2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <p class="desc"><b>粗深紫輪廓＋色塊故意錯位</b>（粉色往右上偏移 10px）、輪廓白花、檸檬花蕊、薰衣草紫星芒塗鴉。手繪感、活潑、有個性 — 和 Phantom 官網插畫同語言，UI 上的深紫描邊也能呼應。</p>
+    <span class="fit best">推薦 — 與 Phantom UI 元件最一致</span>
+  </div>
+
+  <!-- ============ B. 霧面光暈漸層風 ============ -->
+  <div class="opt">
+    <h2><span class="letter">B</span>霧面光暈漸層風</h2>
+    <div class="stage">
+      <svg viewBox="0 0 300 260" fill="none" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="skyB" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#A99BE8"/>
+            <stop offset=".45" stop-color="#D8A8C8"/>
+            <stop offset=".78" stop-color="#F8C9B8"/>
+          </linearGradient>
+          <radialGradient id="sunB" cx=".5" cy=".5" r=".5">
+            <stop offset="0" stop-color="#FFE9D8"/>
+            <stop offset=".55" stop-color="#FFD3B8" stop-opacity=".75"/>
+            <stop offset="1" stop-color="#FFD3B8" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="bloomB1" cx=".5" cy=".5" r=".5">
+            <stop offset="0" stop-color="#FFDCEA"/>
+            <stop offset=".62" stop-color="#FFB9D6" stop-opacity=".88"/>
+            <stop offset="1" stop-color="#FFB9D6" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="bloomB2" cx=".5" cy=".5" r=".5">
+            <stop offset="0" stop-color="#FFEAF2"/>
+            <stop offset=".6" stop-color="#FFCCDF" stop-opacity=".85"/>
+            <stop offset="1" stop-color="#FFCCDF" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <rect width="300" height="260" fill="url(#skyB)"/>
+        <circle cx="150" cy="196" r="86" fill="url(#sunB)"/>
+        <!-- ground -->
+        <path d="M0,206 Q150,188 300,206 L300,260 L0,260 Z" fill="#2C2250"/>
+        <!-- trunk silhouette -->
+        <path d="M150,212 C151,190 147,172 142,150 C140,140 142,128 146,120 M145,168 C132,158 121,152 106,150 M146,152 C161,140 174,134 191,134" stroke="#2C2250" stroke-width="9" stroke-linecap="round"/>
+        <!-- canopy glow -->
+        <circle cx="150" cy="92" r="92" fill="url(#bloomB2)" opacity=".55"/>
+        <circle cx="112" cy="102" r="56" fill="url(#bloomB1)"/>
+        <circle cx="158" cy="74" r="64" fill="url(#bloomB1)"/>
+        <circle cx="200" cy="104" r="50" fill="url(#bloomB2)"/>
+        <!-- floating petals -->
+        <circle cx="236" cy="158" r="3.4" fill="#FFDCEA" opacity=".9"/>
+        <circle cx="64" cy="146" r="2.6" fill="#FFDCEA" opacity=".7"/>
+        <circle cx="208" cy="186" r="2.2" fill="#FFDCEA" opacity=".6"/>
+        <circle cx="92" cy="180" r="3" fill="#FFCCDF" opacity=".75"/>
+      </svg>
+    </div>
+    <p class="desc"><b>無輪廓、柔焦徑向光暈</b>。黃昏紫粉天空、樹冠像發光的雲、深紫剪影枝幹。最安靜、最「呼吸練習」的氛圍，但和 Phantom 的粗線活潑感距離較遠，成長階段差異也較難畫清楚。</p>
+    <span class="fit ok">適合呼吸練習頁背景，當主樹偏靜</span>
+  </div>
+
+  <!-- ============ C. 有機色塊拼貼風 ============ -->
+  <div class="opt">
+    <h2><span class="letter">C</span>有機色塊拼貼風</h2>
+    <div class="stage" style="background:#4D4474">
+      <svg viewBox="0 0 300 260" fill="none">
+        <defs>
+          <pattern id="dotsC" width="13" height="13" patternUnits="userSpaceOnUse">
+            <circle cx="4" cy="4" r="2.4" fill="#3C315B" opacity=".5"/>
+          </pattern>
+          <pattern id="dashC" width="14" height="11" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)">
+            <rect x="0" y="0" width="7.5" height="2.6" rx="1.3" fill="#FFFDF8" opacity=".35"/>
+          </pattern>
+        </defs>
+        <!-- back texture blob -->
+        <path d="M196,52 C232,44 258,70 250,100 C266,118 252,146 226,144 C214,162 184,160 176,142 C152,140 144,110 160,96 C152,72 172,58 196,52 Z" fill="url(#dotsC)"/>
+        <!-- canopy blobs -->
+        <path d="M84,118 C70,92 92,64 124,68 C134,44 178,40 192,64 C224,60 244,88 228,112 C240,134 216,154 192,146 C176,162 136,160 126,142 C100,146 88,136 84,118 Z" fill="#E8AFC4" opacity=".92"/>
+        <path d="M118,96 C114,74 144,62 164,74 C188,66 208,86 198,106 C208,124 186,140 168,130 C150,142 122,130 124,112 C116,108 116,102 118,96 Z" fill="#F2C9D6" opacity=".85"/>
+        <path d="M76,104 C64,88 76,66 98,68 C112,52 140,58 142,78 C156,86 148,108 132,110 C124,124 96,122 92,108 C84,108 78,108 76,104 Z" fill="#D89BB8" opacity=".8"/>
+        <!-- accent blobs -->
+        <path d="M222,128 C238,122 252,134 246,148 C252,160 238,170 226,162 C212,164 206,148 214,140 C214,134 218,130 222,128 Z" fill="#E8C96A" opacity=".9"/>
+        <path d="M62,140 C74,134 86,142 82,154 C86,164 74,172 64,166 C52,168 48,154 56,148 Z" fill="#AB9FF2" opacity=".75"/>
+        <!-- dash texture over canopy -->
+        <path d="M118,96 C114,74 144,62 164,74 C188,66 208,86 198,106 C208,124 186,140 168,130 C150,142 122,130 124,112 C116,108 116,102 118,96 Z" fill="url(#dashC)"/>
+        <!-- trunk blob -->
+        <path d="M143,238 C144,212 142,186 138,158 C137,146 140,132 146,122 C152,120 158,124 158,132 C152,142 150,152 151,164 C154,190 156,214 157,238 C152,242 148,242 143,238 Z" fill="#2C2250"/>
+        <path d="M141,184 C128,174 116,168 102,166 C98,158 104,150 112,154 C126,158 136,166 146,176 Z" fill="#2C2250"/>
+        <!-- ground blob -->
+        <path d="M64,236 C96,224 204,224 238,236 C242,244 234,250 222,248 C170,242 128,242 78,248 C66,250 60,242 64,236 Z" fill="#3C315B"/>
+        <!-- floating bits -->
+        <circle cx="250" cy="190" r="4.4" fill="#F2C9D6" opacity=".8"/>
+        <circle cx="48" cy="84" r="3.4" fill="#E8C96A" opacity=".8"/>
+        <circle cx="262" cy="74" r="3" fill="#AB9FF2" opacity=".8"/>
+      </svg>
+    </div>
+    <p class="desc"><b>不規則色塊半透明疊加＋紋理</b>。三層暮粉色塊堆出樹冠，點點與斜線紋理、芥末黃／薰衣草紫小色塊點綴，全程無輪廓。藝術感最強、最成熟，但偏靜態海報感，做成長動畫較吃力。</p>
+    <span class="fit ok">適合心情小卡、照護海報插圖</span>
+  </div>
+
+  </div>
+</div>
+</body>
+</html>

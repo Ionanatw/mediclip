@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareDoc × Phantom — App Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* ============ Phantom-extracted tokens ============ */
+:root{
+  --ease: cubic-bezier(.22,1,.36,1);
+  --lavender:#AB9FF2; --lav-light:#E2DFFE; --plum:#3C315B; --plum-deep:#2C2250;
+  --lemon:#F1FF52; --green:#45E863; --red:#FF0037; --blue:#6CA0FB; --yellow:#FFD600;
+}
+[data-theme="dark"]{
+  --bg:#1C1C1C; --surface:#28282C; --surface2:#34343A; --surface3:#2E2E32;
+  --text:#FFFDF8; --text2:#A09FA6; --text3:#86848D;
+  --accent:#AB9FF2; --accent-contrast:#1C1C1C;
+  --glow:0 0 44px rgba(171,159,242,.35);
+  --card-border:rgba(255,253,248,.07);
+  --tabbar:rgba(40,40,44,.86);
+}
+[data-theme="light"]{
+  --bg:#FFFDF8; --surface:#FDFCFE; --surface2:#F4F2F4; --surface3:#EDEDEF;
+  --text:#3C315B; --text2:#86848D; --text3:#A09FA6;
+  --accent:#AB9FF2; --accent-contrast:#3C315B;
+  --glow:0 10px 34px rgba(60,49,91,.14);
+  --card-border:rgba(60,49,91,.08);
+  --tabbar:rgba(253,252,254,.88);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:"SF Pro Rounded",ui-rounded,"Nunito","Noto Sans TC",sans-serif;
+  transition:background-color .4s var(--ease),color .4s var(--ease);
+  min-height:100vh; overflow-x:hidden;
+}
+/* atmosphere */
+.atmo{position:fixed;inset:0;pointer-events:none;z-index:0}
+.atmo .blob{position:absolute;border-radius:50%;filter:blur(110px);opacity:.22}
+.atmo .b1{width:560px;height:560px;background:var(--lavender);top:-180px;left:-120px}
+.atmo .b2{width:420px;height:420px;background:var(--blue);bottom:-140px;right:-80px;opacity:.12}
+
+/* ============ page chrome ============ */
+.wrap{position:relative;z-index:1;max-width:1500px;margin:0 auto;padding:48px 32px 80px}
+header.page{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:14px}
+.brand .mark{width:46px;height:46px;border-radius:16px;background:var(--lavender);display:grid;place-items:center;box-shadow:var(--glow)}
+.brand h1{font-size:30px;font-weight:900;letter-spacing:-.025em}
+.brand p{color:var(--text2);font-size:14px;margin-top:2px}
+.toggle{
+  display:inline-flex;align-items:center;gap:10px;border-radius:9999px;padding:10px 20px;
+  background:var(--surface2);color:var(--text);font-weight:700;font-size:15px;cursor:pointer;
+  border:1px solid var(--card-border);transition:all .3s var(--ease);font-family:inherit;
+}
+.toggle:hover{background:var(--lav-light);color:var(--plum);box-shadow:var(--glow)}
+.chips{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:18px 0 40px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:9999px;background:var(--surface);border:1px solid var(--card-border);font-size:12.5px;font-weight:700;color:var(--text2)}
+.chip i{width:13px;height:13px;border-radius:50%;display:inline-block}
+
+/* ============ phone row ============ */
+.phones{display:flex;gap:44px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+.slot{display:flex;flex-direction:column;align-items:center;gap:18px;animation:rise .8s var(--ease) both}
+.slot:nth-child(1){animation-delay:.05s}.slot:nth-child(2){animation-delay:.15s}
+.slot:nth-child(3){animation-delay:.25s}.slot:nth-child(4){animation-delay:.35s}
+.slot:nth-child(5){animation-delay:.45s}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.caption{text-align:center;max-width:300px}
+.caption b{font-size:16px;font-weight:800;letter-spacing:-.01em}
+.caption span{display:block;color:var(--text2);font-size:13px;margin-top:4px;line-height:1.55}
+
+.phone{
+  width:300px;height:630px;border-radius:46px;position:relative;overflow:hidden;
+  background:var(--bg);
+  border:1px solid var(--card-border);
+  box-shadow:0 30px 80px rgba(0,0,0,.35), inset 0 0 0 7px #0e0e10, inset 0 0 0 8px #3a3a40;
+  transition:background-color .4s var(--ease);
+}
+[data-theme="light"] .phone{box-shadow:0 30px 70px rgba(60,49,91,.22), inset 0 0 0 7px #0e0e10, inset 0 0 0 8px #c9c4d8}
+.island{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:86px;height:24px;border-radius:9999px;background:#0e0e10;z-index:30}
+.screen{position:absolute;inset:8px;border-radius:39px;overflow:hidden;display:flex;flex-direction:column;background:var(--bg);transition:background-color .4s var(--ease)}
+.status{display:flex;justify-content:space-between;align-items:center;padding:16px 24px 4px;font-size:12px;font-weight:800;letter-spacing:.02em}
+.status svg{display:block}
+.content{flex:1;overflow:hidden;padding:6px 16px 0;display:flex;flex-direction:column;gap:9px}
+
+/* ============ shared app components ============ */
+.h-greet{font-size:21px;font-weight:900;letter-spacing:-.02em;line-height:1.2}
+.h-greet small{display:block;font-size:12px;color:var(--text2);font-weight:700;letter-spacing:.01em;margin-bottom:3px}
+.card{background:var(--surface);border:1px solid var(--card-border);border-radius:18px;padding:14px;transition:background-color .4s var(--ease)}
+.row{display:flex;gap:10px}
+.row .card{flex:1}
+.stat-num{font-size:24px;font-weight:900;letter-spacing:-.03em}
+.stat-lab{font-size:11px;color:var(--text2);font-weight:700;margin-top:2px}
+.pill-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  border-radius:9999px;padding:13px 18px;font-weight:800;font-size:14.5px;
+  background:var(--accent);color:var(--plum);border:none;font-family:inherit;letter-spacing:-.01em;
+}
+.pill-btn.lemon{background:var(--lemon);color:#2C2250}
+.pill-btn.ghost{background:var(--surface2);color:var(--text)}
+.tag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:9999px;font-size:10.5px;font-weight:800}
+.list-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--card-border)}
+.li-icon{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex-shrink:0}
+.li-body{flex:1;min-width:0}
+.li-title{font-size:13px;font-weight:800;letter-spacing:-.01em}
+.li-sub{font-size:11px;color:var(--text2);font-weight:600;margin-top:1px}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;margin-top:2px}
+.sec-h b{font-size:14px;font-weight:900;letter-spacing:-.01em}
+.sec-h a{font-size:11.5px;color:var(--accent);font-weight:800}
+[data-theme="light"] .sec-h a{color:var(--plum)}
+
+/* ============ TAB BAR — the star ============ */
+.tabbar{
+  position:relative;margin:6px 12px 12px;border-radius:9999px;
+  background:var(--tabbar);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
+  border:1px solid var(--card-border);
+  box-shadow:0 12px 30px rgba(0,0,0,.25);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 18px;height:64px;flex-shrink:0;
+}
+[data-theme="light"] .tabbar{box-shadow:0 12px 30px rgba(60,49,91,.16)}
+.tab{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text3);width:44px}
+.tab span{font-size:9px;font-weight:800;letter-spacing:.02em}
+.tab.on{color:var(--accent)}
+[data-theme="light"] .tab.on{color:var(--plum)}
+.tab.on .dotline{width:14px;height:3px;border-radius:9999px;background:var(--accent);margin-top:1px}
+[data-theme="light"] .tab.on .dotline{background:var(--plum)}
+.tab .dotline{width:14px;height:3px;border-radius:9999px;background:transparent;margin-top:1px}
+.tab-cta{
+  width:52px;height:52px;border-radius:50%;background:var(--accent);
+  display:grid;place-items:center;flex-shrink:0;margin-top:-26px;
+  box-shadow:0 0 0 5px var(--bg), var(--glow);
+  transition:background-color .4s var(--ease);
+}
+.tab-cta.on{background:var(--lemon)}
+.tab-cta svg{display:block}
+
+/* small helpers */
+.muted{color:var(--text2)}
+.warn-card{background:rgba(255,0,55,.09);border:1px solid rgba(255,0,55,.25)}
+[data-theme="light"] .warn-card{background:rgba(255,0,55,.06)}
+.progress{height:8px;border-radius:9999px;background:var(--surface3);overflow:hidden}
+.progress i{display:block;height:100%;border-radius:9999px;background:var(--lemon)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal-grid .d{font-size:10.5px;font-weight:700;color:var(--text2);padding:5px 0;border-radius:9px;position:relative}
+.cal-grid .d.dim{opacity:.32}
+.cal-grid .d.ev::after{content:"";position:absolute;bottom:1px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--blue)}
+.cal-grid .d.evp::after{background:var(--accent)}
+.cal-grid .d.today{background:var(--accent);color:var(--plum);font-weight:900}
+.cal-grid .wd{font-size:9px;font-weight:800;color:var(--text3);padding-bottom:2px}
+
+footer.note{margin-top:64px;text-align:center;color:var(--text2);font-size:13px;line-height:1.8}
+footer.note b{color:var(--text)}
+@media (max-width:760px){.wrap{padding:32px 16px 64px}.phones{gap:32px}}
+</style>
+</head>
+<body>
+<div class="atmo"><div class="blob b1"></div><div class="blob b2"></div></div>
+<div class="wrap">
+
+<header class="page">
+  <div class="brand">
+    <div class="mark">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3C7 3 4 6.6 4 11.2c0 3.1 1.5 5.6 3.9 7.1.5.3.7.2.9-.3l.5-1.3c.2-.4.5-.5 1-.4.5.1 1.1.2 1.7.2 4.9 0 8-3.4 8-8.1C20 5.6 16.9 3 12 3Z" fill="#3C315B"/><circle cx="9.4" cy="10.4" r="1.3" fill="#FFFDF8"/><circle cx="14.6" cy="10.4" r="1.3" fill="#FFFDF8"/></svg>
+    </div>
+    <div>
+      <h1>CareDoc App Mockup</h1>
+      <p>Phantom 設計語言 × 醫療照護懶人包 — 5 個關鍵畫面</p>
+    </div>
+  </div>
+  <button class="toggle" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';this.firstElementChild.textContent=document.documentElement.dataset.theme==='dark'?'切換淺色':'切換深色'"><span>切換淺色</span>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3.4" stroke="currentColor" stroke-width="1.8"/><path d="M8 1v1.6M8 13.4V15M15 8h-1.6M2.6 8H1M12.9 3.1l-1.1 1.1M4.2 11.8l-1.1 1.1M12.9 12.9l-1.1-1.1M4.2 4.2 3.1 3.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+  </button>
+</header>
+
+<div class="chips">
+  <span class="chip"><i style="background:#AB9FF2"></i>Lavender AB9FF2</span>
+  <span class="chip"><i style="background:#3C315B"></i>Plum 3C315B</span>
+  <span class="chip"><i style="background:#F1FF52"></i>Lemon F1FF52</span>
+  <span class="chip"><i style="background:#6CA0FB"></i>行程 6CA0FB</span>
+  <span class="chip"><i style="background:#FF0037"></i>警告 FF0037</span>
+  <span class="chip"><i style="background:#45E863"></i>完成 45E863</span>
+  <span class="chip">膠囊按鈕 / 卡片 R18 / blur(40) / ease(.22,1,.36,1)</span>
+</div>
+
+<div class="phones">
+
+<!-- ============ 1. 首頁 ============ -->
+<div class="slot">
+  <div class="phone"><div class="island"></div><div class="screen">
+    <div class="status"><span>9:41</span>
+      <svg width="44" height="11" viewBox="0 0 44 11" fill="none"><rect x="0" y="2" width="3" height="9" rx="1" fill="currentColor"/><rect x="5" y="0" width="3" height="11" rx="1" fill="currentColor" opacity=".5"/><rect x="22" y="1.5" width="20" height="8" rx="3" stroke="currentColor" stroke-width="1.2"/><rect x="24" y="3.5" width="12" height="4" rx="1.4" fill="currentColor"/></svg>
+    </div>
+    <div class="content">
+      <div class="h-greet"><small>6 月 13 日 星期六</small>午安，今天也辛苦了</div>
+      <div class="row">
+        <div class="card"><div class="stat-num" style="color:var(--accent)">47</div><div class="stat-lab">照護天數</div></div>
+        <div class="card"><div class="stat-num">2<span class="muted" style="font-size:15px;font-weight:800">/4</span></div><div class="stat-lab">今日用藥</div></div>
+        <div class="card"><div class="stat-num" style="color:var(--blue)">3</div><div class="stat-lab">天後回診</div></div>
+      </div>
+      <div class="sec-h"><b>即將到來</b><a>全部</a></div>
+      <div class="list-item">
+        <div class="li-icon" style="background:rgba(108,160,251,.16)">
+          <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><rect x="2" y="3" width="13" height="12" rx="3" stroke="#6CA0FB" stroke-width="1.7"/><path d="M2 7h13M6 1.5V4M11 1.5V4" stroke="#6CA0FB" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </div>
+        <div class="li-body"><div class="li-title">血液腫瘤科回診</div><div class="li-sub">6/16 週二 09:30 · 台大癌醫 3F</div></div>
+        <span class="tag" style="background:rgba(108,160,251,.16);color:var(--blue)">3 天後</span>
+      </div>
+      <div class="sec-h"><b>今日用藥</b><a>識別卡</a></div>
+      <div class="list-item">
+        <div class="li-icon" style="background:rgba(171,159,242,.18)">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="1.6" y="6.8" width="14.8" height="6" rx="3" transform="rotate(-32 1.6 6.8)" stroke="#AB9FF2" stroke-width="1.7"/><path d="m6.5 4.5 4 6.4" stroke="#AB9FF2" stroke-width="1.7"/></svg>
+        </div>
+        <div class="li-body"><div class="li-title">癒妥膜衣錠 50mg</div><div class="li-sub">晚餐後 1 顆 · 配開水</div></div>
+        <span class="tag" style="background:rgba(69,232,99,.14);color:var(--green)">已服用</span>
+      </div>
+      <div class="list-item">
+        <div class="li-icon" style="background:rgba(171,159,242,.18)">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6.4" stroke="#AB9FF2" stroke-width="1.7"/><path d="M9 4.5v9M4.5 9h9" stroke="#AB9FF2" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </div>
+        <div class="li-body"><div class="li-title">止吐藥 8mg</div><div class="li-sub">睡前 1 顆 · 想吐時可提前</div></div>
+        <span class="tag" style="background:var(--surface3);color:var(--text2)">21:30</span>
+      </div>
+      <div class="card" style="background:linear-gradient(135deg,var(--plum-deep),var(--plum));border:none;display:flex;align-items:center;gap:12px">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="9" fill="#F1FF52"/><path d="M17 2.5v4M17 27.5v4M31.5 17h-4M6.5 17h-4M27.3 6.7l-2.9 2.9M9.6 24.4l-2.9 2.9M27.3 27.3l-2.9-2.9M9.6 9.6 6.7 6.7" stroke="#F1FF52" stroke-width="2.4" stroke-linecap="round"/></svg>
+        <div style="flex:1"><div class="li-title" style="color:#FFFDF8">今日快樂 +6</div><div class="li-sub" style="color:#E2DFFE">完成呼吸練習，櫻花樹又長大了一點</div></div>
+      </div>
+    </div>
+    <!-- TAB BAR -->
+    <div class="tabbar">
+      <div class="tab on">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3.2 8.4 10 3l6.8 5.4V16a1.6 1.6 0 0 1-1.6 1.6H4.8A1.6 1.6 0 0 1 3.2 16V8.4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7.6 17.4v-5h4.8v5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <span>首頁</span><div class="dotline"></div>
+      </div>
+      <div class="tab">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.6" y="3.6" width="14.8" height="13.6" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M2.6 8h14.8M7 1.8v3M13 1.8v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>行事曆</span><div class="dotline"></div>
+      </div>
+      <div class="tab-cta">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 4.5v13M4.5 11h13" stroke="#2C2250" stroke-width="2.6" stroke-linecap="round"/></svg>
+      </div>
+      <div class="tab">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5.4 2.6h6.6L15.4 6v11.4H5.4V2.6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M11.6 2.8V6.2h3.4M8 9.4h4.8M8 12.4h4.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>文件</span><div class="dotline"></div>
+      </div>
+      <div class="tab">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 17.5v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M10 11.5C10 8 7.3 5.4 3.8 5.4c0 3.5 2.7 6.1 6.2 6.1Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 9.6c0-2.9 2.3-5 5.2-5 0 2.9-2.3 5-5.2 5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.4 17.5h7.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>花園</span><div class="dotline"></div>
+      </div>
+    </div>
+  </div></div>
+  <div class="caption"><b>首頁 — 照護儀表板</b><span>Tab Bar 為懸浮膠囊（毛玻璃 blur 40），中央薰衣草紫圓鈕＝上傳，5 入口：首頁／行事曆／上傳／文件／花園。</span></div>
+</div>
+
+<!-- ============ 2. 上傳 ============ -->
+<div class="slot">
+  <div class="phone"><div class="island"></div><div class="screen">
+    <div class="status"><span>9:41</span>
+      <svg width="44" height="11" viewBox="0 0 44 11" fill="none"><rect x="0" y="2" width="3" height="9" rx="1" fill="currentColor"/><rect x="5" y="0" width="3" height="11" rx="1" fill="currentColor" opacity=".5"/><rect x="22" y="1.5" width="20" height="8" rx="3" stroke="currentColor" stroke-width="1.2"/><rect x="24" y="3.5" width="12" height="4" rx="1.4" fill="currentColor"/></svg>
+    </div>
+    <div class="content">
+      <div class="h-greet"><small>新的照護時段</small>上傳醫療文件</div>
+      <div class="card" style="border-style:dashed;border-width:1.6px;border-color:var(--accent);background:rgba(171,159,242,.07);display:flex;flex-direction:column;align-items:center;gap:7px;padding:15px 14px">
+        <svg width="46" height="46" viewBox="0 0 46 46" fill="none"><rect x="7" y="13" width="32" height="24" rx="7" stroke="#AB9FF2" stroke-width="2.4"/><path d="M16 13.2 18.6 9h8.8l2.6 4.2" stroke="#AB9FF2" stroke-width="2.4" stroke-linejoin="round"/><circle cx="23" cy="25" r="6.4" stroke="#AB9FF2" stroke-width="2.4"/><circle cx="23" cy="25" r="2" fill="#F1FF52"/></svg>
+        <div class="li-title" style="font-size:14.5px">拍照或從相簿選擇</div>
+        <div class="li-sub" style="text-align:center">衛教單、處方箋、回診單、檢驗單<br>一次最多 10 張，同時段不另扣次</div>
+      </div>
+      <div class="row" style="gap:8px">
+        <div class="card" style="padding:10px;display:flex;align-items:center;gap:8px;justify-content:center">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="2" y="1.6" width="11" height="11.8" rx="2.4" stroke="currentColor" stroke-width="1.6"/><path d="M5 5h5M5 7.6h5M5 10.2h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span style="font-size:12px;font-weight:800">PDF</span>
+        </div>
+        <div class="card" style="padding:10px;display:flex;align-items:center;gap:8px;justify-content:center">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="5.8" stroke="currentColor" stroke-width="1.6"/><path d="M2.4 6h10.2M2.4 9h10.2M7.5 1.7c-3.4 3.6-3.4 8 0 11.6 3.4-3.6 3.4-8 0-11.6Z" stroke="currentColor" stroke-width="1.4"/></svg>
+          <span style="font-size:12px;font-weight:800">網頁</span>
+        </div>
+        <div class="card" style="padding:10px;display:flex;align-items:center;gap:8px;justify-content:center;opacity:.5">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="5.4" y="1.6" width="4.2" height="7.6" rx="2.1" stroke="currentColor" stroke-width="1.6"/><path d="M3 7.5a4.5 4.5 0 0 0 9 0M7.5 12v1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span style="font-size:12px;font-weight:800">語音 soon</span>
+        </div>
+      </div>
+      <div class="sec-h"><b>已選擇 3 張</b><a>清空</a></div>
+      <div class="row" style="gap:8px">
+        <div class="card" style="height:54px;padding:0;overflow:hidden;display:grid;place-items:center;background:linear-gradient(150deg,#6CA0FB33,#AB9FF233)"><span style="font-size:10px;font-weight:800;color:var(--text2)">衛教單 P.1</span></div>
+        <div class="card" style="height:54px;padding:0;display:grid;place-items:center;background:linear-gradient(150deg,#F1FF5226,#AB9FF233)"><span style="font-size:10px;font-weight:800;color:var(--text2)">衛教單 P.2</span></div>
+        <div class="card" style="height:54px;padding:0;display:grid;place-items:center;background:linear-gradient(150deg,#AB9FF233,#FF003718)"><span style="font-size:10px;font-weight:800;color:var(--text2)">處方箋</span></div>
+      </div>
+      <div class="card" style="padding:12px 14px"><div class="li-sub" style="color:var(--text3)">補充說明（選填）</div><div class="li-title" style="margin-top:4px;font-weight:600;color:var(--text2)">護理師說傷口要保持乾燥，洗澡用…</div></div>
+      <button class="pill-btn lemon" style="margin-top:auto;margin-bottom:4px">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.6 9.7 6l4.4.3-3.4 2.9 1.1 4.3L8 11.1l-3.8 2.4 1.1-4.3L1.9 6.3 6.3 6 8 1.6Z" fill="#2C2250"/></svg>
+        開始 AI 整理
+      </button>
+    </div>
+    <div class="tabbar">
+      <div class="tab"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3.2 8.4 10 3l6.8 5.4V16a1.6 1.6 0 0 1-1.6 1.6H4.8A1.6 1.6 0 0 1 3.2 16V8.4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7.6 17.4v-5h4.8v5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>首頁</span><div class="dotline"></div></div>
+      <div class="tab"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.6" y="3.6" width="14.8" height="13.6" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M2.6 8h14.8M7 1.8v3M13 1.8v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>行事曆</span><div class="dotline"></div></div>
+      <div class="tab-cta on"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 4.5v13M4.5 11h13" stroke="#2C2250" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+      <div class="tab"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5.4 2.6h6.6L15.4 6v11.4H5.4V2.6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M11.6 2.8V6.2h3.4M8 9.4h4.8M8 12.4h4.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>文件</span><div class="dotline"></div></div>
+      <div class="tab"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 17.5v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M10 11.5C10 8 7.3 5.4 3.8 5.4c0 3.5 2.7 6.1 6.2 6.1Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 9.6c0-2.9 2.3-5 5.2-5 0 2.9-2.3 5-5.2 5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.4 17.5h7.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>花園</span><div class="dotline"></div></div>
+    </div>
+  </div></div>
+  <div class="caption"><b>上傳 — 中央 CTA 啟動</b><span>點 Tab Bar 中央圓鈕進入；啟動後圓鈕轉為檸檬黃。主 CTA 用 Phantom 的檸檬色膠囊按鈕。</span></div>
+</div>
+
+<!-- ============ 3. 藥品識別卡 ============ -->
+<div class="slot">
+  <div class="phone"><div class="island"></div><div class="screen">
+    <div class="status"><span>9:41</span>
+      <svg width="44" height="11" viewBox="0 0 44 11" fill="none"><rect x="0" y="2" width="3" height="9" rx="1" fill="currentColor"/><rect x="5" y="0" width="3" height="11" rx="1" fill="currentColor" opacity=".5"/><rect x="22" y="1.5" width="20" height="8" rx="3" stroke="currentColor" stroke-width="1.2"/><rect x="24" y="3.5" width="12" height="4" rx="1.4" fill="currentColor"/></svg>
+    </div>
+    <div class="content">
+      <div class="h-greet"><small>藥品識別卡 2/4</small>癒妥 膜衣錠 50mg</div>
+      <div class="card" style="display:flex;align-items:center;justify-content:center;padding:18px;background:linear-gradient(160deg,rgba(171,159,242,.16),rgba(108,160,251,.08))">
+        <svg width="150" height="84" viewBox="0 0 150 84" fill="none">
+          <ellipse cx="75" cy="74" rx="46" ry="6" fill="#000" opacity=".18"/>
+          <g transform="rotate(-18 75 42)">
+            <rect x="25" y="26" width="100" height="32" rx="16" fill="#FFFDF8" stroke="#3C315B" stroke-width="3"/>
+            <path d="M75 26.5v31" stroke="#3C315B" stroke-width="3"/>
+            <rect x="76.5" y="27.5" width="47" height="29" rx="14.5" fill="#AB9FF2"/>
+            <ellipse cx="44" cy="35" rx="9" ry="4" fill="#FFF" opacity=".8" transform="rotate(-8 44 35)"/>
+            <ellipse cx="98" cy="35" rx="8" ry="3.4" fill="#E2DFFE" opacity=".9" transform="rotate(-8 98 35)"/>
+          </g>
+        </svg>
+      </div>
+      <div class="row" style="gap:6px;flex-wrap:wrap">
+        <span class="tag" style="background:rgba(171,159,242,.18);color:var(--accent)">白＋紫 膠囊</span>
+        <span class="tag" style="background:var(--surface2);color:var(--text2)">刻痕 TM50</span>
+        <span class="tag" style="background:var(--surface2);color:var(--text2)">標靶治療</span>
+        <span class="tag" style="background:rgba(241,255,82,.16);color:#c8d432">晚餐後 1 顆</span>
+      </div>
+      <div class="card warn-card" style="display:flex;gap:10px;align-items:flex-start">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="flex-shrink:0;margin-top:1px"><path d="M10 2.4 18.2 16.6H1.8L10 2.4Z" stroke="#FF0037" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 8v3.6" stroke="#FF0037" stroke-width="1.8" stroke-linecap="round"/><circle cx="10" cy="14" r="1.1" fill="#FF0037"/></svg>
+        <div><div class="li-title" style="color:var(--red)">不可與葡萄柚同食</div><div class="li-sub">影響藥物代謝，血中濃度過高。柚子、文旦同屬禁忌。</div></div>
+      </div>
+      <div class="sec-h"><b>注意事項（仿單原文）</b><span class="tag" style="background:rgba(69,232,99,.14);color:var(--green)">免費</span></div>
+      <div class="card" style="padding:12px 14px"><div class="li-sub" style="line-height:1.7;color:var(--text2)">4.3 禁忌：對本品成分過敏者。4.4 注意事項：治療期間應定期監測肝功能，避免與 CYP3A4 強抑制劑併用…</div></div>
+      <div class="card" style="padding:12px 14px;position:relative;overflow:hidden">
+        <div style="filter:blur(5px);opacity:.7"><div class="li-sub" style="line-height:1.7">白話版：這顆藥不能配柚子類水果，吃藥前後也要注意…</div></div>
+        <div style="position:absolute;inset:0;display:grid;place-items:center">
+          <span class="pill-btn" style="padding:8px 16px;font-size:12px">白話版 — 月費解鎖</span>
+        </div>
+      </div>
+    </div>
+    <div class="tabbar">
+      <div class="tab"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3.2 8.4 10 3l6.8 5.4V16a1.6 1.6 0 0 1-1.6 1.6H4.8A1.6 1.6 0 0 1 3.2 16V8.4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7.6 17.4v-5h4.8v5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>首頁</span><div class="dotline"></div></div>
+      <div class="tab"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.6" y="3.6" width="14.8" height="13.6" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M2.6 8h14.8M7 1.8v3M13 1.8v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>行事曆</span><div class="dotline"></div></div>
+      <div class="tab-cta"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 4.5v13M4.5 11h13" stroke="#2C2250" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+      <div class="tab"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5.4 2.6h6.6L15.4 6v11.4H5.4V2.6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M11.6 2.8V6.2h3.4M8 9.4h4.8M8 12.4h4.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>文件</span><div class="dotline"></div></div>
+      <div class="tab"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 17.5v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M10 11.5C10 8 7.3 5.4 3.8 5.4c0 3.5 2.7 6.1 6.2 6.1Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 9.6c0-2.9 2.3-5 5.2-5 0 2.9-2.3 5-5.2 5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.4 17.5h7.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>花園</span><div class="dotline"></div></div>
+    </div>
+  </div></div>
+  <div class="caption"><b>藥品識別卡</b><span>Phantom 插畫風手繪膠囊（粗深紫輪廓＋高光），禁忌紅卡、專業版免費、白話版模糊遮罩付費。</span></div>
+</div>
+
+<!-- ============ 4. 行事曆 ============ -->
+<div class="slot">
+  <div class="phone"><div class="island"></div><div class="screen">
+    <div class="status"><span>9:41</span>
+      <svg width="44" height="11" viewBox="0 0 44 11" fill="none"><rect x="0" y="2" width="3" height="9" rx="1" fill="currentColor"/><rect x="5" y="0" width="3" height="11" rx="1" fill="currentColor" opacity=".5"/><rect x="22" y="1.5" width="20" height="8" rx="3" stroke="currentColor" stroke-width="1.2"/><rect x="24" y="3.5" width="12" height="4" rx="1.4" fill="currentColor"/></svg>
+    </div>
+    <div class="content">
+      <div class="h-greet"><small>2026 年</small>6 月</div>
+      <div class="card" style="padding:12px">
+        <div class="cal-grid">
+          <span class="wd">日</span><span class="wd">一</span><span class="wd">二</span><span class="wd">三</span><span class="wd">四</span><span class="wd">五</span><span class="wd">六</span>
+          <span class="d dim">31</span><span class="d">1</span><span class="d ev">2</span><span class="d">3</span><span class="d">4</span><span class="d evp">5</span><span class="d">6</span>
+          <span class="d">7</span><span class="d">8</span><span class="d evp">9</span><span class="d">10</span><span class="d">11</span><span class="d">12</span><span class="d today">13</span>
+          <span class="d">14</span><span class="d">15</span><span class="d ev">16</span><span class="d">17</span><span class="d">18</span><span class="d evp">19</span><span class="d">20</span>
+          <span class="d">21</span><span class="d">22</span><span class="d">23</span><span class="d ev">24</span><span class="d">25</span><span class="d">26</span><span class="d">27</span>
+          <span class="d">28</span><span class="d">29</span><span class="d evp">30</span><span class="d dim">1</span><span class="d dim">2</span><span class="d dim">3</span><span class="d dim">4</span>
+        </div>
+      </div>
+      <div class="sec-h"><b>6/16 週二</b><a>本週</a></div>
+      <div class="list-item">
+        <div class="li-icon" style="background:rgba(108,160,251,.16)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#6CA0FB" stroke-width="1.7"/><path d="M8 4.6V8l2.4 1.6" stroke="#6CA0FB" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+        <div class="li-body"><div class="li-title">血液腫瘤科回診</div><div class="li-sub">09:30 · 台大癌醫 3F 門診 12 診</div></div>
+      </div>
+      <div class="list-item">
+        <div class="li-icon" style="background:rgba(255,214,0,.14)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M5 2.4h6M6.2 2.4v3.4L3 11.8a2 2 0 0 0 1.8 2.8h6.4a2 2 0 0 0 1.8-2.8L9.8 5.8V2.4" stroke="#FFD600" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="li-body"><div class="li-title">抽血檢驗（空腹）</div><div class="li-sub">08:30 · 前一晚 12 點後禁食</div></div>
+      </div>
+      <div class="sec-h"><b>每日</b></div>
+      <div class="list-item">
+        <div class="li-icon" style="background:rgba(171,159,242,.18)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1.4" y="6" width="13.2" height="5.4" rx="2.7" transform="rotate(-30 1.4 6)" stroke="#AB9FF2" stroke-width="1.6"/><path d="m5.8 4 3.6 5.7" stroke="#AB9FF2" stroke-width="1.6"/></svg></div>
+        <div class="li-body"><div class="li-title">癒妥 50mg · 晚餐後</div><div class="li-sub">每天 19:00 · 持續到 7/14</div></div>
+      </div>
+      <button class="pill-btn" style="margin-top:auto;margin-bottom:4px">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1.8v7.6M7.5 9.4 4.6 6.5M7.5 9.4l2.9-2.9" stroke="#3C315B" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.2 10.6v1.2a1.6 1.6 0 0 0 1.6 1.6h7.4a1.6 1.6 0 0 0 1.6-1.6v-1.2" stroke="#3C315B" stroke-width="1.9" stroke-linecap="round"/></svg>
+        加入手機行事曆 (.ics)
+      </button>
+    </div>
+    <div class="tabbar">
+      <div class="tab"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3.2 8.4 10 3l6.8 5.4V16a1.6 1.6 0 0 1-1.6 1.6H4.8A1.6 1.6 0 0 1 3.2 16V8.4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7.6 17.4v-5h4.8v5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>首頁</span><div class="dotline"></div></div>
+      <div class="tab on"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.6" y="3.6" width="14.8" height="13.6" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M2.6 8h14.8M7 1.8v3M13 1.8v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>行事曆</span><div class="dotline"></div></div>
+      <div class="tab-cta"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 4.5v13M4.5 11h13" stroke="#2C2250" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+      <div class="tab"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5.4 2.6h6.6L15.4 6v11.4H5.4V2.6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M11.6 2.8V6.2h3.4M8 9.4h4.8M8 12.4h4.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>文件</span><div class="dotline"></div></div>
+      <div class="tab"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 17.5v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M10 11.5C10 8 7.3 5.4 3.8 5.4c0 3.5 2.7 6.1 6.2 6.1Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 9.6c0-2.9 2.3-5 5.2-5 0 2.9-2.3 5-5.2 5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.4 17.5h7.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>花園</span><div class="dotline"></div></div>
+    </div>
+  </div></div>
+  <div class="caption"><b>行事曆</b><span>月曆＋事件列表。藍點＝回診/檢驗、紫點＝用藥節點，今天＝薰衣草紫圓。.ics 匯出永遠免費。</span></div>
+</div>
+
+<!-- ============ 5. 快樂花園 ============ -->
+<div class="slot">
+  <div class="phone"><div class="island"></div><div class="screen" style="background:linear-gradient(180deg,var(--bg) 55%, rgba(171,159,242,.12))">
+    <div class="status"><span>9:41</span>
+      <svg width="44" height="11" viewBox="0 0 44 11" fill="none"><rect x="0" y="2" width="3" height="9" rx="1" fill="currentColor"/><rect x="5" y="0" width="3" height="11" rx="1" fill="currentColor" opacity=".5"/><rect x="22" y="1.5" width="20" height="8" rx="3" stroke="currentColor" stroke-width="1.2"/><rect x="24" y="3.5" width="12" height="4" rx="1.4" fill="currentColor"/></svg>
+    </div>
+    <div class="content">
+      <div class="h-greet"><small>快樂花園 · 第 1 棵</small>你的櫻花樹</div>
+      <div class="card" style="display:flex;justify-content:center;padding:10px 14px 0;background:transparent;border:none">
+        <svg width="190" height="170" viewBox="0 0 190 170" fill="none">
+          <circle cx="152" cy="26" r="13" fill="#F1FF52"/>
+          <path d="M152 6v6M152 40v6M172 26h-6M138 26h-6M166.5 11.5l-4.3 4.3M142 36l-4.3 4.3M166.5 40.5l-4.3-4.3M142 16l-4.3-4.3" stroke="#F1FF52" stroke-width="2.6" stroke-linecap="round"/>
+          <ellipse cx="92" cy="152" rx="62" ry="10" fill="#AB9FF2" opacity=".28"/>
+          <path d="M92 150V96" stroke="#3C315B" stroke-width="7" stroke-linecap="round"/>
+          <path d="M92 118c-8-7-18-9-26-7M92 106c7-8 16-11 24-10" stroke="#3C315B" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="62" cy="96" r="22" fill="#FFB7D5"/>
+          <circle cx="92" cy="76" r="27" fill="#FFC9DF"/>
+          <circle cx="122" cy="94" r="21" fill="#FFB7D5"/>
+          <circle cx="80" cy="98" r="16" fill="#FFD9E8"/>
+          <circle cx="108" cy="78" r="13" fill="#FFD9E8"/>
+          <circle cx="74" cy="80" r="4" fill="#FF7EB0"/><circle cx="101" cy="64" r="4" fill="#FF7EB0"/><circle cx="120" cy="86" r="4" fill="#FF7EB0"/><circle cx="88" cy="92" r="4" fill="#FF7EB0"/>
+          <path d="M36 134c4-3 9-3 12 0M148 128c3-4 8-5 12-2" stroke="#45E863" stroke-width="3.4" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="card" style="padding:12px 14px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px">
+          <span class="li-title">茁壯期 · 陽光 132</span>
+          <span class="li-sub">距離大樹 68</span>
+        </div>
+        <div class="progress"><i style="width:66%"></i></div>
+        <div class="li-sub" style="margin-top:7px">今日陽光 6 / 15 · 連續 12 天</div>
+      </div>
+      <div class="sec-h"><b>今天的快樂任務</b></div>
+      <div class="list-item">
+        <div class="li-icon" style="background:rgba(108,160,251,.16)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.6" stroke="#6CA0FB" stroke-width="1.7"/><circle cx="8" cy="8" r="2.4" stroke="#6CA0FB" stroke-width="1.7"/></svg></div>
+        <div class="li-body"><div class="li-title">478 呼吸練習</div><div class="li-sub">3 分鐘 · 已完成</div></div>
+        <span class="tag" style="background:rgba(69,232,99,.14);color:var(--green)">+2 陽光</span>
+      </div>
+      <div class="list-item">
+        <div class="li-icon" style="background:rgba(241,255,82,.14)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13.2c0-3 2.2-5 5-5s5 2 5 5" stroke="#c8d432" stroke-width="1.7" stroke-linecap="round"/><path d="M8 8.2V2.6M8 2.6 5.6 5M8 2.6 10.4 5" stroke="#c8d432" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="li-body"><div class="li-title">寫下一件感恩的事</div><div class="li-sub">感恩日記</div></div>
+        <span class="tag" style="background:var(--surface3);color:var(--text2)">+2 陽光</span>
+      </div>
+      <div class="list-item">
+        <div class="li-icon" style="background:rgba(255,0,55,.1)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 14s-5-3.2-5-7a3 3 0 0 1 5-2.2A3 3 0 0 1 13 7c0 3.8-5 7-5 7Z" stroke="#FF0037" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
+        <div class="li-body"><div class="li-title">小挑戰：跟一位陌生人微笑</div><div class="li-sub">微辣</div></div>
+        <span class="tag" style="background:var(--surface3);color:var(--text2)">+3 陽光</span>
+      </div>
+    </div>
+    <div class="tabbar">
+      <div class="tab"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3.2 8.4 10 3l6.8 5.4V16a1.6 1.6 0 0 1-1.6 1.6H4.8A1.6 1.6 0 0 1 3.2 16V8.4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7.6 17.4v-5h4.8v5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>首頁</span><div class="dotline"></div></div>
+      <div class="tab"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2.6" y="3.6" width="14.8" height="13.6" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M2.6 8h14.8M7 1.8v3M13 1.8v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>行事曆</span><div class="dotline"></div></div>
+      <div class="tab-cta"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 4.5v13M4.5 11h13" stroke="#2C2250" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+      <div class="tab"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5.4 2.6h6.6L15.4 6v11.4H5.4V2.6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M11.6 2.8V6.2h3.4M8 9.4h4.8M8 12.4h4.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>文件</span><div class="dotline"></div></div>
+      <div class="tab on"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 17.5v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M10 11.5C10 8 7.3 5.4 3.8 5.4c0 3.5 2.7 6.1 6.2 6.1Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 9.6c0-2.9 2.3-5 5.2-5 0 2.9-2.3 5-5.2 5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.4 17.5h7.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>花園</span><div class="dotline"></div></div>
+    </div>
+  </div></div>
+  <div class="caption"><b>快樂花園</b><span>Phantom 插畫風的櫻花樹（圓潤幾何＋粗深紫枝幹），陽光值進度條用檸檬色，任務列表照 PRD 規則。</span></div>
+</div>
+
+</div>
+
+<footer class="note">
+  所有色彩、圓角、緩動曲線、毛玻璃數值皆取自 phantom.com production CSS<br>
+  <b>右上角可切換深／淺色</b> — 兩套色系都是 Phantom 官網原生定義 · 全程零 emoji，圖案皆為手繪 SVG
+</footer>
+</div>
+</body>
+</html>
