@@ -1,5 +1,34 @@
 import SwiftUI
 
+// MARK: - 捲動容器（snapshot 模式渲染為固定排版，因 ImageRenderer 不支援 ScrollView）
+
+private struct SnapshotModeKey: EnvironmentKey {
+    static let defaultValue = false
+}
+
+extension EnvironmentValues {
+    var snapshotMode: Bool {
+        get { self[SnapshotModeKey.self] }
+        set { self[SnapshotModeKey.self] = newValue }
+    }
+}
+
+struct CDScroll<Content: View>: View {
+    @Environment(\.snapshotMode) private var snapshotMode
+    @ViewBuilder var content: Content
+
+    var body: some View {
+        if snapshotMode {
+            // Color.clear 佔滿提案尺寸，內容溢出由 overlay 承載並裁切
+            Color.clear
+                .overlay(alignment: .top) { content }
+                .clipped()
+        } else {
+            ScrollView(showsIndicators: false) { content }
+        }
+    }
+}
+
 // MARK: - 卡片
 
 struct CardModifier: ViewModifier {

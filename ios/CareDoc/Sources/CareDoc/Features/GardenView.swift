@@ -8,7 +8,7 @@ struct GardenView: View {
     @SwiftUI.State private var showMoodCard = false
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
+        CDScroll {
             VStack(alignment: .leading, spacing: 14) {
                 PageHeader(kicker: "快樂花園 · 第 1 棵", title: "你的櫻花樹")
 
@@ -141,6 +141,7 @@ struct GardenView: View {
 struct GratitudeView: View {
     @Bindable var state: AppState
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.snapshotMode) private var snapshotMode
 
     var body: some View {
         ZStack {
@@ -149,12 +150,20 @@ struct GratitudeView: View {
                 FlowTopBar(title: "感恩日記") { dismiss() }
                 VStack(alignment: .leading, spacing: 14) {
                     PageHeader(kicker: MockData.gratitudePrompts[0], title: "寫下一件感恩的事")
-                    TextField("今天…", text: $state.gratitudeText, axis: .vertical)
-                        .font(.cdBody(15))
-                        .foregroundStyle(CD.text)
-                        .lineLimit(4...8)
-                        .textFieldStyle(.plain)
-                        .card(padding: 16)
+                    Group {
+                        if snapshotMode {
+                            Text("今天…")
+                                .font(.cdBody(15)).foregroundStyle(CD.text3)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        } else {
+                            TextField("今天…", text: $state.gratitudeText, axis: .vertical)
+                                .font(.cdBody(15))
+                                .foregroundStyle(CD.text)
+                                .lineLimit(4...8)
+                                .textFieldStyle(.plain)
+                        }
+                    }
+                    .card(padding: 16)
                     PillButton(title: "存下來", icon: "heart", style: .lemon) {
                         guard !state.gratitudeText.isEmpty else {
                             Haptics.shared.warning()

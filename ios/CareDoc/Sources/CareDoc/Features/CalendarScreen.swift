@@ -22,7 +22,7 @@ struct CalendarScreen: View {
     }
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
+        CDScroll {
             VStack(alignment: .leading, spacing: 14) {
                 PageHeader(kicker: "2026 年", title: "6 月")
 

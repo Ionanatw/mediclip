@@ -50,11 +50,12 @@ struct FlowTopBar: View {
 
 struct UploadView: View {
     @Bindable var state: AppState
+    @Environment(\.snapshotMode) private var snapshotMode
 
     var body: some View {
         VStack(spacing: 0) {
             FlowTopBar(title: "") { state.uploadStep = .none }
-            ScrollView(showsIndicators: false) {
+            CDScroll {
                 VStack(alignment: .leading, spacing: 14) {
                     PageHeader(kicker: "新的照護時段", title: "上傳醫療文件")
 
@@ -117,11 +118,16 @@ struct UploadView: View {
                     VStack(alignment: .leading, spacing: 6) {
                         Text("補充說明（選填）")
                             .font(.cdBody(11.5, weight: .bold)).foregroundStyle(CD.text3)
-                        TextField("護理師口頭交代的事…", text: $state.noteText, axis: .vertical)
-                            .font(.cdBody(14))
-                            .foregroundStyle(CD.text)
-                            .lineLimit(2...4)
-                            .textFieldStyle(.plain)
+                        if snapshotMode {
+                            Text("護理師說傷口要保持乾燥，洗澡用…")
+                                .font(.cdBody(14)).foregroundStyle(CD.text2)
+                        } else {
+                            TextField("護理師口頭交代的事…", text: $state.noteText, axis: .vertical)
+                                .font(.cdBody(14))
+                                .foregroundStyle(CD.text)
+                                .lineLimit(2...4)
+                                .textFieldStyle(.plain)
+                        }
                     }
                     .card()
 
@@ -253,7 +259,7 @@ struct FollowUpView: View {
     var body: some View {
         VStack(spacing: 0) {
             FlowTopBar(title: "AI 追問") { state.uploadStep = .none }
-            ScrollView(showsIndicators: false) {
+            CDScroll {
                 VStack(alignment: .leading, spacing: 16) {
                     PageHeader(kicker: "差一步就好", title: "幫我確認 2 件事")
 

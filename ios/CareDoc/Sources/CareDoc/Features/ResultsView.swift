@@ -9,7 +9,7 @@ struct ResultsView: View {
     var body: some View {
         VStack(spacing: 0) {
             FlowTopBar(title: "整理結果") { state.uploadStep = .none }
-            ScrollView(showsIndicators: false) {
+            CDScroll {
                 VStack(alignment: .leading, spacing: 14) {
                     PageHeader(kicker: "照護懶人包完成", title: "\(state.session.familyName)的照護重點")
 

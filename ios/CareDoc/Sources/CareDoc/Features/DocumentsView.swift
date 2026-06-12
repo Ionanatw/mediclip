@@ -12,7 +12,7 @@ struct DocumentsView: View {
     }
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
+        CDScroll {
             VStack(alignment: .leading, spacing: 14) {
                 PageHeader(kicker: "時間軸", title: "文件紀錄")
 

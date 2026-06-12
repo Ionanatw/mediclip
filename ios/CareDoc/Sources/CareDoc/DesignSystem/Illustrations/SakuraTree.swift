@@ -137,8 +137,8 @@ struct SakuraTreeView: View {
         for i in 0..<bumps {
             let a = Double(i) / Double(bumps) * 2 * .pi
             let wobble: CGFloat = i % 2 == 0 ? 1.0 : 0.82
-            points.append(CGPoint(x: cx + cos(a) * rx * wobble,
-                                  y: cy + sin(a) * ry * wobble))
+            points.append(CGPoint(x: cx + CGFloat(cos(a)) * rx * wobble,
+                                  y: cy + CGFloat(sin(a)) * ry * wobble))
         }
         p.move(to: points[0])
         for i in 0..<bumps {
@@ -196,10 +196,11 @@ struct SakuraTreeView: View {
         var p = Path()
         for i in 0..<4 {
             let a = Double(i) / 4 * .pi
-            p.move(to: CGPoint(x: c.x + cos(a) * r * 0.45, y: c.y + sin(a) * r * 0.45))
-            p.addLine(to: CGPoint(x: c.x + cos(a) * r, y: c.y + sin(a) * r))
-            p.move(to: CGPoint(x: c.x - cos(a) * r * 0.45, y: c.y - sin(a) * r * 0.45))
-            p.addLine(to: CGPoint(x: c.x - cos(a) * r, y: c.y - sin(a) * r))
+            let ca = CGFloat(cos(a)), sa = CGFloat(sin(a))
+            p.move(to: CGPoint(x: c.x + ca * r * 0.45, y: c.y + sa * r * 0.45))
+            p.addLine(to: CGPoint(x: c.x + ca * r, y: c.y + sa * r))
+            p.move(to: CGPoint(x: c.x - ca * r * 0.45, y: c.y - sa * r * 0.45))
+            p.addLine(to: CGPoint(x: c.x - ca * r, y: c.y - sa * r))
         }
         ctx.stroke(p.applying(t), with: .color(CD.accent),
                    style: StrokeStyle(lineWidth: 2.6, lineCap: .round))

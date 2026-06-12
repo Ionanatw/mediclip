@@ -12,7 +12,7 @@ struct SettingsView: View {
             CD.bg.ignoresSafeArea()
             VStack(spacing: 0) {
                 FlowTopBar(title: "設定") { dismiss() }
-                ScrollView(showsIndicators: false) {
+                CDScroll {
                     VStack(alignment: .leading, spacing: 14) {
                         SectionHeader(title: "提醒（App 內）")
                         VStack(spacing: 0) {

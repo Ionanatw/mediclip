@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carrius 實跑驗收圖庫</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#1C1C1C;--surface:#28282C;--text:#FFFDF8;--text2:#A09FA6;--accent:#AB9FF2;--lemon:#F1FF52}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"SF Pro Rounded",ui-rounded,"Nunito","Noto Sans TC",sans-serif;padding:48px 32px 80px}
+h1{font-size:28px;font-weight:900;letter-spacing:-.02em}
+.sub{color:var(--text2);font-size:14px;margin:8px 0 36px;line-height:1.7}
+.sub b{color:var(--lemon)}
+h2{font-size:18px;font-weight:900;margin:40px 0 16px;color:var(--accent)}
+.grid{display:flex;flex-wrap:wrap;gap:20px}
+.shot{width:228px}
+.shot img{width:100%;border-radius:22px;border:1px solid rgba(255,253,248,.1);display:block;background:#000}
+.shot.sq{width:180px}
+.shot p{font-size:12px;font-weight:800;color:var(--text2);text-align:center;margin-top:8px}
+</style>
+</head>
+<body>
+<h1>Carrius 實跑驗收圖庫</h1>
+<p class="sub">每一張都是<b>編譯後的 App 實際執行渲染</b>的輸出（swiftc 編譯 → ImageRenderer 離屏渲染），不是 mockup。<br>共 13 畫面 × 深淺色 + 櫻花樹 5 成長階段 = 31 張。震動節奏需 iPhone 實機才能體感。</p>
+
+<h2>核心流程（深色）</h2>
+<div class="grid">
+  <div class="shot"><img src="snaps/01-welcome-dark.png"><p>1 歡迎頁</p></div>
+  <div class="shot"><img src="snaps/02-home-dark.png"><p>2 首頁儀表板</p></div>
+  <div class="shot"><img src="snaps/03-upload-dark.png"><p>3 上傳</p></div>
+  <div class="shot"><img src="snaps/05-followup-dark.png"><p>5 AI 追問</p></div>
+  <div class="shot"><img src="snaps/06-results-dark.png"><p>6 結果總覽</p></div>
+  <div class="shot"><img src="snaps/07-medcard-dark.png"><p>7 藥品識別卡</p></div>
+</div>
+
+<h2>功能頁（深色）</h2>
+<div class="grid">
+  <div class="shot"><img src="snaps/08-calendar-dark.png"><p>8 行事曆</p></div>
+  <div class="shot"><img src="snaps/09-checklist-dark.png"><p>9 每日待辦</p></div>
+  <div class="shot"><img src="snaps/10-poster-dark.png"><p>10 照護海報</p></div>
+  <div class="shot"><img src="snaps/11-documents-dark.png"><p>11 文件紀錄</p></div>
+  <div class="shot"><img src="snaps/12-settings-dark.png"><p>12 設定</p></div>
+  <div class="shot"><img src="snaps/13-garden-dark.png"><p>13 快樂花園</p></div>
+  <div class="shot"><img src="snaps/14-breathing-dark.png"><p>呼吸練習（B 風格）</p></div>
+</div>
+
+<h2>淺色模式</h2>
+<div class="grid">
+  <div class="shot"><img src="snaps/01-welcome-light.png"><p>歡迎頁</p></div>
+  <div class="shot"><img src="snaps/02-home-light.png"><p>首頁</p></div>
+  <div class="shot"><img src="snaps/06-results-light.png"><p>結果總覽</p></div>
+  <div class="shot"><img src="snaps/07-medcard-light.png"><p>藥品識別卡</p></div>
+  <div class="shot"><img src="snaps/08-calendar-light.png"><p>行事曆</p></div>
+  <div class="shot"><img src="snaps/13-garden-light.png"><p>快樂花園</p></div>
+</div>
+
+<h2>櫻花樹 5 成長階段（A 描邊錯位風）</h2>
+<div class="grid">
+  <div class="shot sq"><img src="snaps/tree-0-種子.png"><p>種子 0</p></div>
+  <div class="shot sq"><img src="snaps/tree-1-發芽.png"><p>發芽 20</p></div>
+  <div class="shot sq"><img src="snaps/tree-2-幼苗.png"><p>幼苗 60</p></div>
+  <div class="shot sq"><img src="snaps/tree-3-茁壯.png"><p>茁壯 120</p></div>
+  <div class="shot sq"><img src="snaps/tree-4-大樹.png"><p>大樹 200</p></div>
+</div>
+</body>
+</html>

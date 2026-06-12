@@ -10,7 +10,7 @@ struct MedicationCardView: View {
             CD.bg.ignoresSafeArea()
             VStack(spacing: 0) {
                 FlowTopBar(title: "藥品識別卡") { dismiss() }
-                ScrollView(showsIndicators: false) {
+                CDScroll {
                     VStack(alignment: .leading, spacing: 14) {
                         PageHeader(kicker: med.purpose, title: "\(med.name) \(med.dose)")
 

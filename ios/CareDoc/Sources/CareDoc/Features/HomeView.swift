@@ -9,7 +9,7 @@ struct HomeView: View {
     private var takenCount: Int { state.session.medications.filter(\.takenToday).count }
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
+        CDScroll {
             VStack(alignment: .leading, spacing: 14) {
                 HStack(alignment: .top) {
                     PageHeader(kicker: "6 月 13 日 星期六", title: "午安，今天也辛苦了")

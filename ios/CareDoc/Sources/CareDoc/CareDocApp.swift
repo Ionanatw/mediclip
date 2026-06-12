@@ -1,6 +1,5 @@
 import SwiftUI
 
-@main
 struct CareDocApp: App {
     @SwiftUI.State private var state = AppState()
 

@@ -11,7 +11,7 @@ struct PosterView: View {
             CD.bg.ignoresSafeArea()
             VStack(spacing: 0) {
                 FlowTopBar(title: "照護海報") { dismiss() }
-                ScrollView(showsIndicators: false) {
+                CDScroll {
                     VStack(alignment: .leading, spacing: 14) {
                         PageHeader(kicker: "貼在冰箱上，全家都看得懂", title: "圖解照護海報")
 

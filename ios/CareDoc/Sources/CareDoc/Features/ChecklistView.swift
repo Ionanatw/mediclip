@@ -18,7 +18,7 @@ struct ChecklistView: View {
             CD.bg.ignoresSafeArea()
             VStack(spacing: 0) {
                 FlowTopBar(title: "每日照護待辦") { dismiss() }
-                ScrollView(showsIndicators: false) {
+                CDScroll {
                     VStack(alignment: .leading, spacing: 14) {
                         PageHeader(kicker: "6 月 13 日", title: "今天的照護清單")
 
