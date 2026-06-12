@@ -6,7 +6,7 @@ dist/
 .env.*.local
 *.log
 .DS_Store
-ios/
+ios/CareDoc/.build/
 android/
 .vercel
 .gstack/
