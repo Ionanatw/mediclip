@@ -1,0 +1,112 @@
+import 'models.dart';
+
+/// 擬真化療出院衛教單整理結果（mock，貫穿全畫面）。
+/// ⚠️ 藥品外觀為示意，未經食藥署核實——詳見 docs/drug-appearance-check.html。
+class MockData {
+  static List<Medication> medications() => [
+        Medication(
+          name: '癒妥 膜衣錠', dose: '50mg', timing: '晚餐後 1 顆，配開水',
+          purpose: '標靶治療', form: PillForm.capsule,
+          colorA: 0xFFFFFDF8, colorB: 0xFFAB9FF2, imprint: 'TM50',
+          appearanceText: '白＋紫 膠囊，刻痕 TM50',
+          warning: '不可與葡萄柚同食',
+          warningDetail: '影響藥物代謝，血中濃度過高。柚子、文旦同屬禁忌。',
+          professionalNote: '4.3 禁忌：對本品成分過敏者。4.4 注意事項：治療期間應定期監測肝功能，避免與 CYP3A4 強抑制劑併用。4.5 交互作用：葡萄柚汁可能增加血中濃度。',
+          plainNote: '這顆藥不能配柚子類水果（葡萄柚、柚子、文旦都算），會讓藥效太強。',
+          scheduledTime: '19:00', takenToday: true,
+        ),
+        Medication(
+          name: '止吐藥', dose: '8mg', timing: '睡前 1 顆，想吐時可提前',
+          purpose: '預防化療噁心', form: PillForm.tablet,
+          colorA: 0xFFFFD9E8, colorB: 0xFFFFD9E8, imprint: 'OND8',
+          appearanceText: '淡粉 圓錠，刻痕 OND8',
+          professionalNote: '4.4 注意事項：可能引起便祕與頭痛，長 QT 症候群患者慎用。',
+          plainNote: '吃了可能會便祕，多喝水多吃蔬菜。心臟有問題要先跟醫師說。',
+          scheduledTime: '21:30',
+        ),
+        Medication(
+          name: '胃藥', dose: '40mg', timing: '早餐前 30 分鐘 1 顆',
+          purpose: '保護胃黏膜', form: PillForm.oblong,
+          colorA: 0xFFF1FF52, colorB: 0xFFF1FF52, imprint: 'PPI40',
+          appearanceText: '黃 橢圓錠，刻痕 PPI40',
+          warning: '不可與含鋁鎂制酸劑併服',
+          warningDetail: '需間隔至少 2 小時，否則吸收下降。',
+          professionalNote: '4.5 交互作用：不可與含鋁、鈣、鎂之制酸劑併服，間隔至少 2 小時。',
+          plainNote: '不能跟一般胃散、胃乳片一起吃，要隔開 2 小時。',
+          scheduledTime: '07:30', takenToday: true,
+        ),
+        Medication(
+          name: '升白血球藥', dose: '300mcg', timing: '醫囑日皮下注射',
+          purpose: '提升白血球', form: PillForm.tablet,
+          colorA: 0xFFE2DFFE, colorB: 0xFFE2DFFE, imprint: 'GCSF',
+          appearanceText: '淡紫 圓錠（注射劑示意）',
+          professionalNote: '4.4 注意事項：可能出現骨頭痠痛，屬常見反應；發燒超過 38 度應立即回診。',
+          plainNote: '打完可能會骨頭痠，是正常的。但如果發燒超過 38 度要馬上回醫院。',
+          scheduledTime: '依醫囑',
+        ),
+      ];
+
+  static List<ScheduleEvent> events() => [
+        ScheduleEvent(kind: EventKind.lab, title: '抽血檢驗（空腹）', detail: '台大癌醫 1F 抽血站', month: 6, day: 16, time: '08:30', note: '前一晚 12 點後禁食'),
+        ScheduleEvent(kind: EventKind.appointment, title: '血液腫瘤科回診', detail: '台大癌醫 3F 門診 12 診', month: 6, day: 16, time: '09:30', note: '攜帶藥袋與這份整理'),
+        ScheduleEvent(kind: EventKind.dressing, title: '傷口換藥', detail: '居家，紗布＋生理食鹽水', month: 6, day: 14, time: '10:00', note: '觀察紅腫熱痛'),
+        ScheduleEvent(kind: EventKind.appointment, title: '第二次化療', detail: '台大癌醫 5F 化療中心', month: 6, day: 24, time: '08:00', note: '預計 4-6 小時'),
+        ScheduleEvent(kind: EventKind.medication, title: '癒妥 50mg', detail: '每天晚餐後，持續至 7/14', month: 6, day: 13, time: '19:00'),
+      ];
+
+  static List<CareNote> notes() => [
+        CareNote(Severity.high, '發燒超過 38°C 立即回診', '白血球低下期間發燒可能是感染，不可自行退燒觀察。'),
+        CareNote(Severity.high, '避免生食', '生魚片、生菜沙拉、未削皮水果都暫停，食物要全熟。'),
+        CareNote(Severity.medium, '傷口保持乾燥', '洗澡用防水敷料保護，若滲濕立即更換。'),
+        CareNote(Severity.medium, '避免人多密閉場所', '外出戴口罩，回家先洗手。'),
+        CareNote(Severity.low, '適度散步', '每天 20-30 分鐘，覺得累就休息。'),
+      ];
+
+  static List<ChecklistItem> checklist() => [
+        ChecklistItem('用藥', '早餐前胃藥 40mg', detail: '07:30 前', done: true),
+        ChecklistItem('用藥', '晚餐後癒妥 50mg', detail: '19:00', done: true),
+        ChecklistItem('用藥', '睡前止吐藥 8mg', detail: '21:30'),
+        ChecklistItem('傷口', '檢查傷口有無紅腫', detail: '換藥時順便看'),
+        ChecklistItem('傷口', '更換紗布', detail: '10:00'),
+        ChecklistItem('飲食', '確認三餐全熟食', done: true),
+        ChecklistItem('飲食', '喝水 2000ml', detail: '目前約 1200ml'),
+        ChecklistItem('活動', '散步 20 分鐘', detail: '傍晚涼一點再去'),
+      ];
+
+  static List<DocumentRecord> documents() => [
+        DocumentRecord('出院衛教單（化療照護）', '術後第 1 週', '6/10', 6, ['用藥', '行程', '注意事項']),
+        DocumentRecord('處方箋', '術後第 1 週', '6/10', 1, ['用藥']),
+        DocumentRecord('回診預約單', '術後第 1 週', '6/10', 1, ['行程']),
+        DocumentRecord('護理站口頭交代筆記', '出院當天', '6/10', 1, ['注意事項']),
+      ];
+
+  static List<HappyTask> happyTasks() => [
+        HappyTask('478 呼吸練習', '3 分鐘', 2, HappyKind.breathing, done: true),
+        HappyTask('寫下一件感恩的事', '感恩日記', 2, HappyKind.gratitude),
+        HappyTask('頸部伸展一組', '2 分鐘微運動', 3, HappyKind.exercise),
+        HappyTask('小挑戰：跟一位陌生人微笑', '微辣', 3, HappyKind.challenge),
+        HappyTask('分享心情小卡', '給家人或朋友', 1, HappyKind.share),
+      ];
+
+  static final moodCards = [
+    MoodCard('你照顧別人的樣子，也值得被好好照顧。', 'Carrius'),
+    MoodCard('今天只要做到「夠好」就可以了，不用滿分。', 'Carrius'),
+    MoodCard('休息不是偷懶，是為了走更長的路。', 'Carrius'),
+  ];
+
+  static const gratitudePrompts = [
+    '今天有什麼小事讓你鬆了一口氣？',
+    '誰今天幫了你一把？',
+    '今天的自己哪裡做得不錯？',
+  ];
+
+  static CareSession session() => CareSession(
+        familyName: '媽媽',
+        summary: '出院後居家照護重點：每日按時服用標靶藥與止吐藥、傷口保持乾燥、6/16 回診前一晚 12 點後禁食抽血。白血球偏低期間避免生食與人多場所。',
+        medications: medications(),
+        events: events(),
+        notes: notes(),
+        checklist: checklist(),
+        documents: documents(),
+      );
+}

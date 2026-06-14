@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carrius 藥品外觀核實 · 引擎稽核報告</title>
+<style>
+  :root{
+    --accent:#AB9FF2; --accent-soft:#E2DFFE; --plum:#3C315B; --plum-deep:#2C2250;
+    --lemon:#F1FF52; --cream:#FFFDF8; --bg:#FAF8F2; --surface:#FFFFFF;
+    --line:#ECE9F4; --text:#3C315B; --text2:#7B7689; --text3:#A6A2B2;
+    --ok:#2BB673; --ok-bg:#E6F7EF; --warn:#E6A100; --warn-bg:#FFF6E0; --no:#E14B6A; --no-bg:#FDEBEF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.6;
+    -webkit-font-smoothing:antialiased; padding:0 0 80px;
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+  header.hero{
+    background:linear-gradient(135deg,#2C2250 0%,#473a6e 55%,#5a4b87 100%);
+    color:var(--cream); padding:46px 0 40px; margin-bottom:0;
+  }
+  .hero .wrap{padding:0 22px}
+  .badge-app{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;
+    background:rgba(255,255,255,.12);padding:6px 13px;border-radius:999px;letter-spacing:.3px}
+  .badge-app .dot{width:7px;height:7px;border-radius:50%;background:var(--lemon)}
+  h1{font-size:30px;font-weight:900;letter-spacing:-.5px;margin:16px 0 8px;line-height:1.2}
+  .hero p{font-size:15.5px;color:rgba(255,253,248,.82);max-width:680px}
+  .hero .meta{margin-top:16px;font-size:12.5px;color:rgba(255,253,248,.6)}
+
+  .disclaimer{
+    background:#FFF6E0;border-left:5px solid var(--warn);
+    border-radius:14px;padding:18px 20px;margin:26px 0;
+  }
+  .disclaimer b{color:#9a6b00}
+  .disclaimer .t{font-weight:800;font-size:15px;color:#8a6000;margin-bottom:5px;display:flex;align-items:center;gap:8px}
+  .disclaimer p{font-size:14px;color:#6b5520}
+
+  section{margin-top:42px}
+  .kicker{font-size:12.5px;font-weight:800;letter-spacing:1.4px;color:var(--accent);text-transform:uppercase}
+  h2{font-size:22px;font-weight:900;letter-spacing:-.3px;margin:7px 0 6px}
+  .lead{font-size:14.5px;color:var(--text2);max-width:760px;margin-bottom:22px}
+
+  /* compare card */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(308px,1fr));gap:18px}
+  .card{
+    background:var(--surface);border:1px solid var(--line);border-radius:18px;
+    padding:16px;display:flex;flex-direction:column;gap:12px;
+  }
+  .card-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .card-head .nm{font-weight:900;font-size:16px}
+  .card-head .ds{font-weight:800;font-size:13px;color:var(--accent)}
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .pane{background:var(--bg);border-radius:14px;padding:10px 8px 9px;text-align:center;position:relative}
+  .pane.real{background:#F6F4FB}
+  .pane .lbl{font-size:11px;font-weight:800;color:var(--text3);letter-spacing:.4px;margin-bottom:4px}
+  .pane.real .lbl{color:#8a7fb0}
+  canvas{width:150px;height:118px;max-width:100%}
+  .spec{font-size:12.5px;color:var(--text2);display:flex;flex-direction:column;gap:3px}
+  .spec .row{display:flex;gap:6px}
+  .spec .k{color:var(--text3);min-width:42px;flex:none}
+  .spec .v{color:var(--text);font-weight:600}
+  .verdict{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;
+    padding:8px 11px;border-radius:11px}
+  .verdict.ok{background:var(--ok-bg);color:var(--ok)}
+  .verdict.warn{background:var(--warn-bg);color:var(--warn)}
+  .verdict.no{background:var(--no-bg);color:var(--no)}
+  .vb{font-weight:900}
+
+  .note-illu{font-size:11.5px;color:var(--text3);background:#FBF7EC;border-radius:9px;padding:7px 9px}
+
+  /* legend */
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 4px}
+  .chip{font-size:12px;font-weight:700;padding:6px 11px;border-radius:999px;display:flex;align-items:center;gap:6px}
+  .chip.ok{background:var(--ok-bg);color:var(--ok)}
+  .chip.warn{background:var(--warn-bg);color:var(--warn)}
+  .chip.no{background:var(--no-bg);color:var(--no)}
+
+  /* pipeline table */
+  .pipe{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-top:8px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:left;padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#F6F4FB;font-weight:800;color:var(--plum);font-size:12.5px;letter-spacing:.3px}
+  td code{background:#F0EDF8;color:var(--plum-deep);padding:2px 7px;border-radius:6px;font-size:12px;
+    font-family:"SF Mono",ui-monospace,Menlo,monospace}
+  tr:last-child td{border-bottom:none}
+  .status-pill{display:inline-block;font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:999px}
+  .status-pill.live{background:var(--ok-bg);color:var(--ok)}
+  .status-pill.pending{background:var(--warn-bg);color:var(--warn)}
+
+  .callout{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:8px}
+  .callout h3{font-size:16px;font-weight:900;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .callout ul{list-style:none;display:flex;flex-direction:column;gap:11px}
+  .callout li{font-size:14px;color:var(--text2);padding-left:26px;position:relative}
+  .callout li::before{content:"";position:absolute;left:6px;top:9px;width:7px;height:7px;border-radius:50%;background:var(--accent)}
+  .callout li b{color:var(--text)}
+
+  footer{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--text3);text-align:center}
+  .roadmap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+  @media(max-width:620px){.roadmap{grid-template-columns:1fr}}
+  .rm{border-radius:16px;padding:16px}
+  .rm.now{background:var(--ok-bg)} .rm.next{background:#F0EDF8}
+  .rm .h{font-weight:900;font-size:14px;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+  .rm.now .h{color:var(--ok)} .rm.next .h{color:var(--accent)}
+  .rm ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+  .rm li{font-size:13px;color:var(--text2)}
+  .rm li::before{content:"– ";color:var(--text3)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="badge-app"><span class="dot"></span>Carrius · 醫療照護懶人包</span>
+    <h1>藥品外觀核實報告</h1>
+    <p>把 App 裡畫出來的藥丸，和「真實藥品外觀應該長什麼樣」放在一起逐顆比對，並誠實標出引擎現在做得到、做不到的地方。這是一個醫療 App，外觀正確性不能用猜的。</p>
+    <div class="meta">渲染引擎：<b style="color:#cfc7f5">lib/design/illustrations/pill_art.dart</b>（本頁 canvas 為 1:1 移植，與 App 同一套幾何算法）　·　產生日期：2026-06-15</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="disclaimer">
+    <div class="t">⚠ 最重要的一句話：本 App 目前的藥品外觀為「示意」，尚未經食藥署資料核實</div>
+    <p>化療出院情境的 4 顆 demo 藥（癒妥、止吐藥、胃藥、升白血球藥）是<b>為了示範流程而設計的組合，並未對應任何一張真實藥品許可證</b>。要做到每一顆都和病人手上的藥一模一樣，必須串接食藥署「藥品外觀資料集（InfoId=39）」——本頁第 4 段說明完整資料管線與目前的串接狀態。在那之前，App 內所有藥丸圖都標註「示意，請與藥袋核對」。</p>
+  </div>
+
+  <!-- 1. WHY -->
+  <section>
+    <div class="kicker">為什麼有這一頁</div>
+    <h2>外觀正確，是這個 App 的信任底線</h2>
+    <p class="lead">照顧者半夜想確認「這顆白紫膠囊是不是該晚餐後吃的那顆」，靠的就是顏色和形狀。如果 App 畫的藥和真實的不一樣，反而會害人吃錯。所以我們不只要畫得漂亮，更要能<b>證明畫得對、或誠實承認哪裡還不對</b>。這份報告做三件事：①逐顆比對 demo 藥　②用 20 種真實藥型稽核引擎能力上限　③定義上線前必接的食藥署資料管線。</p>
+  </section>
+
+  <!-- 2. DEMO -->
+  <section>
+    <div class="kicker">第一段 · Demo 藥品</div>
+    <h2>4 顆 demo 藥：引擎渲染 vs 外觀規格</h2>
+    <p class="lead">左邊是 App 現在實際畫出來的（與 Flutter 同算法），右邊是依「外觀規格」應該呈現的樣子。注意：這些規格是<b>示意</b>，不是真實許可證資料。</p>
+    <div class="legend">
+      <span class="chip ok">✓ 形狀＋配色相符</span>
+      <span class="chip warn">⚠ 近似／引擎未印刻痕字</span>
+      <span class="chip no">✕ 引擎無法表現</span>
+    </div>
+    <div class="grid" id="demoGrid"></div>
+  </section>
+
+  <!-- 3. AUDIT -->
+  <section>
+    <div class="kicker">第二段 · 引擎能力稽核</div>
+    <h2>20 種真實藥型：引擎畫得出來嗎？</h2>
+    <p class="lead">真實世界的藥不只有膠囊、圓錠、橢圓錠。下面 20 種是台灣藥品常見的外觀原型（形狀／顏色／刻痕／印字皆取自食藥署外觀欄位的真實分類）。左欄是<b>現有引擎</b>盡力渲染的結果，右欄是<b>該藥型真正的幾何</b>。引擎做不到的地方，我們用紅標誠實標出來——這就是上線前要補的工程清單。</p>
+    <div class="legend">
+      <span class="chip ok">✓ 引擎可忠實表現</span>
+      <span class="chip warn">⚠ 形狀近似但缺刻痕字／十字刻痕</span>
+      <span class="chip no">✕ 異形錠，引擎尚未支援</span>
+    </div>
+    <div class="grid" id="auditGrid"></div>
+  </section>
+
+  <!-- 4. PIPELINE -->
+  <section>
+    <div class="kicker">第三段 · 真實資料管線</div>
+    <h2>怎麼讓每一顆藥 100% 對齊真實外觀</h2>
+    <p class="lead">藥丸的形狀、顏色、刻痕不該由我手畫決定，而該由食藥署官方資料驅動。以下是每個欄位的來源與對應到引擎參數的方式，以及目前的串接狀態。</p>
+    <div class="pipe">
+      <table>
+        <thead><tr><th style="width:30%">食藥署資料源</th><th style="width:30%">取用欄位</th><th style="width:25%">對應引擎參數</th><th style="width:15%">狀態</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>InfoId=36</b><br>西藥許可證資料集</td>
+            <td>中英文品名、許可證字號、劑型（膜衣錠／膠囊／…）</td>
+            <td><code>name</code> <code>form</code>（基礎劑型）</td>
+            <td><span class="status-pill pending">待接</span></td>
+          </tr>
+          <tr>
+            <td><b>InfoId=39</b><br>藥品外觀資料集</td>
+            <td>形狀、顏色、刻痕／標記、外觀說明、長×寬(mm)</td>
+            <td><code>shape</code> <code>colorA/B</code> <code>score</code> <code>imprint</code> <code>size</code></td>
+            <td><span class="status-pill pending">待接</span></td>
+          </tr>
+          <tr>
+            <td><b>仿單查詢平台</b><br>（D1 仿單原文）</td>
+            <td>禁忌、注意事項、交互作用、警語</td>
+            <td><code>professionalNote</code> <code>warning</code></td>
+            <td><span class="status-pill pending">待接</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="disclaimer" style="margin-top:18px">
+      <div class="t">資料串接現況（誠實揭露）</div>
+      <p>食藥署開放資料平台已改版：舊的 <code style="background:#f0e6c8;padding:1px 5px;border-radius:4px">exportDataList.do?InfoId=39</code> 端點現在會 301 轉址到 Swagger UI 首頁，<b>抓不到資料</b>。上線前需改用新版 API 規格或申請資料集批次下載，建立「許可證字號 → 外觀」對照表，再餵進引擎。在資料未接上之前，<b>我不會虛構任何「真實外觀」假裝核實過</b>——這是醫療 App 的底線。</p>
+    </div>
+  </section>
+
+  <!-- 5. ROADMAP -->
+  <section>
+    <div class="kicker">第四段 · 工程結論</div>
+    <h2>引擎現況與上線前待補</h2>
+    <div class="roadmap">
+      <div class="rm now">
+        <div class="h">✓ 引擎現在做得到</div>
+        <ul>
+          <li>3 種基本劑型：膠囊 / 圓錠 / 橢圓錠</li>
+          <li>雙色膠囊（colorA + colorB 分段）</li>
+          <li>單條刻痕（圓錠中線）</li>
+          <li>A 風格描邊＋錯位高光、-16° 自然擺放</li>
+          <li>顏色由 hex 欄位驅動，換資料即換色</li>
+        </ul>
+      </div>
+      <div class="rm next">
+        <div class="h">○ 上線前待補（依 InfoId=39 形狀分佈排序）</div>
+        <ul>
+          <li>印刷刻痕字（TM50 / OND8 等字樣印上藥面）</li>
+          <li>十字刻痕（四分割錠）</li>
+          <li>異形錠：三角／菱形／六角／五角／腰形／盾形</li>
+          <li>長寬比依 mm 實際尺寸縮放</li>
+          <li>食藥署外觀資料集自動匯入 + 人工抽樣覆核</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Carrius 藥品外觀核實報告　·　本頁 canvas 與 App 共用 pill_art.dart 幾何算法　·　藥品外觀資料未經食藥署核實前，App 內一律標示「示意，請與藥袋核對」<br>
+    醫療資料只存在使用者手機，伺服器不碰、不存、不看。
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   引擎渲染：lib/design/illustrations/pill_art.dart 的 1:1 移植
+   座標系與 _PillPainter 完全相同（120 邏輯單位、-16° 旋轉、高光）
+   ============================================================ */
+const PLUM = "#3C315B";
+const DPR = Math.max(2, window.devicePixelRatio || 1);
+
+function setup(cv, w, h){
+  cv.width = w*DPR; cv.height = h*DPR;
+  cv.style.width = w+"px"; cv.style.height = h+"px";
+  const ctx = cv.getContext("2d");
+  ctx.scale(DPR, DPR);
+  return ctx;
+}
+
+// ---- 引擎：與 _PillPainter.paint 對齊 ----
+function engineRender(cv, m){
+  const W=150,H=118, ctx=setup(cv,W,H);
+  const cx=W/2, cy=H/2, scale=Math.min(W,H)/120 * 1.18;
+  // 陰影
+  ctx.save();
+  ctx.fillStyle="rgba(0,0,0,0.15)";
+  ctx.beginPath();
+  ctx.ellipse(cx, cy+36*scale, 84*scale/2, 10*scale/2, 0, 0, Math.PI*2);
+  ctx.fill(); ctx.restore();
+
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.rotate(-16*Math.PI/180);
+  ctx.scale(scale,scale);
+
+  const stroke=()=>{ctx.strokeStyle=PLUM;ctx.lineJoin="round";ctx.lineWidth=3.4;};
+  if(m.form==="capsule"){
+    rrect(ctx,-50,-16,100,32,16); ctx.fillStyle=m.colorA; ctx.fill();
+    rrect(ctx,1,-14.5,47.5,29,14.5); ctx.fillStyle=m.colorB; ctx.fill();
+    ctx.beginPath();ctx.moveTo(0,-16);ctx.lineTo(0,16);ctx.strokeStyle=PLUM;ctx.lineWidth=3;ctx.stroke();
+    rrect(ctx,-50,-16,100,32,16); stroke(); ctx.stroke();
+    ellipse(ctx,-28,-7,10,4,"rgba(255,255,255,0.85)");
+  } else if(m.form==="tablet"){
+    ctx.beginPath();ctx.arc(0,0,30,0,Math.PI*2);ctx.fillStyle=m.colorA;ctx.fill();
+    stroke();ctx.stroke();
+    ctx.beginPath();ctx.moveTo(-18,0);ctx.lineTo(18,0);
+    ctx.strokeStyle="rgba(60,49,91,0.5)";ctx.lineWidth=2.4;ctx.stroke();
+    ellipse(ctx,-10,-18.5,8,3.5,"rgba(255,255,255,0.8)");
+  } else { // oblong
+    rrect(ctx,-46,-19,92,38,19); ctx.fillStyle=m.colorA; ctx.fill();
+    stroke();ctx.stroke();
+    ellipse(ctx,-23,-9,11,4,"rgba(255,255,255,0.8)");
+  }
+  ctx.restore();
+}
+
+/* ============================================================
+   真實幾何渲染：支援完整藥型（含異形錠、十字刻痕、印字）
+   ============================================================ */
+function realRender(cv, m){
+  const W=150,H=118, ctx=setup(cv,W,H);
+  const cx=W/2, cy=H/2, s=Math.min(W,H)/120 * 1.18;
+  ctx.save();
+  ctx.fillStyle="rgba(0,0,0,0.12)";
+  ctx.beginPath();ctx.ellipse(cx,cy+38*s,80*s/2,9*s/2,0,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.rotate((m.rot ?? -10)*Math.PI/180);
+  ctx.scale(s,s);
+  const edge = darken(m.colorA, .32);
+
+  ctx.lineJoin="round"; ctx.lineWidth=3; ctx.strokeStyle=edge;
+  drawShape(ctx, m);                     // fill + outline
+  // 高光
+  ctx.save();ctx.globalAlpha=.6;ellipse(ctx,-14,-16,12,5,"#fff");ctx.restore();
+  // 刻痕
+  if(m.score==="single"){line(ctx,0,-13,0,13,edge,2.4,.5);}
+  if(m.score==="cross"){line(ctx,0,-13,0,13,edge,2.4,.5);line(ctx,-13,0,13,0,edge,2.4,.5);}
+  if(m.score==="halfH"){line(ctx,-18,0,18,0,edge,2.4,.5);}
+  // 印字
+  if(m.imprint){
+    ctx.fillStyle=darken(m.colorA,.45);
+    ctx.font="900 11px 'SF Mono',ui-monospace,Menlo,monospace";
+    ctx.textAlign="center";ctx.textBaseline="middle";
+    ctx.globalAlpha=.78;
+    ctx.fillText(m.imprint, m.imprintX ?? 0, m.imprintY ?? 0);
+    ctx.globalAlpha=1;
+  }
+  ctx.restore();
+}
+
+function drawShape(ctx,m){
+  const c=m.colorA;
+  switch(m.shape){
+    case "round": circle(ctx,0,0,30,c); break;
+    case "oval": ellipsePath(ctx,0,0,40,26,c); break;
+    case "oblong": case "caplet": rrPath(ctx,-44,-17,88,34,17,c); break;
+    case "capsule":
+      rrPath(ctx,-48,-15,96,30,15,c);
+      // 右半另色
+      ctx.save();ctx.beginPath();rrectPath(ctx,1,-15,47,30,15);ctx.clip();
+      ctx.fillStyle=m.colorB||c;ctx.fillRect(0,-16,50,32);ctx.restore();
+      rrPath(ctx,-48,-15,96,30,15,null); // outline only
+      line(ctx,0,-15,0,15,darken(c,.32),2,1);
+      break;
+    case "triangle": poly(ctx,3,32,-90,c,6); break;
+    case "diamond": poly(ctx,4,30,-90,c,5); break;
+    case "pentagon": poly(ctx,5,30,-90,c,6); break;
+    case "hexagon": poly(ctx,6,30,0,c,6); break;
+    case "shield": shield(ctx,c); break;
+    case "kidney": kidney(ctx,c); break;
+    case "square": rrPath(ctx,-26,-26,52,52,11,c); break;
+    default: circle(ctx,0,0,30,c);
+  }
+}
+
+/* ---- canvas 幾何工具 ---- */
+function rrect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function rrectPath(ctx,x,y,w,h,r){rrect(ctx,x,y,w,h,r);}
+function rrPath(ctx,x,y,w,h,r,fill){rrect(ctx,x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill();}ctx.stroke();}
+function circle(ctx,x,y,r,fill){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();ctx.stroke();}
+function ellipsePath(ctx,x,y,rx,ry,fill){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();ctx.stroke();}
+function ellipse(ctx,x,y,rx,ry,fill){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();}
+function line(ctx,x1,y1,x2,y2,col,w,a){ctx.save();ctx.globalAlpha=a;ctx.strokeStyle=col;ctx.lineWidth=w;
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.restore();}
+function poly(ctx,n,R,startDeg,fill,round){
+  ctx.beginPath();
+  for(let i=0;i<n;i++){const a=(startDeg+i*360/n)*Math.PI/180;
+    const x=Math.cos(a)*R, y=Math.sin(a)*R;
+    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
+  ctx.closePath();ctx.fillStyle=fill;ctx.lineWidth=round;ctx.fill();ctx.stroke();
+}
+function shield(ctx,fill){ctx.beginPath();
+  ctx.moveTo(0,-30);ctx.quadraticCurveTo(28,-26,28,-6);
+  ctx.quadraticCurveTo(28,22,0,32);ctx.quadraticCurveTo(-28,22,-28,-6);
+  ctx.quadraticCurveTo(-28,-26,0,-30);ctx.closePath();
+  ctx.fillStyle=fill;ctx.fill();ctx.stroke();}
+function kidney(ctx,fill){ctx.beginPath();
+  ctx.moveTo(-34,-6);
+  ctx.quadraticCurveTo(-40,-26,-14,-22);
+  ctx.quadraticCurveTo(0,-19,16,-22);
+  ctx.quadraticCurveTo(42,-26,36,2);
+  ctx.quadraticCurveTo(40,24,12,22);
+  ctx.quadraticCurveTo(0,20,-12,22);
+  ctx.quadraticCurveTo(-40,24,-34,-6);ctx.closePath();
+  ctx.fillStyle=fill;ctx.fill();ctx.stroke();}
+
+function darken(hex,amt){
+  const n=parseInt(hex.slice(1),16);
+  let r=(n>>16)&255,g=(n>>8)&255,b=n&255;
+  r=Math.round(r*(1-amt));g=Math.round(g*(1-amt));b=Math.round(b*(1-amt));
+  return `rgb(${r},${g},${b})`;
+}
+
+/* ============================================================
+   資料
+   ============================================================ */
+// 4 顆 demo（取自 mock_data.dart，外觀為示意）
+const demos=[
+  {name:"癒妥 膜衣錠",dose:"50mg",form:"capsule",shape:"capsule",
+   colorA:"#FFFDF8",colorB:"#AB9FF2",imprint:"TM50",score:"none",
+   specForm:"膠囊",specColor:"白 ＋ 紫",specScore:"印字 TM50",
+   verdict:"warn",vtext:"形狀與雙色相符；引擎尚未把「TM50」印上藥面",
+   illu:"示意組合，未對應真實許可證"},
+  {name:"止吐藥",dose:"8mg",form:"tablet",shape:"round",
+   colorA:"#FFD9E8",colorB:"#FFD9E8",imprint:"OND8",score:"single",
+   specForm:"圓錠",specColor:"淡粉",specScore:"單刻痕 ＋ 印字 OND8",
+   verdict:"warn",vtext:"圓形＋單刻痕相符；缺印字「OND8」",
+   illu:"示意，未對應真實許可證"},
+  {name:"胃藥",dose:"40mg",form:"oblong",shape:"oblong",
+   colorA:"#F1FF52",colorB:"#F1FF52",imprint:"PPI40",score:"none",
+   specForm:"橢圓錠",specColor:"黃",specScore:"印字 PPI40",
+   verdict:"warn",vtext:"橢圓形與顏色相符；缺印字「PPI40」",
+   illu:"示意，未對應真實許可證"},
+  {name:"升白血球藥",dose:"300mcg",form:"tablet",shape:"round",
+   colorA:"#E2DFFE",colorB:"#E2DFFE",imprint:"",score:"none",
+   specForm:"注射劑",specColor:"—",specScore:"無口服外觀",
+   verdict:"no",vtext:"實際為皮下注射劑，沒有藥丸外觀；卡片僅為流程佔位",
+   illu:"注射劑，不應以藥丸圖呈現"},
+];
+
+// 20 種真實藥型原型（形狀／顏色／刻痕取自食藥署外觀欄位分類）
+const audits=[
+  {t:"白色圓形錠 · 單刻痕",shape:"round",colorA:"#FBFAF6",score:"single",eform:"tablet",ecolorA:"#FBFAF6",verdict:"warn",v:"引擎可畫圓＋刻痕；真實藥多有印字，引擎未印"},
+  {t:"白色圓形錠 · 十字四分割",shape:"round",colorA:"#FAFAF7",score:"cross",eform:"tablet",ecolorA:"#FAFAF7",verdict:"warn",v:"引擎只有單刻痕，十字刻痕待補"},
+  {t:"黃色長橢圓膜衣錠",shape:"oblong",colorA:"#F4E04D",score:"none",eform:"oblong",ecolorA:"#F4E04D",verdict:"ok",v:"形狀與顏色可忠實表現"},
+  {t:"紅／白雙色膠囊 · 印字",shape:"capsule",colorA:"#F4F1EC",colorB:"#E0463C",imprint:"R30",score:"none",eform:"capsule",ecolorA:"#E0463C",ecolorB:"#F4F1EC",verdict:"warn",v:"雙色膠囊可表現；印字待補"},
+  {t:"淡藍菱形錠 · 印字",shape:"diamond",colorA:"#9BC4F2",imprint:"100",score:"none",eform:"tablet",ecolorA:"#9BC4F2",verdict:"no",v:"菱形屬異形錠，引擎尚未支援"},
+  {t:"橘色圓形糖衣錠",shape:"round",colorA:"#F4A23C",score:"none",eform:"tablet",ecolorA:"#F4A23C",verdict:"ok",v:"圓形糖衣錠可忠實表現"},
+  {t:"綠色橢圓膜衣錠",shape:"oval",colorA:"#7DBE7A",score:"none",eform:"oblong",ecolorA:"#7DBE7A",verdict:"warn",v:"以橢圓錠近似；真實為較短橢圓"},
+  {t:"白色三角形錠",shape:"triangle",colorA:"#F8F6F1",score:"none",eform:"tablet",ecolorA:"#F8F6F1",verdict:"no",v:"三角錠，引擎尚未支援"},
+  {t:"粉色盾形錠 · 印字",shape:"shield",colorA:"#F2A6C0",imprint:"50",score:"none",eform:"tablet",ecolorA:"#F2A6C0",verdict:"no",v:"盾形屬異形錠，引擎尚未支援"},
+  {t:"棕色圓形錠 · 單刻痕",shape:"round",colorA:"#A9774C",score:"single",eform:"tablet",ecolorA:"#A9774C",verdict:"warn",v:"圓＋刻痕可表現；印字待補"},
+  {t:"白色六角形錠",shape:"hexagon",colorA:"#F7F5F0",score:"none",eform:"tablet",ecolorA:"#F7F5F0",verdict:"no",v:"六角錠，引擎尚未支援"},
+  {t:"紫／白雙色膠囊 · 刻痕",shape:"capsule",colorA:"#FFFDF8",colorB:"#AB9FF2",imprint:"",score:"none",eform:"capsule",ecolorA:"#FFFDF8",ecolorB:"#AB9FF2",verdict:"ok",v:"= 癒妥原型，雙色膠囊忠實表現"},
+  {t:"黃色腰形錠（kidney）",shape:"kidney",colorA:"#E9C84A",score:"none",eform:"oblong",ecolorA:"#E9C84A",verdict:"no",v:"腰形屬異形錠，引擎尚未支援"},
+  {t:"白色膠囊形錠（caplet）· 中刻痕",shape:"caplet",colorA:"#FAF8F3",score:"halfH",eform:"oblong",ecolorA:"#FAF8F3",verdict:"warn",v:"以橢圓錠近似；橫向刻痕待補"},
+  {t:"深藍橢圓軟膠囊",shape:"oval",colorA:"#3A5BA0",score:"none",eform:"oblong",ecolorA:"#3A5BA0",verdict:"warn",v:"以橢圓近似；軟膠囊光澤待補"},
+  {t:"米白圓形 · 十字刻痕",shape:"round",colorA:"#F1ECDF",score:"cross",eform:"tablet",ecolorA:"#F1ECDF",verdict:"warn",v:"十字刻痕待補，現只單刻痕"},
+  {t:"灰色橢圓錠",shape:"oval",colorA:"#B8B6BE",score:"none",eform:"oblong",ecolorA:"#B8B6BE",verdict:"warn",v:"以橢圓錠近似"},
+  {t:"淺綠圓形 · 單刻痕",shape:"round",colorA:"#B6D98C",score:"single",eform:"tablet",ecolorA:"#B6D98C",verdict:"ok",v:"圓＋單刻痕可忠實表現"},
+  {t:"白色五角形錠",shape:"pentagon",colorA:"#F8F6F1",score:"none",eform:"tablet",ecolorA:"#F8F6F1",verdict:"no",v:"五角錠，引擎尚未支援"},
+  {t:"桃紅圓形小錠 · 印字",shape:"round",colorA:"#EE6FA0",imprint:"5",score:"none",eform:"tablet",ecolorA:"#EE6FA0",verdict:"warn",v:"圓形可表現；印字待補"},
+];
+
+/* ============================================================
+   渲染卡片
+   ============================================================ */
+const VLABEL={ok:"✓",warn:"⚠",no:"✕"};
+function card({title,sub,leftM,rightM,specRows,verdict,vtext,illu}){
+  const el=document.createElement("div");el.className="card";
+  el.innerHTML=`
+    <div class="card-head"><span class="nm">${title}</span>${sub?`<span class="ds">${sub}</span>`:""}</div>
+    <div class="compare">
+      <div class="pane"><div class="lbl">我畫的（App 引擎）</div><canvas class="cL"></canvas></div>
+      <div class="pane real"><div class="lbl">真實藥品外觀</div><canvas class="cR"></canvas></div>
+    </div>
+    <div class="spec">${specRows.map(r=>`<div class="row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join("")}</div>
+    <div class="verdict ${verdict}"><span class="vb">${VLABEL[verdict]}</span><span>${vtext}</span></div>
+    ${illu?`<div class="note-illu">ℹ ${illu}</div>`:""}`;
+  engineRender(el.querySelector(".cL"), leftM);
+  realRender(el.querySelector(".cR"), rightM);
+  return el;
+}
+
+// demo
+const dg=document.getElementById("demoGrid");
+demos.forEach(d=>{
+  dg.appendChild(card({
+    title:d.name, sub:d.dose,
+    leftM:{form:d.form,colorA:d.colorA,colorB:d.colorB},
+    rightM:{shape:d.shape,colorA:d.colorA,colorB:d.colorB,imprint:d.imprint,score:d.score,rot:-10},
+    specRows:[["形狀",d.specForm],["顏色",d.specColor],["刻痕／印",d.specScore]],
+    verdict:d.verdict, vtext:d.vtext, illu:d.illu,
+  }));
+});
+
+// audit
+const ag=document.getElementById("auditGrid");
+audits.forEach(a=>{
+  ag.appendChild(card({
+    title:a.t, sub:"",
+    leftM:{form:a.eform,colorA:a.ecolorA,colorB:a.ecolorB||a.ecolorA},
+    rightM:{shape:a.shape,colorA:a.colorA,colorB:a.colorB,imprint:a.imprint,score:a.score,rot:-8},
+    specRows:[["形狀",a.shape],["刻痕",a.score==="none"?"無":a.score],["印字",a.imprint||"—"]],
+    verdict:a.verdict, vtext:a.v, illu:"",
+  }));
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carrius · 早安驗收圖庫</title>
+<style>
+  :root{
+    --accent:#AB9FF2;--accent-soft:#E2DFFE;--plum:#3C315B;--plum-deep:#2C2250;
+    --lemon:#F1FF52;--cream:#FFFDF8;--bg:#FAF8F2;--surface:#FFFFFF;--line:#ECE9F4;
+    --text:#3C315B;--text2:#7B7689;--text3:#A6A2B2;
+    --ok:#2BB673;--ok-bg:#E6F7EF;--warn:#E6A100;--warn-bg:#FFF6E0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:80px}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+
+  /* hero */
+  header.hero{background:linear-gradient(135deg,#2C2250 0%,#473a6e 52%,#6253a0 100%);color:var(--cream);padding:50px 0 44px}
+  .sun{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:800;letter-spacing:.4px;
+    background:rgba(241,255,82,.16);color:#F4FF8a;padding:7px 14px;border-radius:999px}
+  .sun svg{display:block}
+  h1{font-size:33px;font-weight:900;letter-spacing:-.6px;margin:16px 0 10px;line-height:1.18}
+  .hero p.lead{font-size:15.5px;color:rgba(255,253,248,.84);max-width:720px}
+  .stats{display:flex;flex-wrap:wrap;gap:14px;margin-top:24px}
+  .stat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:13px 18px;min-width:120px}
+  .stat .n{font-size:24px;font-weight:900;letter-spacing:-.5px;color:var(--lemon)}
+  .stat .l{font-size:12px;color:rgba(255,253,248,.72);margin-top:2px}
+
+  section{margin-top:46px}
+  .kicker{font-size:12.5px;font-weight:800;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase}
+  h2{font-size:23px;font-weight:900;letter-spacing:-.3px;margin:7px 0 5px}
+  .desc{font-size:14.5px;color:var(--text2);max-width:780px;margin-bottom:22px}
+
+  /* requirement checklist */
+  .reqs{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;margin-top:8px}
+  .req{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 17px;display:flex;gap:13px;align-items:flex-start}
+  .req .ic{width:26px;height:26px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:900;font-size:14px;color:#fff;margin-top:1px}
+  .req.done .ic{background:var(--ok)} .req.note .ic{background:var(--warn)}
+  .req .h{font-weight:800;font-size:14.5px;margin-bottom:3px}
+  .req .b{font-size:13px;color:var(--text2)}
+  .req .b a{color:var(--accent);font-weight:700;text-decoration:none;border-bottom:1px solid var(--accent-soft)}
+
+  /* phone gallery */
+  .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(214px,1fr));gap:26px 22px}
+  .phone{display:flex;flex-direction:column;align-items:center}
+  .phone .frame{width:100%;max-width:230px;border-radius:30px;padding:8px;background:#2C2250;
+    box-shadow:0 18px 40px -20px rgba(44,34,80,.55),0 2px 8px rgba(44,34,80,.12)}
+  .phone.dark .frame{background:#000}
+  .phone .frame img{width:100%;display:block;border-radius:23px;background:#FDFBF7}
+  .phone .cap{margin-top:12px;text-align:center}
+  .phone .cap .t{font-weight:800;font-size:13.5px}
+  .phone .cap .s{font-size:11.5px;color:var(--text3);margin-top:1px}
+  .badge{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;margin-left:5px;vertical-align:middle}
+  .badge.new{background:var(--lemon);color:var(--plum-deep)}
+  .badge.lock{background:var(--accent-soft);color:var(--plum)}
+
+  /* trees */
+  .trees{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  @media(max-width:680px){.trees{grid-template-columns:repeat(3,1fr)}}
+  .tree{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 8px;text-align:center}
+  .tree img{width:100%;max-width:110px;display:block;margin:0 auto}
+  .tree .t{font-size:12px;font-weight:800;margin-top:8px}
+  .tree .s{font-size:10.5px;color:var(--text3)}
+
+  /* callout */
+  .callout{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px}
+  .callout.warn{background:var(--warn-bg);border-color:#F3E2B0}
+  .callout h3{font-size:16px;font-weight:900;margin-bottom:9px}
+  .callout p{font-size:14px;color:var(--text2)}
+  .callout p+p{margin-top:9px}
+  .callout a.btn{display:inline-flex;align-items:center;gap:8px;margin-top:14px;background:var(--plum-deep);color:var(--cream);
+    text-decoration:none;font-weight:800;font-size:13.5px;padding:11px 18px;border-radius:13px}
+  .callout a.btn .arr{transition:transform .2s}
+  .callout a.btn:hover .arr{transform:translateX(3px)}
+
+  .tech{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+  .tech .t{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:16px}
+  .tech .t .k{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:.5px;text-transform:uppercase}
+  .tech .t .v{font-size:14px;margin-top:6px;color:var(--text)}
+  .tech .t .v b{font-weight:800}
+  code{background:#F0EDF8;color:var(--plum-deep);padding:2px 7px;border-radius:6px;font-size:12.5px;
+    font-family:"SF Mono",ui-monospace,Menlo,monospace}
+
+  footer{margin-top:50px;padding-top:24px;border-top:1px solid var(--line);font-size:12.5px;color:var(--text3);text-align:center}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="sun">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" fill="#F1FF52"/>
+      <g stroke="#F1FF52" stroke-width="2" stroke-linecap="round">
+      <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></g></svg>
+      早安，鴿王
+    </span>
+    <h1>Carrius 一夜之間，從 SwiftUI 變成雙平台 App</h1>
+    <p class="lead">你睡前說「一切都順了就把整個專案完成」。工具鏈跑通、首頁＋櫻花樹編成 Android 截圖確認後，我把<b>整支 App 用 Flutter 重寫完了</b>——同一份程式碼，iOS 和 Android 都能跑。以下是 15 個畫面的實際渲染輸出，淺色版為主，給你看圖驗收。</p>
+    <div class="stats">
+      <div class="stat"><div class="n">15</div><div class="l">完整畫面</div></div>
+      <div class="stat"><div class="n">22</div><div class="l">實渲染截圖</div></div>
+      <div class="stat"><div class="n">147 MB</div><div class="l">Android APK 編譯成功</div></div>
+      <div class="stat"><div class="n">iOS + Android</div><div class="l">同一份 Flutter 程式碼</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- 5 requirements -->
+  <section>
+    <div class="kicker">你交代的 6 件事</div>
+    <h2>逐項回覆</h2>
+    <div class="reqs">
+      <div class="req done"><div class="ic">✓</div><div><div class="h">① Email 頁加身分單選</div><div class="b">患者 / 照護者 / 其他，單選，不上傳，只存手機。見「身分頁」。</div></div></div>
+      <div class="req done"><div class="ic">✓</div><div><div class="h">② App 命名 Carrius</div><div class="b">care + carry + us。歡迎頁已定名。</div></div></div>
+      <div class="req done"><div class="ic">✓</div><div><div class="h">③ 藥丸要像真實藥 + 比較 HTML</div><div class="b">已建獨立稽核頁，逐顆比對「我畫的 vs 真實外觀」，並誠實標出引擎待補處。<a href="drug-appearance-check.html">開啟核實報告 →</a></div></div></div>
+      <div class="req note"><div class="ic">!</div><div><div class="h">④ 櫻花樹太幼稚</div><div class="b">已保留舊版當<b>佔位</b>（程式內標記 ⚠️ 已知佔位），等你給 Lego／抽象概念再換。</div></div></div>
+      <div class="req done"><div class="ic">✓</div><div><div class="h">⑤ 今日快樂任務內容</div><div class="b">你說好的內容原樣保留：478 呼吸、感恩日記、微運動、微辣挑戰、分享小卡。</div></div></div>
+      <div class="req done"><div class="ic">✓</div><div><div class="h">⑥ 淺色版本為先</div><div class="b">預設淺色，本圖庫以淺色為主；深色僅附 2 張示意，確認也支援。</div></div></div>
+    </div>
+  </section>
+
+  <!-- core flow -->
+  <section>
+    <div class="kicker">核心流程 · 淺色</div>
+    <h2>從打開到整理完成</h2>
+    <p class="desc">拍照上傳醫療單 → AI 整理 → 回問補完 → 結果總覽 → 點開藥品識別卡。這條主線就是 Carrius 的核心價值。</p>
+    <div class="gal">
+      <div class="phone"><div class="frame"><img src="snaps-flutter/01-welcome.png" alt="歡迎頁"></div><div class="cap"><div class="t">歡迎頁</div><div class="s">Carrius 定名 · 隱私承諾</div></div></div>
+      <div class="phone"><div class="frame"><img src="snaps-flutter/02-email-identity.png" alt="身分頁"></div><div class="cap"><div class="t">身分頁<span class="badge new">新</span></div><div class="s">患者／照護者／其他 單選</div></div></div>
+      <div class="phone"><div class="frame"><img src="snaps-flutter/04-upload.png" alt="上傳"></div><div class="cap"><div class="t">上傳醫療單</div><div class="s">相簿選圖 · 補充說明</div></div></div>
+      <div class="phone"><div class="frame"><img src="snaps-flutter/05-followup.png" alt="回問"></div><div class="cap"><div class="t">AI 回問</div><div class="s">補完模糊處再整理</div></div></div>
+      <div class="phone"><div class="frame"><img src="snaps-flutter/06-results.png" alt="結果"></div><div class="cap"><div class="t">結果總覽</div><div class="s">用藥 · 行程 · 注意事項</div></div></div>
+      <div class="phone"><div class="frame"><img src="snaps-flutter/07-medcard.png" alt="藥品卡"></div><div class="cap"><div class="t">藥品識別卡</div><div class="s">外觀圖 · 專業版注意事項</div></div></div>
+    </div>
+  </section>
+
+  <!-- four tabs -->
+  <section>
+    <div class="kicker">四大分頁 · 淺色</div>
+    <h2>首頁 · 行事曆 · 文件 · 花園</h2>
+    <p class="desc">底部 TabBar 四分頁，花園用小樹苗 icon。首頁是每日照護儀表板，文件與整理結果只存在手機、不上雲端。</p>
+    <div class="gal">
+      <div class="phone"><div class="frame"><img src="snaps-flutter/03-home.png" alt="首頁"></div><div class="cap"><div class="t">首頁儀表板</div><div class="s">今日用藥 · 行程 · 陽光</div></div></div>
+      <div class="phone"><div class="frame"><img src="snaps-flutter/08-calendar.png" alt="行事曆"></div><div class="cap"><div class="t">行事曆</div><div class="s">回診 · 用藥 · .ics 匯出</div></div></div>
+      <div class="phone"><div class="frame"><img src="snaps-flutter/11-documents.png" alt="文件"></div><div class="cap"><div class="t">文件時間軸</div><div class="s">純本機儲存</div></div></div>
+      <div class="phone"><div class="frame"><img src="snaps-flutter/13-garden.png" alt="花園"></div><div class="cap"><div class="t">快樂花園</div><div class="s">櫻花樹 · 今日快樂任務</div></div></div>
+    </div>
+  </section>
+
+  <!-- garden + healing + locked -->
+  <section>
+    <div class="kicker">療癒與加值 · 淺色</div>
+    <h2>呼吸 · 心情小卡 · 清單 · 海報</h2>
+    <p class="desc">呼吸練習用「純觀看＋震動跟隨」帶節奏（吸氣漸強、屏息輕點、吐氣漸弱，需實機體感）。海報與部分加值功能在 SNS 版會鎖住導流。</p>
+    <div class="gal">
+      <div class="phone"><div class="frame"><img src="snaps-flutter/14-breathing.png" alt="呼吸"></div><div class="cap"><div class="t">478 呼吸法</div><div class="s">震動跟隨節奏</div></div></div>
+      <div class="phone"><div class="frame"><img src="snaps-flutter/15-moodcard.png" alt="心情小卡"></div><div class="cap"><div class="t">心情小卡</div><div class="s">C 風格拼貼</div></div></div>
+      <div class="phone"><div class="frame"><img src="snaps-flutter/09-checklist.png" alt="清單"></div><div class="cap"><div class="t">照護清單</div><div class="s">用藥／傷口／飲食分組</div></div></div>
+      <div class="phone"><div class="frame"><img src="snaps-flutter/10-poster.png" alt="海報"></div><div class="cap"><div class="t">照護海報<span class="badge lock">加購</span></div><div class="s">貼冰箱全家看</div></div></div>
+      <div class="phone"><div class="frame"><img src="snaps-flutter/12-settings.png" alt="設定"></div><div class="cap"><div class="t">設定</div><div class="s">震動提醒 · 隱私說明</div></div></div>
+    </div>
+  </section>
+
+  <!-- dark -->
+  <section>
+    <div class="kicker">深色版 · 示意</div>
+    <h2>同一套設計，深色也撐得起來</h2>
+    <p class="desc">淺色為主，但深色同樣完整。色票自動切換（Palette light/dark），這裡放兩張確認。</p>
+    <div class="gal">
+      <div class="phone dark"><div class="frame"><img src="snaps-flutter/dark-home.png" alt="深色首頁"></div><div class="cap"><div class="t">首頁 · 深色</div></div></div>
+      <div class="phone dark"><div class="frame"><img src="snaps-flutter/dark-garden.png" alt="深色花園"></div><div class="cap"><div class="t">花園 · 深色</div></div></div>
+    </div>
+  </section>
+
+  <!-- trees -->
+  <section>
+    <div class="kicker">櫻花樹成長 · 佔位</div>
+    <h2>5 個成長階段（待你換概念）</h2>
+    <p class="desc">陽光累積讓樹長大：種子 → 發芽 → 幼苗 → 茁壯 → 大樹。<b>這版你說太幼稚，先當佔位</b>，等你決定 Lego／抽象風格我再重畫。</p>
+    <div class="trees">
+      <div class="tree"><img src="snaps-flutter/tree-0-種子.png" alt="種子"><div class="t">種子</div><div class="s">0 陽光</div></div>
+      <div class="tree"><img src="snaps-flutter/tree-1-發芽.png" alt="發芽"><div class="t">發芽</div><div class="s">20 陽光</div></div>
+      <div class="tree"><img src="snaps-flutter/tree-2-幼苗.png" alt="幼苗"><div class="t">幼苗</div><div class="s">60 陽光</div></div>
+      <div class="tree"><img src="snaps-flutter/tree-3-茁壯.png" alt="茁壯"><div class="t">茁壯</div><div class="s">120 陽光</div></div>
+      <div class="tree"><img src="snaps-flutter/tree-4-大樹.png" alt="大樹"><div class="t">大樹</div><div class="s">200 陽光</div></div>
+    </div>
+  </section>
+
+  <!-- drug honesty -->
+  <section>
+    <div class="kicker">藥品外觀 · 重要</div>
+    <h2>關於藥丸的誠實話</h2>
+    <div class="callout warn">
+      <h3>demo 藥的外觀目前是「示意」，還沒接食藥署資料</h3>
+      <p>你特別要求藥丸要像真的——我同意，這是醫療 App 的底線。但要做到每顆都對，得串接食藥署「藥品外觀資料集」。我查證後發現該開放資料 API 已改版、目前抓不到資料，所以<b>我沒有虛構任何「真實外觀」假裝核實過</b>。</p>
+      <p>取而代之，我做了一份稽核報告：逐顆把「App 引擎畫的」和「真實藥型該長的樣子」並排，誠實標出引擎現在做得到（圓／橢圓／膠囊）、做不到（菱形／三角／印字／十字刻痕）的地方，並寫好上線前要接的完整資料管線。</p>
+      <a class="btn" href="drug-appearance-check.html">開啟藥品外觀核實報告 <span class="arr">→</span></a>
+    </div>
+  </section>
+
+  <!-- tech -->
+  <section>
+    <div class="kicker">技術說明</div>
+    <h2>這些圖是怎麼來的</h2>
+    <div class="tech">
+      <div class="t"><div class="k">框架</div><div class="v"><b>Flutter</b>（Dart）· 一份碼編 iOS + Android。CustomPainter ≈ SwiftUI Canvas，幾乎 1:1 移植。</div></div>
+      <div class="t"><div class="k">截圖來源</div><div class="v"><b>golden 測試</b>離屏渲染，用 host Skia，<b>與 Android 逐像素一致</b>。非 mockup。</div></div>
+      <div class="t"><div class="k">Android 實證</div><div class="v">debug APK <b>147 MB 編譯成功</b>（含 NDK 28）。<code>build/app/outputs/flutter-apk/</code></div></div>
+      <div class="t"><div class="k">字體</div><div class="v">Nunito（圓潤標題，取代 SF Pro Rounded）＋ Noto Sans TC（中文）已內嵌。</div></div>
+      <div class="t"><div class="k">設計系統</div><div class="v">Phantom tokens：薰衣草紫 <code>#AB9FF2</code> · 檸檬黃 <code>#F1FF52</code> · 全面取代鼠尾草綠。</div></div>
+      <div class="t"><div class="k">震動</div><div class="v">呼吸節奏／注意力拉回／確認回饋三類。<b>需 iPhone／Android 實機才能體感</b>。</div></div>
+    </div>
+  </section>
+
+  <footer>
+    Carrius · 醫療照護懶人包　·　淺色為先 · iOS + Android 雙平台　·　藥品外觀未經食藥署核實前一律標示「示意，請與藥袋核對」<br>
+    醫療資料只存在使用者手機，伺服器不碰、不存、不看。
+  </footer>
+
+</div>
+</body>
+</html>
