@@ -4,7 +4,7 @@ import '../models/mock_data.dart';
 import '../design/haptics.dart';
 import '../design/illustrations/sakura_tree.dart';
 
-enum AppTab { home, calendar, documents, garden }
+enum AppTab { home, calendar, atlas, documents, garden }
 
 class AppState extends ChangeNotifier {
   bool onboarded = false;
@@ -26,6 +26,29 @@ class AppState extends ChangeNotifier {
         '傷口換藥是每天一次，還是滲濕才換？單子上兩處寫法不同。',
         ['每天固定一次', '滲濕就換', '兩者皆是']),
   ];
+
+  // 藥品圖鑑：預設收合（乾淨），可一鍵展開全部或單列展開
+  bool atlasExpandAll = false;
+  final Set<String> atlasOpen = {};
+
+  void atlasToggleAll() {
+    atlasExpandAll = !atlasExpandAll;
+    atlasOpen.clear();
+    Haptics.light();
+    notifyListeners();
+  }
+
+  void atlasToggleOne(String slug) {
+    if (atlasOpen.contains(slug)) {
+      atlasOpen.remove(slug);
+    } else {
+      atlasOpen.add(slug);
+    }
+    Haptics.light();
+    notifyListeners();
+  }
+
+  bool atlasIsOpen(String slug) => atlasExpandAll || atlasOpen.contains(slug);
 
   // 快樂花園
   int sunToday = 6;

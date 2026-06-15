@@ -14,6 +14,7 @@ import 'package:carrius/screens/welcome_screen.dart';
 import 'package:carrius/screens/email_gate_screen.dart';
 import 'package:carrius/screens/home_screen.dart';
 import 'package:carrius/screens/calendar_screen.dart';
+import 'package:carrius/screens/drug_atlas_screen.dart';
 import 'package:carrius/screens/documents_screen.dart';
 import 'package:carrius/screens/garden_screen.dart';
 import 'package:carrius/screens/upload_screen.dart';
@@ -74,6 +75,14 @@ void main() {
     addTearDown(tester.view.reset);
     await tester.pumpWidget(widget);
     await tester.pump(const Duration(milliseconds: 60));
+    // 讓 Image.asset 真的顯示（test 環境圖片解碼是 async）
+    await tester.runAsync(() async {
+      for (final e in find.byType(Image).evaluate()) {
+        final img = e.widget as Image;
+        await precacheImage(img.image, e);
+      }
+    });
+    await tester.pump(const Duration(milliseconds: 60));
     await expectLater(find.byType(MaterialApp), matchesGoldenFile('goldens/$name.png'));
   }
 
@@ -109,6 +118,13 @@ void main() {
 
     final doc = homeState()..tab = AppTab.documents;
     await shoot(tester, '11-documents', _frame(DocumentsScreen(state: doc), tabBar: true, state: doc));
+
+    final atlas = homeState()..tab = AppTab.atlas;
+    await shoot(tester, '16-atlas', _frame(DrugAtlasScreen(state: atlas), tabBar: true, state: atlas));
+
+    final atlasOpen = homeState()..tab = AppTab.atlas;
+    atlasOpen.atlasOpen.add('ulcer_lansoprazole');
+    await shoot(tester, '17-atlas-open', _frame(DrugAtlasScreen(state: atlasOpen), tabBar: true, state: atlasOpen));
 
     await shoot(tester, '12-settings', _frame(SettingsScreen(onClose: () {})));
 

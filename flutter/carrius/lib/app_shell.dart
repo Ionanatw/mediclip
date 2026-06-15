@@ -7,6 +7,7 @@ import 'screens/welcome_screen.dart';
 import 'screens/email_gate_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/calendar_screen.dart';
+import 'screens/drug_atlas_screen.dart';
 import 'screens/documents_screen.dart';
 import 'screens/garden_screen.dart';
 import 'screens/upload_screen.dart';
@@ -94,6 +95,8 @@ class _AppShellState extends State<AppShell> {
         );
       case AppTab.calendar:
         return CalendarScreen(state: state);
+      case AppTab.atlas:
+        return DrugAtlasScreen(state: state);
       case AppTab.documents:
         return DocumentsScreen(state: state);
       case AppTab.garden:

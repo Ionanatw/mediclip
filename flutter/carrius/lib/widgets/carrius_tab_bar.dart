@@ -26,7 +26,7 @@ class CarriusTabBar extends StatelessWidget {
               filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
               child: Container(
                 height: 64,
-                padding: const EdgeInsets.symmetric(horizontal: 22),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
                   color: p.tabbar,
                   borderRadius: BorderRadius.circular(999),
@@ -34,15 +34,13 @@ class CarriusTabBar extends StatelessWidget {
                   boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.18), blurRadius: 16, offset: const Offset(0, 8))],
                 ),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _item(p, AppTab.home, Icons.home_outlined, '首頁'),
-                    const Spacer(),
                     _item(p, AppTab.calendar, Icons.calendar_today_outlined, '行事曆'),
-                    const Spacer(),
                     const SizedBox(width: 54), // 中央按鈕佔位
-                    const Spacer(),
                     _item(p, AppTab.documents, Icons.description_outlined, '文件'),
-                    const Spacer(),
+                    _item(p, AppTab.atlas, Icons.medication_outlined, '圖鑑'),
                     _gardenItem(p),
                   ],
                 ),
