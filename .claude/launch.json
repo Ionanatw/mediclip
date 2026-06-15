@@ -8,6 +8,12 @@
       "port": 3456
     },
     {
+      "name": "drugpoc",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["docs/drug_live_poc_server.py", "3500"],
+      "port": 3500
+    },
+    {
       "name": "dev",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
