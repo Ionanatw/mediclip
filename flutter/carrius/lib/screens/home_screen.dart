@@ -26,7 +26,7 @@ class HomeScreen extends StatelessWidget {
     final taken = s.medications.where((m) => m.takenToday).length;
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(18, 12, 18, 120),
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 120),
       children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,

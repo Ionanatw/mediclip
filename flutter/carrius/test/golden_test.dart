@@ -44,18 +44,23 @@ Widget _frame(Widget child, {Palette palette = Palette.light, bool tabBar = fals
     theme: ThemeData(useMaterial3: true, fontFamily: CD.body, scaffoldBackgroundColor: palette.bg, splashFactory: NoSplash.splashFactory),
     home: PaletteScope(
       palette: palette,
-      child: Scaffold(
-        backgroundColor: palette.bg,
-        body: SafeArea(
-          bottom: false,
-          child: tabBar && state != null
-              ? Stack(children: [
-                  Positioned.fill(child: child),
-                  Positioned(left: 0, right: 0, bottom: 8, child: CarriusTabBar(state: state, onUpload: () {})),
-                ])
-              : child,
-        ),
-      ),
+      // 模擬真機安全區（靈動島 + 底部 home indicator），讓截圖與實機一致、
+      // 並驗證內容不會頂到狀態列。結構對齊 app_shell。
+      child: Builder(builder: (context) {
+        final mq = MediaQuery.of(context);
+        return MediaQuery(
+          data: mq.copyWith(padding: const EdgeInsets.only(top: 59, bottom: 34)),
+          child: Scaffold(
+            backgroundColor: palette.bg,
+            body: tabBar && state != null
+                ? Stack(children: [
+                    Positioned.fill(child: SafeArea(bottom: false, child: child)),
+                    Positioned(left: 0, right: 0, bottom: 8, child: SafeArea(top: false, child: CarriusTabBar(state: state, onUpload: () {}))),
+                  ])
+                : SafeArea(bottom: false, child: child),
+          ),
+        );
+      }),
     ),
   );
 }

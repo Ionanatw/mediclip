@@ -13,36 +13,44 @@ class CarriusTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = PaletteScope.of(context);
+    // 中央按鈕浮在膠囊「外面」，避免被 ClipRRect 裁掉上緣。
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(999),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-          child: Container(
-            height: 64,
-            padding: const EdgeInsets.symmetric(horizontal: 22),
-            decoration: BoxDecoration(
-              color: p.tabbar,
-              borderRadius: BorderRadius.circular(999),
-              border: Border.all(color: p.cardBorder, width: 1),
-              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.18), blurRadius: 16, offset: const Offset(0, 8))],
-            ),
-            child: Row(
-              children: [
-                _item(p, AppTab.home, Icons.home_outlined, '首頁'),
-                const Spacer(),
-                _item(p, AppTab.calendar, Icons.calendar_today_outlined, '行事曆'),
-                const Spacer(),
-                _centerButton(),
-                const Spacer(),
-                _item(p, AppTab.documents, Icons.description_outlined, '文件'),
-                const Spacer(),
-                _gardenItem(p),
-              ],
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.center,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(999),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+              child: Container(
+                height: 64,
+                padding: const EdgeInsets.symmetric(horizontal: 22),
+                decoration: BoxDecoration(
+                  color: p.tabbar,
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(color: p.cardBorder, width: 1),
+                  boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.18), blurRadius: 16, offset: const Offset(0, 8))],
+                ),
+                child: Row(
+                  children: [
+                    _item(p, AppTab.home, Icons.home_outlined, '首頁'),
+                    const Spacer(),
+                    _item(p, AppTab.calendar, Icons.calendar_today_outlined, '行事曆'),
+                    const Spacer(),
+                    const SizedBox(width: 54), // 中央按鈕佔位
+                    const Spacer(),
+                    _item(p, AppTab.documents, Icons.description_outlined, '文件'),
+                    const Spacer(),
+                    _gardenItem(p),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
+          Positioned(top: -14, left: 0, right: 0, child: Center(child: _centerButton())),
+        ],
       ),
     );
   }
@@ -96,18 +104,15 @@ class CarriusTabBar extends StatelessWidget {
         Haptics.light();
         onUpload();
       },
-      child: Transform.translate(
-        offset: const Offset(0, -14),
-        child: Container(
-          width: 54,
-          height: 54,
-          decoration: BoxDecoration(
-            color: CD.accent,
-            shape: BoxShape.circle,
-            boxShadow: [BoxShadow(color: CD.accent.withValues(alpha: 0.45), blurRadius: 14, offset: const Offset(0, 4))],
-          ),
-          child: const Icon(Icons.add, size: 22, color: CD.plumDeep),
+      child: Container(
+        width: 54,
+        height: 54,
+        decoration: BoxDecoration(
+          color: CD.accent,
+          shape: BoxShape.circle,
+          boxShadow: [BoxShadow(color: CD.accent.withValues(alpha: 0.45), blurRadius: 14, offset: const Offset(0, 4))],
         ),
+        child: const Icon(Icons.add, size: 22, color: CD.plumDeep),
       ),
     );
   }

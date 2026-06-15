@@ -102,8 +102,13 @@ class PaletteScope extends InheritedWidget {
 
 /// 字型工具（對應 SwiftUI .cdDisplay/.cdTitle/.cdBody）
 class CDText {
+  // Nunito 只有拉丁字母，沒有中文字形；中文一律 fallback 到 Noto Sans TC，
+  // 讓「Carrius」「47」等拉丁／數字維持圓潤 Nunito，中文用設計指定字體（不再漏字回退系統字）。
+  static const List<String> _cjkFallback = ['NotoSansTC'];
+
   static TextStyle display(double size, {Color? color}) => TextStyle(
         fontFamily: CD.display,
+        fontFamilyFallback: _cjkFallback,
         fontWeight: FontWeight.w900,
         fontSize: size,
         height: 1.15,
@@ -113,6 +118,7 @@ class CDText {
 
   static TextStyle title(double size, {Color? color}) => TextStyle(
         fontFamily: CD.display,
+        fontFamilyFallback: _cjkFallback,
         fontWeight: FontWeight.w800,
         fontSize: size,
         letterSpacing: -0.2,
