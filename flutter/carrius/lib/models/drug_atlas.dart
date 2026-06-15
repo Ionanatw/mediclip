@@ -4,7 +4,7 @@
 class DrugFull {
   final String slug, disease;
   final String chiName, enName, ingredient, drugClass;
-  final String license, nhiCode, brand, appearanceMark;
+  final String license, nhiCode, brand, appearanceMark, appearanceSource;
   final String indication, dosage, sideEffects, precautions, contraindication;
   final String photoAsset; // assets/drugs/<slug>.jpg
   final String deepSource; // 深度臨床欄位來源（醫院網域）；空＝無
@@ -21,6 +21,7 @@ class DrugFull {
     this.nhiCode = '',
     this.brand = '',
     this.appearanceMark = '',
+    this.appearanceSource = '',
     this.indication = '',
     this.dosage = '',
     this.sideEffects = '',

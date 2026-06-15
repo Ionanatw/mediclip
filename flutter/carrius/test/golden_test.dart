@@ -123,8 +123,9 @@ void main() {
     await shoot(tester, '16-atlas', _frame(DrugAtlasScreen(state: atlas), tabBar: true, state: atlas));
 
     final atlasOpen = homeState()..tab = AppTab.atlas;
-    atlasOpen.atlasOpen.add('ulcer_lansoprazole');
-    await shoot(tester, '17-atlas-open', _frame(DrugAtlasScreen(state: atlasOpen), tabBar: true, state: atlasOpen));
+    atlasOpen.atlasOpen.addAll(['ulcer_lansoprazole', 'ulcer_amoxicillin']);
+    await shoot(tester, '17-atlas-open', _frame(DrugAtlasScreen(state: atlasOpen), tabBar: true, state: atlasOpen),
+        size: const Size(393, 1680));
 
     await shoot(tester, '12-settings', _frame(SettingsScreen(onClose: () {})));
 
