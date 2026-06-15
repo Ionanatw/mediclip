@@ -127,6 +127,13 @@ void main() {
     await shoot(tester, '17-atlas-open', _frame(DrugAtlasScreen(state: atlasOpen), tabBar: true, state: atlasOpen),
         size: const Size(393, 1680));
 
+    // KSPH 完整標準表 showcase（舒脈優 = 鴿王參考卡本尊）
+    final atlasHtn = homeState()..tab = AppTab.atlas;
+    atlasHtn.atlasOpen.add('htn_sevikar_hct');
+    await shoot(tester, '18-atlas-htn-full',
+        _frame(DrugAtlasScreen(state: atlasHtn, focusDisease: '高血壓及併發心臟疾病'), tabBar: true, state: atlasHtn),
+        size: const Size(393, 1700));
+
     await shoot(tester, '12-settings', _frame(SettingsScreen(onClose: () {})));
 
     final g = homeState()..tab = AppTab.garden;

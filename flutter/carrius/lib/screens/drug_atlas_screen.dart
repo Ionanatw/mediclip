@@ -11,7 +11,8 @@ import '../state/app_state.dart';
 /// ⚠️ POC：內容版權屬食藥署/各醫院，未授權不得用於正式 App。
 class DrugAtlasScreen extends StatelessWidget {
   final AppState state;
-  const DrugAtlasScreen({super.key, required this.state});
+  final String? focusDisease; // 非空時只顯示該病分組
+  const DrugAtlasScreen({super.key, required this.state, this.focusDisease});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class DrugAtlasScreen extends StatelessWidget {
         Text('資料來源：食藥署藥品外觀 ＋ 各醫院藥品頁（藥台灣彙整）。POC 示意，內容版權屬原始來源，未授權前請勿用於正式 App。',
             style: CDText.body(11, weight: FontWeight.w500, color: p.text3, height: 1.45)),
         const SizedBox(height: 14),
-        for (final g in drugAtlasGroups) ...[
+        for (final g in drugAtlasGroups.where((g) => focusDisease == null || g.name == focusDisease)) ...[
           _diseaseHeader(p, g),
           const SizedBox(height: 10),
           for (final d in g.drugs) ...[_DrugTile(state: state, drug: d), const SizedBox(height: 10)],

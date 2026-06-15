@@ -5,9 +5,10 @@ class DrugFull {
   final String slug, disease;
   final String chiName, enName, ingredient, drugClass;
   final String license, nhiCode, brand, appearanceMark, appearanceSource;
+  final String unit, materialCode, pdfUrl; // 單位、料號、仿單 PDF（KSPH 標準表）
   final String indication, dosage, sideEffects, precautions, contraindication;
   final String photoAsset; // assets/drugs/<slug>.jpg
-  final String deepSource; // 深度臨床欄位來源（醫院網域）；空＝無
+  final String deepSource; // 深度臨床欄位來源（醫院）；空＝無
   final bool fdaImage; // 外觀照片是否為食藥署官方圖
 
   const DrugFull({
@@ -22,6 +23,9 @@ class DrugFull {
     this.brand = '',
     this.appearanceMark = '',
     this.appearanceSource = '',
+    this.unit = '',
+    this.materialCode = '',
+    this.pdfUrl = '',
     this.indication = '',
     this.dosage = '',
     this.sideEffects = '',
@@ -45,7 +49,9 @@ class DrugFull {
     add('學名／成分', ingredient);
     add('類別', drugClass);
     add('健保代號', nhiCode);
+    add('單位', unit);
     add('廠牌', brand);
+    add('料號', materialCode);
     add('外觀標記', appearanceMark);
     add('適應症', indication);
     add('用法用量', dosage);
