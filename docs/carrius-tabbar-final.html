@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carrius tab bar 定版 v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.24.0/dist/tabler-icons.min.css">
+<style>
+  :root{--accent:#AB9FF2;--accentSoft:#E2DFFE;--plum:#3C315B;--plumDeep:#2C2250;--cream:#FDFBF7;--surface:#fff;--info:#6CA0FB;--coral:#D4816B;--garden:#8FD3A6;--text2:#86848D;--text3:#A6A4AD;--border:rgba(60,49,91,.10);}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+  body{background:#EDEAF3;font-family:'Noto Sans TC',sans-serif;color:var(--plum);padding:34px 24px 40px;display:flex;gap:30px;flex-wrap:wrap;justify-content:center;align-items:flex-start;}
+  .col{width:320px;}
+  .h{font-size:15px;font-weight:900;margin-bottom:12px;}
+  .phone{position:relative;height:420px;background:var(--cream);border-radius:36px 36px 42px 42px;border:8px solid #15121f;overflow:hidden;}
+  .faded{position:absolute;inset:0;padding:22px 18px;}
+  .fl{height:13px;border-radius:7px;background:#E7E3F0;margin-bottom:9px;}
+  .fbig{height:74px;border-radius:18px;background:#CFE0F6;margin-bottom:14px;}
+  .fcard{height:54px;border-radius:16px;background:#fff;border:1px solid var(--border);margin-bottom:11px;}
+  .scrim{position:absolute;inset:0;background:rgba(28,22,50,.34);}
+  .tabwrap{position:absolute;left:16px;right:16px;bottom:14px;}
+  .tabbar{position:relative;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-radius:999px;background:rgba(253,251,247,.66);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid var(--border);box-shadow:0 9px 22px rgba(40,34,80,.16);}
+  .tab{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:8.5px;color:var(--text3);font-weight:900;width:42px;}
+  .tab.on{color:var(--accent);}
+  .tab .ti{font-size:21px;line-height:1;}            /* 統一 icon 字級 */
+  .tab u{display:block;width:12px;height:3px;border-radius:999px;background:transparent;margin-top:1px;}
+  .tab.on u{background:var(--accent);}
+  /* 右下 FAB（縮小 20%：56→45） */
+  .fab{position:absolute;right:18px;bottom:82px;width:45px;height:45px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:var(--plumDeep);box-shadow:0 8px 18px rgba(171,159,242,.6);}
+  .fab .ti{font-size:22px;}
+  .menu{position:absolute;right:18px;bottom:138px;width:258px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:6px;box-shadow:0 16px 40px rgba(40,34,80,.28);}
+  .mrow{display:flex;align-items:center;gap:12px;padding:11px;border-radius:15px;}
+  .mrow+.mrow{border-top:1px solid var(--border);}
+  .mic{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:none;color:#fff;}
+  .mic .ti{font-size:18px;}
+  .mt{font-size:13.5px;font-weight:800;}
+  .ms{font-size:10.5px;color:var(--text2);margin-top:1px;}
+  .note{font-size:12px;color:#6b6580;margin-top:12px;line-height:1.55;}
+</style>
+</head>
+<body>
+
+<div class="col">
+  <div class="h">① 統一 icon ＋ 縮小 FAB ＋「設定」人頭</div>
+  <div class="phone">
+    <div class="faded"><div class="fl" style="width:46%"></div><div class="fbig"></div><div class="fl" style="width:30%;margin-bottom:11px"></div><div class="fcard"></div><div class="fcard"></div></div>
+    <div class="fab"><i class="ti ti-plus"></i></div>
+    <div class="tabwrap"><div class="tabbar">
+      <div class="tab on"><i class="ti ti-home"></i>首頁<u></u></div>
+      <div class="tab"><i class="ti ti-calendar-month"></i>行事曆<u></u></div>
+      <div class="tab"><i class="ti ti-file-text"></i>文件<u></u></div>
+      <div class="tab"><i class="ti ti-plant-2"></i>花園<u></u></div>
+      <div class="tab"><i class="ti ti-user"></i>設定<u></u></div>
+    </div></div>
+  </div>
+  <div class="note">5 個 icon 同一套（Tabler）、同字級，小房子不再偏小。FAB 縮 20%（點擊有震動回饋）。最右改「設定」＋人頭、不顯示名字。</div>
+</div>
+
+<div class="col">
+  <div class="h">② 點右下 [+] → 快速記錄選單</div>
+  <div class="phone">
+    <div class="faded"><div class="fl" style="width:46%"></div><div class="fbig"></div><div class="fl" style="width:30%;margin-bottom:11px"></div><div class="fcard"></div><div class="fcard"></div></div>
+    <div class="scrim"></div>
+    <div class="menu">
+      <div class="mrow"><div class="mic" style="background:var(--info)"><i class="ti ti-file-text"></i></div><div><div class="mt">整理新文件</div><div class="ms">拍照／選圖，AI 三分鐘整理成指南</div></div></div>
+      <div class="mrow"><div class="mic" style="background:var(--garden)"><i class="ti ti-pencil"></i></div><div><div class="mt">記一筆</div><div class="ms">體溫、症狀、今天的觀察</div></div></div>
+      <div class="mrow"><div class="mic" style="background:var(--coral)"><i class="ti ti-bell"></i></div><div><div class="mt">加提醒</div><div class="ms">回診、領藥、換藥</div></div></div>
+    </div>
+    <div class="fab"><i class="ti ti-x"></i></div>
+    <div class="tabwrap"><div class="tabbar">
+      <div class="tab on"><i class="ti ti-home"></i>首頁<u></u></div>
+      <div class="tab"><i class="ti ti-calendar-month"></i>行事曆<u></u></div>
+      <div class="tab"><i class="ti ti-file-text"></i>文件<u></u></div>
+      <div class="tab"><i class="ti ti-plant-2"></i>花園<u></u></div>
+      <div class="tab"><i class="ti ti-user"></i>設定<u></u></div>
+    </div></div>
+  </div>
+  <div class="note">FAB 旋成 ✕，往上展開三個動作。「記一筆」＝日頻留存鉤子。</div>
+</div>
+
+</body>
+</html>

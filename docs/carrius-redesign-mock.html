@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carrius 改版 mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#AB9FF2; --accentSoft:#E2DFFE; --plum:#3C315B; --plumDeep:#2C2250;
+    --cream:#FDFBF7; --surface:#FFFFFF; --lemon:#F1FF52; --pink:#FFB7D5; --pinkSoft:#FFE0EC;
+    --garden:#8FD3A6; --gardenSoft:#E4F4EA; --coral:#D4816B; --coralSoft:#F7E7E1;
+    --info:#6CA0FB; --infoSoft:#E4EEFE; --text2:#86848D; --text3:#A6A4AD;
+    --border:rgba(60,49,91,.10);
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-font-smoothing:antialiased;}
+  body{background:#EDEAF3; font-family:'Noto Sans TC',sans-serif; color:var(--plum); padding:32px; display:flex; gap:28px; flex-wrap:wrap; justify-content:center; align-items:flex-start;}
+  .latin,h1,h2,.num{font-family:'Nunito','Noto Sans TC',sans-serif;}
+  .label{position:absolute; top:-26px; left:0; font-size:13px; font-weight:700; color:#6b6580;}
+  .phone{position:relative; width:330px; height:715px; background:var(--cream); border-radius:42px; border:9px solid #15121f; overflow:hidden; box-shadow:0 18px 50px rgba(40,34,80,.22);}
+  .scroll{height:100%; overflow:hidden; display:flex; flex-direction:column;}
+  .status{display:flex; justify-content:space-between; align-items:center; padding:14px 24px 4px; font-size:13px; font-weight:700;}
+  .hero{background:linear-gradient(180deg,#EBE4FF 0%, #F3EEFF 38%, var(--cream) 100%); padding:6px 20px 18px;}
+  .topbar{display:flex; align-items:center; gap:10px; margin:4px 0 14px;}
+  .ava{width:42px; height:42px; border-radius:14px; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:15px;}
+  .iconbtn{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.7); display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--plum);}
+  .greet{font-size:14px; color:var(--text2); font-weight:500;}
+  .greetBig{font-size:23px; font-weight:900; margin-top:2px; line-height:1.25;}
+  .body{padding:4px 18px 0; overflow:hidden;}
+  .sec{font-size:13px; font-weight:800; margin:18px 4px 9px; display:flex; justify-content:space-between; align-items:center;}
+  .sec .more{font-size:12px; color:var(--accent); font-weight:700;}
+  /* hero next-event card */
+  .nextcard{background:var(--info); border-radius:22px; padding:16px 18px; color:#fff; position:relative; overflow:hidden;}
+  .nextcard .tag{display:inline-block; background:rgba(255,255,255,.25); padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700;}
+  .nextcard .t{font-size:18px; font-weight:900; margin:9px 0 2px;}
+  .nextcard .d{font-size:12.5px; opacity:.9; font-weight:500;}
+  .nextcard .cd{position:absolute; right:16px; top:16px; text-align:right;}
+  .nextcard .cd b{font-size:30px; font-weight:900; font-family:'Nunito';}
+  .nextcard .cd span{display:block; font-size:11px; opacity:.9; margin-top:-2px;}
+  /* med progress widget */
+  .medcard{background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:14px 16px; display:flex; align-items:center; gap:14px;}
+  .ring{width:54px;height:54px;border-radius:50%; background:conic-gradient(var(--accent) 75%, var(--accentSoft) 0); display:flex;align-items:center;justify-content:center;}
+  .ring i{width:40px;height:40px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;font-family:'Nunito';}
+  .pills{display:flex; gap:6px; margin-top:7px;}
+  .pdot{width:22px;height:22px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;}
+  /* coral reminder band */
+  .band{background:var(--coralSoft); border-radius:18px; padding:13px 15px; display:flex; gap:11px; align-items:flex-start;}
+  .band .ic{width:30px;height:30px;border-radius:10px;background:var(--coral);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;flex:none;}
+  /* garden peek */
+  .garden{background:var(--gardenSoft); border-radius:22px; padding:15px 16px; display:flex; gap:14px; align-items:center;}
+  .tree{width:64px;height:64px;flex:none;}
+  .barwrap{height:7px;border-radius:9px;background:#fff;overflow:hidden;margin-top:7px;}
+  .barwrap i{display:block;height:100%;background:var(--garden);}
+  /* companion bubble */
+  .bubble{background:var(--surface); border:1px solid var(--border); border-radius:20px 20px 20px 6px; padding:13px 15px; display:flex; gap:11px; align-items:flex-start; margin-top:12px;}
+  .bubble .mo{width:34px;height:34px;border-radius:50%;background:var(--accentSoft);display:flex;align-items:center;justify-content:center;font-size:17px;flex:none;}
+  /* tab bar — 浮起毛玻璃膠囊（glassmorphism），同現有 CarriusTabBar */
+  .tabwrap{position:absolute; left:16px; right:16px; bottom:16px;}
+  .tabbar{position:relative; height:62px; display:flex; align-items:center; justify-content:space-between; padding:0 18px; border-radius:999px; background:rgba(253,251,247,.62); -webkit-backdrop-filter:blur(22px); backdrop-filter:blur(22px); border:1px solid var(--border); box-shadow:0 10px 26px rgba(40,34,80,.18);}
+  .grp{display:flex; gap:14px;}
+  .tab{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9.5px;color:var(--text3);font-weight:900;width:40px;}
+  .tab.on{color:var(--accent);}
+  .tab i{font-size:19px;line-height:1;}
+  .tab u{display:block;width:13px;height:3px;border-radius:999px;background:transparent;margin-top:1px;}
+  .tab.on u{background:var(--accent);}
+  .fab{position:absolute; top:-15px; left:50%; transform:translateX(-50%); width:52px;height:52px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:25px;color:var(--plumDeep);box-shadow:0 7px 16px rgba(171,159,242,.55);}
+  .tabava{width:24px;height:24px;border-radius:8px;background:#EAE8F2;color:var(--text3);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;}
+  .tab.on .tabava{background:var(--accent);color:#fff;}
+  .sprout{width:19px;height:19px;display:block;}
+  /* 我的 page */
+  .meHero{background:linear-gradient(180deg,#EBE4FF 0%, var(--cream) 100%); padding:10px 20px 20px; text-align:center;}
+  .meAva{width:84px;height:84px;border-radius:28px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:30px;margin:8px auto 10px;font-family:'Nunito';}
+  .meName{font-size:20px;font-weight:900;}
+  .meMail{font-size:12.5px;color:var(--text2);margin-top:1px;}
+  .planpill{display:inline-flex;align-items:center;gap:6px;background:var(--accentSoft);color:var(--plumDeep);font-size:12px;font-weight:700;padding:5px 13px;border-radius:999px;margin-top:9px;}
+  .seg{display:flex;gap:8px;padding:14px 18px 4px;}
+  .seg b{font-size:12.5px;font-weight:700;color:var(--text2);padding:6px 12px;border-radius:999px;}
+  .seg b.on{background:var(--plum);color:#fff;}
+  .group{background:var(--surface);border:1px solid var(--border);border-radius:18px;margin:8px 18px;overflow:hidden;}
+  .row{display:flex;align-items:center;gap:12px;padding:13px 15px;border-bottom:1px solid var(--border);}
+  .row:last-child{border-bottom:none;}
+  .row .ic{width:30px;height:30px;border-radius:9px;background:var(--accentSoft);color:var(--plumDeep);display:flex;align-items:center;justify-content:center;font-size:16px;flex:none;}
+  .row .tx{flex:1;font-size:13.5px;font-weight:700;}
+  .row .ch{color:var(--text3);font-size:18px;}
+  .switch{width:42px;height:25px;border-radius:999px;background:var(--accent);position:relative;flex:none;}
+  .switch i{position:absolute;top:3px;right:3px;width:19px;height:19px;border-radius:50%;background:#fff;}
+  .grp-title{font-size:12px;font-weight:800;color:var(--text3);margin:16px 22px 2px;}
+  .note{font-size:11px;color:var(--text3);text-align:center;padding:14px 30px;line-height:1.6;}
+  /* sub page */
+  .subbar{display:flex;align-items:center;gap:12px;padding:8px 18px 10px;}
+  .backbtn{width:38px;height:38px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:19px;color:var(--plum);}
+  .subtitle{font-size:17px;font-weight:900;}
+  .pcontent{padding:6px 22px;overflow:hidden;}
+  .pcontent h3{font-size:13.5px;margin:15px 0 5px;font-weight:800;}
+  .pcontent p{font-size:12.5px;color:var(--text2);line-height:1.65;margin-bottom:4px;}
+  .pcontent .lead{font-size:13.5px;color:var(--plum);font-weight:500;margin-bottom:6px;}
+  .draft{font-size:11px;color:var(--text3);margin-top:14px;}
+</style>
+</head>
+<body>
+
+<!-- ============ 1. 首頁（改版） ============ -->
+<div style="position:relative;">
+<div class="label">① 首頁（改版）</div>
+<div class="phone"><div class="scroll">
+  <div class="hero">
+    <div class="status"><span class="latin">9:41</span><span>● ● ●</span></div>
+    <div class="topbar">
+      <div class="ava">宥</div>
+      <div style="flex:1;">
+        <div class="greet">早安</div>
+        <div class="greetBig">今天，和媽媽一起</div>
+      </div>
+      <div class="iconbtn">☀<span style="font-size:12px;font-weight:900;margin-left:1px;">6</span></div>
+    </div>
+    <div class="nextcard">
+      <div class="cd"><b class="num">3</b><span>天後</span></div>
+      <span class="tag">下一個重要行程</span>
+      <div class="t">血液腫瘤科回診</div>
+      <div class="d">6/16 (一) 09:30 · 台大癌醫 3F</div>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="sec">今日用藥 <span class="more">識別卡 ›</span></div>
+    <div class="medcard">
+      <div class="ring"><i class="num">2/4</i></div>
+      <div style="flex:1;">
+        <div style="font-size:13.5px;font-weight:800;">還有 2 種要吃</div>
+        <div class="pills">
+          <div class="pdot" style="background:var(--accentSoft);">✓</div>
+          <div class="pdot" style="background:var(--accentSoft);">✓</div>
+          <div class="pdot" style="background:var(--lemon);">藥</div>
+          <div class="pdot" style="background:#EFEDF6;color:var(--text3);">藥</div>
+        </div>
+      </div>
+      <div class="ch" style="color:var(--text3);font-size:18px;">›</div>
+    </div>
+
+    <div class="sec">今天要注意</div>
+    <div class="band">
+      <div class="ic">⚠</div>
+      <div><div style="font-size:13px;font-weight:800;color:#8a3f29;">發燒超過 38°C 立即回診</div>
+      <div style="font-size:11.5px;color:#a25b45;margin-top:2px;">白血球低下期間別自行退燒觀察</div></div>
+    </div>
+
+    <div class="sec">你的快樂花園</div>
+    <div class="garden">
+      <svg class="tree" viewBox="0 0 64 64"><path d="M32 56 L32 34" stroke="#3C315B" stroke-width="4" stroke-linecap="round"/><ellipse cx="32" cy="26" rx="18" ry="14" fill="#8FD3A6"/><ellipse cx="36" cy="22" rx="9" ry="6" fill="#CFEDD9"/><circle cx="24" cy="26" r="2" fill="#FFFDF8"/><circle cx="38" cy="20" r="2" fill="#FFFDF8"/><path d="M22 56 Q32 59 42 56" stroke="#3C315B" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
+      <div style="flex:1;">
+        <div style="font-size:13.5px;font-weight:800;">你的茶樹 · 茁壯期</div>
+        <div class="barwrap"><i style="width:62%"></i></div>
+        <div style="font-size:11px;color:#3f7d5a;margin-top:5px;font-weight:600;">124 / 200 ☀ · 泡杯茶，休息一下</div>
+      </div>
+    </div>
+
+    <div class="bubble">
+      <div class="mo">🌱</div>
+      <div style="font-size:12.5px;color:var(--text2);line-height:1.5;">今天也記得喝口水、深呼吸三次。我陪你顧媽媽。</div>
+    </div>
+  </div>
+
+  <div class="tabwrap"><div class="tabbar">
+    <div class="grp">
+      <div class="tab on"><i>⌂</i>首頁<u></u></div>
+      <div class="tab"><i>▦</i>行事曆<u></u></div>
+    </div>
+    <div class="grp">
+      <div class="tab"><i>▤</i>文件<u></u></div>
+      <div class="tab"><svg class="sprout" viewBox="0 0 20 20" fill="none" stroke="#A6A4AD" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="17.5" x2="10" y2="10.5"/><path d="M10 11.5 C10 7.5 7 5.5 3.5 5.5 C3.5 9 6 11.5 10 11.5 Z"/><path d="M10 9.5 C10 6 13 4 16.5 4 C16.5 7.5 14 9.5 10 9.5 Z"/></svg>花園<u></u></div>
+      <div class="tab"><div class="tabava">宥</div>我的<u></u></div>
+    </div>
+    <div class="fab">＋</div>
+  </div></div>
+</div></div>
+</div>
+
+<!-- ============ 2. 我的（新分頁） ============ -->
+<div style="position:relative;">
+<div class="label">② 我的（新分頁・設定都收這）</div>
+<div class="phone"><div class="scroll">
+  <div class="meHero">
+    <div class="status"><span class="latin">9:41</span><span>● ● ●</span></div>
+    <div class="meAva">宥</div>
+    <div class="meName">宥辰</div>
+    <div class="meMail">ionachen@gamania.com</div>
+    <div class="planpill">🌱 免費方案 · 剩 1 次照護時段</div>
+  </div>
+  <div class="seg"><b class="on">設定</b><b>帳號</b><b>關於</b></div>
+
+  <div class="grp-title">提醒</div>
+  <div class="group">
+    <div class="row"><div class="ic">⏰</div><div class="tx">用藥時間提醒</div><div class="switch"><i></i></div></div>
+    <div class="row"><div class="ic">🚶</div><div class="tx">久坐提醒</div><div class="switch"><i></i></div></div>
+  </div>
+
+  <div class="grp-title">外觀</div>
+  <div class="group">
+    <div class="row"><div class="ic">◐</div><div class="tx">深色模式</div><div class="switch" style="background:#D6D3DE;"><i style="right:auto;left:3px;"></i></div></div>
+    <div class="row"><div class="ic">↕</div><div class="tx">字級大小</div><div class="ch">›</div></div>
+  </div>
+
+  <div class="grp-title">關於與隱私</div>
+  <div class="group">
+    <div class="row"><div class="ic">🔒</div><div class="tx">隱私政策</div><div class="ch">›</div></div>
+    <div class="row"><div class="ic">📄</div><div class="tx">使用者同意書</div><div class="ch">›</div></div>
+    <div class="row"><div class="ic">ⓘ</div><div class="tx">關於 Carrius v0.1</div><div class="ch">›</div></div>
+  </div>
+
+  <div class="note">醫療資料只存在你的手機。<br>伺服器只知道你的 email 和付費狀態。</div>
+
+  <div class="tabwrap"><div class="tabbar">
+    <div class="grp">
+      <div class="tab"><i>⌂</i>首頁<u></u></div>
+      <div class="tab"><i>▦</i>行事曆<u></u></div>
+    </div>
+    <div class="grp">
+      <div class="tab"><i>▤</i>文件<u></u></div>
+      <div class="tab"><svg class="sprout" viewBox="0 0 20 20" fill="none" stroke="#A6A4AD" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="17.5" x2="10" y2="10.5"/><path d="M10 11.5 C10 7.5 7 5.5 3.5 5.5 C3.5 9 6 11.5 10 11.5 Z"/><path d="M10 9.5 C10 6 13 4 16.5 4 C16.5 7.5 14 9.5 10 9.5 Z"/></svg>花園<u></u></div>
+      <div class="tab on"><div class="tabava">宥</div>我的<u></u></div>
+    </div>
+    <div class="fab">＋</div>
+  </div></div>
+</div></div>
+</div>
+
+<!-- ============ 3. 子頁返回示範 ============ -->
+<div style="position:relative;">
+<div class="label">③ 子頁：左上 ← 返回（取代 X）</div>
+<div class="phone"><div class="scroll">
+  <div class="status" style="padding-top:14px;"><span class="latin">9:41</span><span>● ● ●</span></div>
+  <div class="subbar">
+    <div class="backbtn">←</div>
+    <div class="subtitle">隱私政策</div>
+  </div>
+  <div class="pcontent">
+    <p class="lead">一句話：你的醫療資料只存在這台手機。</p>
+    <h3>我們怎麼處理你的資料</h3>
+    <p>· 照片與整理結果只存在手機本機，不上傳雲端、不進入我們的伺服器。</p>
+    <p>· 伺服器只保存你的 email 與付費狀態，不碰、不存、不看任何醫療內容。</p>
+    <p>· AI 整理透過加密通道即時處理，處理完不留存你的文件內容。</p>
+    <p>· 解除安裝 App，手機上的醫療資料就一併消失。</p>
+    <h3>你的權利</h3>
+    <p>· 你可以隨時在裝置上刪除任何一次照護時段的資料。</p>
+    <p>· 你可以來信要求刪除帳號（email 與付費紀錄）。</p>
+    <p class="draft">本頁為 Carrius v0.1 POC 草稿，正式版上線前將送法務複核。</p>
+  </div>
+  <div class="tabwrap"><div class="tabbar">
+    <div class="grp">
+      <div class="tab"><i>⌂</i>首頁<u></u></div>
+      <div class="tab"><i>▦</i>行事曆<u></u></div>
+    </div>
+    <div class="grp">
+      <div class="tab"><i>▤</i>文件<u></u></div>
+      <div class="tab"><svg class="sprout" viewBox="0 0 20 20" fill="none" stroke="#A6A4AD" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="17.5" x2="10" y2="10.5"/><path d="M10 11.5 C10 7.5 7 5.5 3.5 5.5 C3.5 9 6 11.5 10 11.5 Z"/><path d="M10 9.5 C10 6 13 4 16.5 4 C16.5 7.5 14 9.5 10 9.5 Z"/></svg>花園<u></u></div>
+      <div class="tab on"><div class="tabava">宥</div>我的<u></u></div>
+    </div>
+    <div class="fab">＋</div>
+  </div></div>
+</div></div>
+</div>
+
+</body>
+</html>

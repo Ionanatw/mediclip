@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carrius tab bar 三版</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
+<style>
+  :root{--accent:#AB9FF2;--plum:#3C315B;--plumDeep:#2C2250;--cream:#FDFBF7;--text3:#A6A4AD;--border:rgba(60,49,91,.10);}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+  body{background:#EDEAF3;font-family:'Noto Sans TC',sans-serif;color:var(--plum);padding:34px 24px 40px;display:flex;gap:30px;flex-wrap:wrap;justify-content:center;align-items:flex-start;}
+  .col{width:300px;}
+  .h{font-size:15px;font-weight:900;margin-bottom:3px;}
+  .h .rec{font-size:11px;color:#fff;background:var(--accent);padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:2px;}
+  .sub{font-size:12px;color:#6b6580;line-height:1.5;margin-bottom:12px;min-height:34px;}
+  .phone{position:relative;height:300px;background:var(--cream);border-radius:34px 34px 40px 40px;border:8px solid #15121f;overflow:hidden;}
+  .faded{position:absolute;inset:0;padding:22px 18px;opacity:.45;}
+  .fl{height:13px;border-radius:7px;background:#E7E3F0;margin-bottom:9px;}
+  .fbig{height:64px;border-radius:16px;background:#DAD4EC;margin-bottom:12px;}
+  .scrim{position:absolute;left:0;right:0;bottom:96px;height:60px;background:linear-gradient(180deg,rgba(253,251,247,0),var(--cream));}
+  /* shared tab bar */
+  .tabwrap{position:absolute;left:14px;right:14px;bottom:14px;}
+  .tabbar{position:relative;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-radius:999px;background:rgba(253,251,247,.62);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid var(--border);box-shadow:0 9px 22px rgba(40,34,80,.16);}
+  .grp{display:flex;gap:12px;}
+  .tab{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:var(--text3);font-weight:900;width:38px;}
+  .tab.on{color:var(--accent);}
+  .tab i{font-size:18px;line-height:1;font-style:normal;}
+  .tab u{display:block;width:12px;height:3px;border-radius:999px;background:transparent;margin-top:1px;}
+  .tab.on u{background:var(--accent);}
+  .tabava{width:22px;height:22px;border-radius:7px;background:#EAE8F2;color:var(--text3);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;}
+  .tab.on .tabava{background:var(--accent);color:#fff;}
+  .sprout{width:18px;height:18px;display:block;}
+  .fab{position:absolute;top:-15px;width:50px;height:50px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--plumDeep);box-shadow:0 7px 15px rgba(171,159,242,.55);}
+  .fab.center{left:50%;transform:translateX(-50%);}
+  .gap{width:50px;display:flex;justify-content:center;position:relative;}
+  .tick{font-size:11.5px;color:#3f7d5a;font-weight:700;margin-top:9px;}
+  .cross{font-size:11.5px;color:#b0563b;font-weight:700;margin-top:9px;}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute"><defs><g id="sp"><line x1="9" y1="16" x2="9" y2="9.5" stroke="#A6A4AD" stroke-width="1.8" stroke-linecap="round"/><path d="M9 10.5 C9 7 6.3 5.2 3.2 5.2 C3.2 8.3 5.5 10.5 9 10.5 Z" fill="none" stroke="#A6A4AD" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 8.8 C9 5.6 11.7 3.8 14.8 3.8 C14.8 6.9 12.5 8.8 9 8.8 Z" fill="none" stroke="#A6A4AD" stroke-width="1.8" stroke-linejoin="round"/></g></defs></svg>
+
+<!-- A -->
+<div class="col">
+  <div class="h">A · 4 tab ＋ 中央 [+]<span class="rec">我推薦</span></div>
+  <div class="sub">2 ＋ 鈕 ＋ 2，[+] 真正置中當主角。花園改從首頁花園卡進入。</div>
+  <div class="phone">
+    <div class="faded"><div class="fl" style="width:50%"></div><div class="fbig"></div><div class="fl" style="width:80%"></div><div class="fl" style="width:65%"></div></div>
+    <div class="scrim"></div>
+    <div class="tabwrap"><div class="tabbar">
+      <div class="grp">
+        <div class="tab on"><i>⌂</i>首頁<u></u></div>
+        <div class="tab"><i>▦</i>行事曆<u></u></div>
+      </div>
+      <div class="grp">
+        <div class="tab"><i>▤</i>文件<u></u></div>
+        <div class="tab"><div class="tabava">宥</div>我的<u></u></div>
+      </div>
+      <div class="fab center">＋</div>
+    </div></div>
+  </div>
+  <div class="tick">✓ 對稱乾淨，[+] 不壓任何 tab</div>
+</div>
+
+<!-- B -->
+<div class="col">
+  <div class="h">B · 5 tab ＋ [+] 移右下</div>
+  <div class="sub">tab bar 五等分（花園留著），[+]「新照護時段」改成右下獨立浮鈕。</div>
+  <div class="phone">
+    <div class="faded"><div class="fl" style="width:50%"></div><div class="fbig"></div><div class="fl" style="width:80%"></div><div class="fl" style="width:65%"></div></div>
+    <div class="scrim"></div>
+    <div class="fab" style="right:20px;bottom:88px;top:auto;">＋</div>
+    <div class="tabwrap"><div class="tabbar" style="justify-content:space-around;padding:0 8px;">
+      <div class="tab on"><i>⌂</i>首頁<u></u></div>
+      <div class="tab"><i>▦</i>行事曆<u></u></div>
+      <div class="tab"><i>▤</i>文件<u></u></div>
+      <div class="tab"><svg class="sprout" viewBox="0 0 18 18"><use href="#sp"/></svg>花園<u></u></div>
+      <div class="tab"><div class="tabava">宥</div>我的<u></u></div>
+    </div></div>
+  </div>
+  <div class="tick">✓ 五個 tab 均分整齊，花園留著</div>
+  <div class="cross">✗ [+] 離開中央，主動作較不突出</div>
+</div>
+
+<!-- C -->
+<div class="col">
+  <div class="h">C · 5 tab ＋ 中央留白槽</div>
+  <div class="sub">照舊 app 做法：中央保留空槽給 [+]（2 左＋槽＋3 右），不再壓到文件。</div>
+  <div class="phone">
+    <div class="faded"><div class="fl" style="width:50%"></div><div class="fbig"></div><div class="fl" style="width:80%"></div><div class="fl" style="width:65%"></div></div>
+    <div class="scrim"></div>
+    <div class="tabwrap"><div class="tabbar">
+      <div class="tab on"><i>⌂</i>首頁<u></u></div>
+      <div class="tab"><i>▦</i>行事曆<u></u></div>
+      <div class="gap"><div class="fab" style="left:50%;transform:translateX(-50%);">＋</div></div>
+      <div class="tab"><i>▤</i>文件<u></u></div>
+      <div class="tab"><svg class="sprout" viewBox="0 0 18 18"><use href="#sp"/></svg>花園<u></u></div>
+      <div class="tab"><div class="tabava">宥</div>我的<u></u></div>
+    </div></div>
+  </div>
+  <div class="tick">✓ 花園留著，[+] 在中央</div>
+  <div class="cross">✗ 2／3 不對稱，[+] 視覺略偏左</div>
+</div>
+
+</body>
+</html>

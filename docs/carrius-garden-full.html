@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carrius 花園頁完整版</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Nunito:wght@800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.24.0/dist/tabler-icons.min.css">
+<style>
+  :root{--accent:#AB9FF2;--accentSoft:#E2DFFE;--plum:#3C315B;--plumDeep:#2C2250;--cream:#FDFBF7;--surface:#fff;
+    --info:#6CA0FB;--text2:#86848D;--text3:#A6A4AD;--border:rgba(60,49,91,.10);}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;}
+  body{background:#EDEAF3;font-family:'Noto Sans TC',sans-serif;color:var(--plum);padding:34px;display:flex;justify-content:center;align-items:flex-start;}
+  .phone{position:relative;width:344px;background:var(--cream);border-radius:44px;border:9px solid #15121f;overflow:hidden;padding-bottom:86px;}
+  .status{display:flex;justify-content:space-between;align-items:center;padding:15px 26px 8px;font-size:13px;font-weight:700;}
+  .pagehead{padding:2px 20px 4px;}
+  .pagehead .k{font-size:12px;color:var(--text2);font-weight:700;}
+  .pagehead .t{font-size:23px;font-weight:900;margin-top:1px;}
+  /* 連續簽到 */
+  .streak{margin:10px 18px 0;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:13px 15px;}
+  .streakTop{display:flex;align-items:center;gap:8px;margin-bottom:11px;}
+  .flame{width:30px;height:30px;border-radius:10px;background:#FFE7C2;display:flex;align-items:center;justify-content:center;color:#E08A2B;font-size:17px;}
+  .streakN{font-size:15px;font-weight:900;}.streakN b{font-family:'Nunito';color:#E08A2B;}
+  .streakSub{font-size:11px;color:var(--text2);margin-left:auto;font-weight:600;}
+  .week{display:flex;justify-content:space-between;}
+  .day{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:10px;color:var(--text3);font-weight:700;width:34px;}
+  .dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;background:#F0EEF6;color:var(--text3);}
+  .dot.done{background:var(--accent);color:#fff;}
+  .dot.today{background:#fff;border:2px solid var(--accent);color:var(--accent);font-size:11px;font-weight:900;}
+  /* 樹場景 */
+  .scene{position:relative;height:286px;margin-top:8px;overflow:hidden;}
+  .scene svg.bg{position:absolute;inset:0;width:100%;height:100%;}
+  .treewrap{position:absolute;left:0;right:0;top:30px;display:flex;justify-content:center;}
+  .sceneCap{position:absolute;left:0;right:0;bottom:10px;text-align:center;}
+  .sceneCap .t{font-size:18px;font-weight:900;}
+  .sceneCap .s{font-size:12px;color:var(--text2);font-weight:600;margin-top:3px;}
+  .sunpill{position:absolute;top:12px;right:18px;background:rgba(255,255,255,.72);border-radius:999px;padding:5px 11px;font-size:12px;font-weight:900;color:#E08A2B;display:flex;align-items:center;gap:4px;}
+  /* 分類滑動圖卡 */
+  .railhead{margin:16px 18px 9px;}
+  .railhead .t{font-size:16px;font-weight:900;}
+  .railhead .s{font-size:11.5px;color:var(--text2);font-weight:600;margin-top:1px;}
+  .rail{display:flex;gap:11px;overflow-x:auto;padding:2px 18px 4px;scrollbar-width:none;}
+  .rail::-webkit-scrollbar{display:none;}
+  .hcard{flex:none;width:138px;border-radius:20px;padding:13px;display:flex;flex-direction:column;gap:7px;}
+  .blob{width:48px;height:48px;border-radius:16px;display:flex;align-items:center;justify-content:center;}
+  .blob .ti{font-size:25px;}
+  .ht{font-size:13.5px;font-weight:900;line-height:1.25;}
+  .hs{font-size:10.5px;color:var(--text2);font-weight:600;line-height:1.35;}
+  .meta{display:flex;align-items:center;gap:6px;margin-top:auto;padding-top:4px;}
+  .sunchip{background:rgba(255,255,255,.72);border-radius:999px;padding:2px 8px;font-size:10px;font-weight:900;color:#E08A2B;}
+  .chem{font-size:9.5px;font-weight:800;color:var(--text3);}
+  /* footer recap */
+  .recap{margin:18px 18px 4px;background:var(--accentSoft);border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:12px;}
+  .recap .ic{width:34px;height:34px;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:18px;flex:none;}
+  /* tab bar */
+  .tabwrap{position:absolute;left:16px;right:16px;bottom:14px;}
+  .tabbar{position:relative;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-radius:999px;background:rgba(253,251,247,.78);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid var(--border);box-shadow:0 9px 22px rgba(40,34,80,.16);}
+  .tab{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:8.5px;color:var(--text3);font-weight:900;width:42px;}
+  .tab.on{color:var(--accent);}.tab .ti{font-size:21px;line-height:1;}
+  .tab u{display:block;width:12px;height:3px;border-radius:999px;background:transparent;margin-top:1px;}.tab.on u{background:var(--accent);}
+  .fab{position:absolute;right:18px;bottom:82px;width:45px;height:45px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:var(--plumDeep);box-shadow:0 8px 18px rgba(171,159,242,.6);}
+  .fab .ti{font-size:22px;}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="status"><span style="font-family:Nunito">9:41</span><span>● ● ●</span></div>
+  <div class="pagehead"><div class="k">快樂花園</div><div class="t">照顧家人，也照顧自己</div></div>
+
+  <div class="streak">
+    <div class="streakTop"><div class="flame"><i class="ti ti-flame"></i></div><div class="streakN">連續 <b>12</b> 天照顧自己</div><div class="streakSub">本週 5 / 7</div></div>
+    <div class="week">
+      <div class="day">一<div class="dot done"><i class="ti ti-check"></i></div></div>
+      <div class="day">二<div class="dot done"><i class="ti ti-check"></i></div></div>
+      <div class="day">三<div class="dot done"><i class="ti ti-check"></i></div></div>
+      <div class="day">四<div class="dot done"><i class="ti ti-check"></i></div></div>
+      <div class="day">五<div class="dot today">今</div></div>
+      <div class="day">六<div class="dot"></div></div>
+      <div class="day">日<div class="dot"></div></div>
+    </div>
+  </div>
+
+  <div class="scene">
+    <svg class="bg" viewBox="0 0 344 286" preserveAspectRatio="none">
+      <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3ECFF"/><stop offset="0.55" stop-color="#FBF4EC"/><stop offset="1" stop-color="#FDFBF7"/></linearGradient></defs>
+      <rect width="344" height="286" fill="url(#sky)"/>
+      <circle cx="172" cy="116" r="116" fill="#FFEFD6" opacity="0.7"/><circle cx="172" cy="116" r="80" fill="#FFE3B8" opacity="0.55"/>
+      <path d="M0 238 Q120 214 200 232 T344 228 V286 H0 Z" fill="#EAF3EA"/><path d="M0 256 Q150 236 264 252 T344 250 V286 H0 Z" fill="#DCEEDF"/>
+      <circle cx="64" cy="74" r="3.5" fill="#C9B7F2"/><circle cx="284" cy="60" r="4" fill="#F3C7DC"/><circle cx="304" cy="146" r="3" fill="#C9B7F2"/>
+    </svg>
+    <div class="sunpill"><i class="ti ti-sun" style="font-size:13px"></i> 124</div>
+    <div class="treewrap"><svg width="176" height="200" viewBox="0 0 176 200">
+      <path d="M88 192 L88 116" stroke="#3C315B" stroke-width="9" stroke-linecap="round"/>
+      <path d="M88 146 Q64 134 48 136" stroke="#3C315B" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M88 130 Q114 118 130 122" stroke="#3C315B" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <ellipse cx="88" cy="76" rx="60" ry="44" fill="#7FC79A"/><ellipse cx="102" cy="62" rx="29" ry="19" fill="#A7DCB9"/>
+      <circle cx="60" cy="72" r="3.4" fill="#fff"/><circle cx="110" cy="56" r="3.4" fill="#fff"/><circle cx="90" cy="90" r="3.4" fill="#fff"/>
+      <path d="M56 192 Q88 200 120 192" stroke="#3C315B" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+    </svg></div>
+    <div class="sceneCap"><div class="t">你的茶樹，長得正好</div><div class="s">茁壯期 · 再 76 ☀ 就長成大樹</div></div>
+  </div>
+
+  <div class="railhead"><div class="t">想放鬆一下</div><div class="s">安撫神經、補一點血清素</div></div>
+  <div class="rail">
+    <div class="hcard" style="background:#E4EEFE"><div class="blob" style="background:#CFE0FC"><i class="ti ti-wind" style="color:#3F7BC4"></i></div><div class="ht">478 呼吸</div><div class="hs">吸4 停7 吐8，3 分鐘</div><div class="meta"><span class="sunchip">+2 ☀</span><span class="chem">血清素</span></div></div>
+    <div class="hcard" style="background:#E1F2EE"><div class="blob" style="background:#C6E8DF"><i class="ti ti-yoga" style="color:#2E8B72"></i></div><div class="ht">身體掃描</div><div class="hs">從頭到腳放鬆 2 分鐘</div><div class="meta"><span class="sunchip">+2 ☀</span><span class="chem">副交感</span></div></div>
+    <div class="hcard" style="background:#FBEFE2"><div class="blob" style="background:#F6DEC2"><i class="ti ti-eye" style="color:#C2872E"></i></div><div class="ht">五感著陸</div><div class="hs">看4 摸3 聽2，回到當下</div><div class="meta"><span class="sunchip">+2 ☀</span><span class="chem">焦慮↓</span></div></div>
+    <div class="hcard" style="background:#F0ECFB"><div class="blob" style="background:#DED5F6"><i class="ti ti-cup" style="color:#6B5FC0"></i></div><div class="ht">慢慢喝杯茶</div><div class="hs">專心感受溫度與香氣</div><div class="meta"><span class="sunchip">+1 ☀</span><span class="chem">正念</span></div></div>
+    <div class="hcard" style="background:#FBEAF1"><div class="blob" style="background:#F6CFE0"><i class="ti ti-music" style="color:#C75E8A"></i></div><div class="ht">聽一首歌</div><div class="hs">放你最近喜歡的那首</div><div class="meta"><span class="sunchip">+1 ☀</span><span class="chem">多巴胺</span></div></div>
+  </div>
+
+  <div class="railhead"><div class="t">想振奮一點</div><div class="s">動起來、給自己一點成就感</div></div>
+  <div class="rail">
+    <div class="hcard" style="background:#E7F3DE"><div class="blob" style="background:#CFE7B6"><i class="ti ti-stretching" style="color:#5C8A2A"></i></div><div class="ht">微運動伸展</div><div class="hs">頸肩一組，2 分鐘</div><div class="meta"><span class="sunchip">+3 ☀</span><span class="chem">腦內啡</span></div></div>
+    <div class="hcard" style="background:#FBF0DC"><div class="blob" style="background:#F7E0AE"><i class="ti ti-sun-high" style="color:#C2872E"></i></div><div class="ht">曬太陽散步</div><div class="hs">出門走 10 分鐘</div><div class="meta"><span class="sunchip">+3 ☀</span><span class="chem">血清素</span></div></div>
+    <div class="hcard" style="background:#E4EEFE"><div class="blob" style="background:#CFE0FC"><i class="ti ti-target-arrow" style="color:#3F7BC4"></i></div><div class="ht">寫個小目標</div><div class="hs">今天想完成的一件小事</div><div class="meta"><span class="sunchip">+2 ☀</span><span class="chem">多巴胺</span></div></div>
+    <div class="hcard" style="background:#FBEEE7"><div class="blob" style="background:#F6D5C3"><i class="ti ti-confetti" style="color:#C26A45"></i></div><div class="ht">慶祝小成就</div><div class="hs">記下一件做得不錯的</div><div class="meta"><span class="sunchip">+2 ☀</span><span class="chem">多巴胺</span></div></div>
+    <div class="hcard" style="background:#FBEAF1"><div class="blob" style="background:#F6CFE0"><i class="ti ti-mood-smile" style="color:#C75E8A"></i></div><div class="ht">舒適圈小挑戰</div><div class="hs">微辣：跟一個人微笑</div><div class="meta"><span class="sunchip">+3 ☀</span><span class="chem">腎上腺素</span></div></div>
+  </div>
+
+  <div class="railhead"><div class="t">想被在乎、被連結</div><div class="s">和人靠近一點，補催產素</div></div>
+  <div class="rail">
+    <div class="hcard" style="background:#FBEAF1"><div class="blob" style="background:#F6CFE0"><i class="ti ti-message-heart" style="color:#C75E8A"></i></div><div class="ht">跟家人說說話</div><div class="hs">傳一則訊息或打給他</div><div class="meta"><span class="sunchip">+2 ☀</span><span class="chem">催產素</span></div></div>
+    <div class="hcard" style="background:#F0ECFB"><div class="blob" style="background:#DED5F6"><i class="ti ti-heart-handshake" style="color:#6B5FC0"></i></div><div class="ht">給自己一個擁抱</div><div class="hs">雙手環抱 20 秒</div><div class="meta"><span class="sunchip">+1 ☀</span><span class="chem">催產素</span></div></div>
+    <div class="hcard" style="background:#E1F2EE"><div class="blob" style="background:#C6E8DF"><i class="ti ti-notebook" style="color:#2E8B72"></i></div><div class="ht">寫一件感恩</div><div class="hs">今天讓你鬆口氣的小事</div><div class="meta"><span class="sunchip">+2 ☀</span><span class="chem">血清素</span></div></div>
+    <div class="hcard" style="background:#FBF0DC"><div class="blob" style="background:#F7E0AE"><i class="ti ti-photo" style="color:#C2872E"></i></div><div class="ht">翻一張老照片</div><div class="hs">想一段溫暖的回憶</div><div class="meta"><span class="sunchip">+1 ☀</span><span class="chem">催產素</span></div></div>
+  </div>
+
+  <div class="recap"><div class="ic"><i class="ti ti-seeding"></i></div><div><div style="font-size:13.5px;font-weight:900;">這週你照顧自己 5 天</div><div style="font-size:11px;color:var(--text2);font-weight:600;margin-top:1px;">每天一點點，茶樹和你都在長</div></div></div>
+
+  <div class="tabwrap"><div class="tabbar">
+    <div class="tab"><i class="ti ti-home"></i>首頁<u></u></div>
+    <div class="tab"><i class="ti ti-calendar-month"></i>行事曆<u></u></div>
+    <div class="tab"><i class="ti ti-file-text"></i>文件<u></u></div>
+    <div class="tab on"><i class="ti ti-plant-2"></i>花園<u></u></div>
+    <div class="tab"><i class="ti ti-user"></i>設定<u></u></div>
+  </div></div>
+  <div class="fab"><i class="ti ti-plus"></i></div>
+</div>
+</body>
+</html>
