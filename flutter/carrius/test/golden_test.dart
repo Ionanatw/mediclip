@@ -158,4 +158,34 @@ void main() {
           size: const Size(360, 360));
     }
   });
+
+  // 清死按鈕新增的 sheet / 內容頁 golden（含深色），看圖驗收 + 回歸保護
+  Future<void> shootSheet(WidgetTester tester, String name, Widget widget, Finder tapTarget,
+      {Size size = const Size(393, 1000)}) async {
+    tester.view.physicalSize = Size(size.width * 3, size.height * 3);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(const SizedBox.shrink()); // 清掉上一個 sheet 的 Navigator/route，避免殘留
+    await tester.pumpWidget(widget);
+    await tester.pump(const Duration(milliseconds: 60));
+    await tester.ensureVisible(tapTarget);
+    await tester.pumpAndSettle();
+    await tester.tap(tapTarget);
+    await tester.pumpAndSettle();
+    await expectLater(find.byType(MaterialApp), matchesGoldenFile('goldens/$name.png'));
+  }
+
+  testWidgets('demo new-state sheets (light + dark)', (tester) async {
+    await shootSheet(tester, '19-sheet-privacy', _frame(SettingsScreen(onClose: () {})), find.text('隱私政策'));
+    await shootSheet(tester, '20-sheet-pricing', _frame(SettingsScreen(onClose: () {})), find.textContaining('方案：免費'));
+    await shootSheet(tester, '21-sheet-about', _frame(SettingsScreen(onClose: () {})), find.text('Carrius v0.1 POC'));
+    final doc = homeState()..tab = AppTab.documents;
+    await shootSheet(tester, '22-doc-detail', _frame(DocumentsScreen(state: doc)),
+        find.text(doc.session.documents.first.title));
+    // 深色模式驗證（新 sheet 用 palette token，理應自適應）
+    await shootSheet(tester, 'dark-sheet-privacy', _frame(SettingsScreen(onClose: () {}), palette: Palette.dark),
+        find.text('隱私政策'));
+    await shootSheet(tester, 'dark-sheet-pricing', _frame(SettingsScreen(onClose: () {}), palette: Palette.dark),
+        find.textContaining('方案：免費'));
+  });
 }
