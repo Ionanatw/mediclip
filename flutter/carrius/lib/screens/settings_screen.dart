@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../design/tokens.dart';
 import '../design/components.dart';
+import '../design/haptics.dart';
 
 class SettingsScreen extends StatefulWidget {
   final VoidCallback onClose;
@@ -46,9 +47,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.all(6),
                 child: Column(
                   children: [
-                    _nav(p, Icons.person_outline, 'ionachen@gamania.com'),
+                    _nav(p, Icons.person_outline, 'ionachen@gamania.com', chevron: false),
                     _divider(p),
-                    _nav(p, Icons.credit_card, '方案：免費（剩 1 次照護時段）'),
+                    _nav(p, Icons.credit_card, '方案：免費（剩 1 次照護時段）',
+                        onTap: () => showCDSheet(context, title: '方案與計費', body: _pricingBody(p))),
                   ],
                 ),
               ),
@@ -59,11 +61,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.all(6),
                 child: Column(
                   children: [
-                    _nav(p, Icons.lock_outline, '隱私政策'),
+                    _nav(p, Icons.lock_outline, '隱私政策',
+                        onTap: () => showCDSheet(context, title: '隱私政策', body: _privacyBody(p))),
                     _divider(p),
-                    _nav(p, Icons.article_outlined, '使用者同意書'),
+                    _nav(p, Icons.article_outlined, '使用者同意書',
+                        onTap: () => showCDSheet(context, title: '使用者同意書', body: _consentBody(p))),
                     _divider(p),
-                    _nav(p, Icons.info_outline, 'Carrius v0.1 POC'),
+                    _nav(p, Icons.info_outline, 'Carrius v0.1 POC',
+                        onTap: () => showCDSheet(context, title: '關於 Carrius', body: _aboutBody(p))),
                   ],
                 ),
               ),
@@ -94,18 +99,122 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _nav(Palette p, IconData icon, String label) {
-    return Padding(
+  Widget _nav(Palette p, IconData icon, String label, {VoidCallback? onTap, bool chevron = true}) {
+    final row = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
       child: Row(
         children: [
           SizedBox(width: 26, child: Icon(icon, size: 15, color: p.text2)),
           const SizedBox(width: 11),
-          Text(label, style: CDText.body(13.5, weight: FontWeight.w700, color: p.text)),
-          const Spacer(),
-          Icon(Icons.chevron_right, size: 16, color: p.text3),
+          Expanded(child: Text(label, style: CDText.body(13.5, weight: FontWeight.w700, color: p.text))),
+          if (chevron) Icon(Icons.chevron_right, size: 16, color: p.text3),
         ],
       ),
+    );
+    if (onTap == null) return row;
+    return GestureDetector(
+      onTap: () {
+        Haptics.light();
+        onTap();
+      },
+      child: row,
+    );
+  }
+
+  // ---- 內容頁（真實可讀，非佔位）----
+
+  Widget _privacyBody(Palette p) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: const [
+        SheetParagraph('一句話：你的醫療資料只存在這台手機。'),
+        SheetHeading('我們怎麼處理你的資料'),
+        SheetBullet('照片與整理結果只存在手機本機，不上傳雲端、不進入我們的伺服器。'),
+        SheetBullet('伺服器只保存你的 email 與付費狀態，不碰、不存、不看任何醫療內容。'),
+        SheetBullet('AI 整理透過加密通道即時處理，處理完不留存你的文件內容。'),
+        SheetBullet('解除安裝 App，手機上的醫療資料就一併消失。'),
+        SheetHeading('你的權利'),
+        SheetBullet('你可以隨時在裝置上刪除任何一次照護時段的資料。'),
+        SheetBullet('你可以來信要求刪除帳號（email 與付費紀錄）。'),
+        SheetParagraph('\n本頁為 Carrius v0.1 POC 草稿，正式版上線前將送法務複核。'),
+      ],
+    );
+  }
+
+  Widget _consentBody(Palette p) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: const [
+        SheetParagraph('使用 Carrius 前，請先了解以下事項。'),
+        SheetBullet('Carrius 是醫療資訊整理的輔助工具，不是醫療器材，不提供診斷、處方或治療建議。'),
+        SheetBullet('所有整理結果由 AI 輔助產生，可能有誤。請務必與原始醫療文件、醫師或藥師核對。'),
+        SheetBullet('用藥、停藥、劑量調整一律以醫囑為準，不要僅依本 App 內容自行決定。'),
+        SheetBullet('遇到緊急狀況請撥打 119 或立即就醫，不要等待 App。'),
+        SheetParagraph('\n繼續使用即代表你已了解並同意以上說明。'),
+        SheetParagraph('本頁為 Carrius v0.1 POC 草稿，正式版上線前將送法務複核。'),
+      ],
+    );
+  }
+
+  Widget _pricingBody(Palette p) {
+    Widget tier(String name, String price, List<String> feats, {bool current = false}) {
+      return Container(
+        margin: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: current ? CD.accent.withValues(alpha: 0.12) : p.surface2,
+          borderRadius: BorderRadius.circular(CD.rRow),
+          border: Border.all(color: current ? CD.accent : p.cardBorder, width: 1),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(name, style: CDText.title(14, color: p.text)),
+                const SizedBox(width: 8),
+                Text(price, style: CDText.body(12.5, weight: FontWeight.w800, color: CD.accent)),
+                const Spacer(),
+                if (current) const TagView(text: '目前方案', color: CD.accent),
+              ],
+            ),
+            const SizedBox(height: 6),
+            for (final f in feats) Padding(
+              padding: const EdgeInsets.only(top: 3),
+              child: Text('· $f', style: CDText.body(12, weight: FontWeight.w500, color: p.text2)),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SheetParagraph('以「照護時段」計費：24 小時內不限上傳張數與整理次數。'),
+        tier('免費', '\$0', ['AI 整理 2 次', '專業版注意事項（用藥安全永遠免費）'], current: true),
+        tier('輕量', '\$30 / 3 時段', ['AI 整理 3 次']),
+        tier('吃到飽', '\$149 / 月', ['AI 整理 15 次/月', '白話版注意事項（含嚴重度標示）']),
+        const SheetHeading('加購'),
+        const SheetBullet('照護海報 \$49 一次買斷'),
+        const SheetBullet('推播提醒 \$29 / 月'),
+        const SheetParagraph('\n付費功能即將在正式版開放。'),
+      ],
+    );
+  }
+
+  Widget _aboutBody(Palette p) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: const [
+        SheetParagraph('Carrius — 醫療照護整理工具（care + carry + us）。'),
+        SheetParagraph('把散亂的醫療文件，3 分鐘變成全家看得懂的照護指南。'),
+        SheetHeading('版本'),
+        SheetBullet('v0.1 POC 展示版本。部分功能（金流、雲端同步、語音輸入、.ics 匯出）尚未開放。'),
+        SheetHeading('資料來源致謝'),
+        SheetBullet('藥品資料引用食藥署 Open Data 與各醫院藥品資訊，POC 階段僅供展示，正式版前將取得授權。'),
+        SheetParagraph('\n此內容由 AI 輔助整理，請與原始醫療文件核對。'),
+      ],
     );
   }
 }

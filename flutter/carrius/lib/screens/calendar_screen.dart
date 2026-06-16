@@ -80,9 +80,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
         else
           for (final e in _dayEvents) ...[EventRow(event: e), const SizedBox(height: 10)],
         const SizedBox(height: 4),
-        PillButton(title: '加入手機行事曆 (.ics)', icon: Icons.ios_share, onTap: () {}),
+        PillButton(
+            title: '加入手機行事曆 (.ics)',
+            icon: Icons.ios_share,
+            onTap: () => showComingSoon(context, '.ics 匯出')),
         const SizedBox(height: 8),
-        Center(child: Text('.ics 匯出永遠免費', style: CDText.body(11, weight: FontWeight.w500, color: p.text3))),
+        Center(child: Text('.ics 匯出永遠免費，正式版開放', style: CDText.body(11, weight: FontWeight.w500, color: p.text3))),
       ],
     );
   }

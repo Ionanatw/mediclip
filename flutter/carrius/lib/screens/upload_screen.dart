@@ -56,11 +56,11 @@ class _UploadScreenState extends State<UploadScreen> {
               const SizedBox(height: 14),
               Row(
                 children: [
-                  _source(p, Icons.description_outlined, 'PDF', true),
+                  _source(p, Icons.description_outlined, 'PDF', true, 'PDF 上傳'),
                   const SizedBox(width: 8),
-                  _source(p, Icons.public, '網頁', true),
+                  _source(p, Icons.public, '網頁', true, '網頁匯入'),
                   const SizedBox(width: 8),
-                  _source(p, Icons.mic_none, '語音 soon', false),
+                  _source(p, Icons.mic_none, '語音（即將）', false, '語音輸入'),
                 ],
               ),
               if (picked > 0) ...[
@@ -123,24 +123,30 @@ class _UploadScreenState extends State<UploadScreen> {
     );
   }
 
-  Widget _source(Palette p, IconData icon, String label, bool enabled) {
+  Widget _source(Palette p, IconData icon, String label, bool enabled, String feature) {
     return Expanded(
-      child: Opacity(
-        opacity: enabled ? 1 : 0.45,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 11),
-          decoration: BoxDecoration(
-            color: p.surface,
-            borderRadius: BorderRadius.circular(CD.rRow),
-            border: Border.all(color: p.cardBorder, width: 1),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 13, color: p.text),
-              const SizedBox(width: 7),
-              Text(label, style: CDText.body(12, weight: FontWeight.w900, color: p.text)),
-            ],
+      child: GestureDetector(
+        onTap: () {
+          Haptics.light();
+          showComingSoon(context, feature);
+        },
+        child: Opacity(
+          opacity: enabled ? 1 : 0.45,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 11),
+            decoration: BoxDecoration(
+              color: p.surface,
+              borderRadius: BorderRadius.circular(CD.rRow),
+              border: Border.all(color: p.cardBorder, width: 1),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 13, color: p.text),
+                const SizedBox(width: 7),
+                Text(label, style: CDText.body(12, weight: FontWeight.w900, color: p.text)),
+              ],
+            ),
           ),
         ),
       ),

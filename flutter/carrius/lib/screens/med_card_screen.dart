@@ -90,6 +90,7 @@ class MedCardScreen extends StatelessWidget {
               const SizedBox(height: 10),
               BlurLock(
                 cta: '白話版 — 月費解鎖',
+                onTap: () => showComingSoon(context, '白話版注意事項'),
                 child: CDCard(
                   padding: const EdgeInsets.all(14),
                   child: Text(med.plainNote, style: CDText.body(13, weight: FontWeight.w500, color: p.text, height: 1.5)),

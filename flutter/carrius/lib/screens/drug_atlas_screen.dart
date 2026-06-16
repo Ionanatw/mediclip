@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../design/tokens.dart';
 import '../design/components.dart';
-import '../design/haptics.dart';
 import '../models/drug_atlas.dart';
 import '../models/drug_atlas_data.dart';
 import '../state/app_state.dart';
@@ -111,7 +110,7 @@ class _DrugTile extends StatelessWidget {
               const SizedBox(height: 12),
               _table(p),
               const SizedBox(height: 10),
-              _footer(p),
+              _footer(context, p),
             ],
           ],
         ),
@@ -219,17 +218,18 @@ class _DrugTile extends StatelessWidget {
     );
   }
 
-  Widget _footer(Palette p) {
+  Widget _footer(BuildContext context, Palette p) {
     final src = drug.hasDeep && drug.deepSource.isNotEmpty ? '說明來源：${drug.deepSource}' : '說明：基本資料（深度仿單內容待授權）';
     return Row(
       children: [
         Icon(Icons.info_outline, size: 12, color: p.text3),
         const SizedBox(width: 5),
         Expanded(child: Text('$src · 請以仿單與醫囑為準', style: CDText.body(10, weight: FontWeight.w500, color: p.text3))),
-        GestureDetector(
-          onTap: Haptics.light,
-          child: Text('仿單 PDF', style: CDText.body(10.5, weight: FontWeight.w800, color: CD.accent)),
-        ),
+        if (drug.pdfUrl.isNotEmpty)
+          GestureDetector(
+            onTap: () => showComingSoon(context, '仿單 PDF'),
+            child: Text('仿單 PDF', style: CDText.body(10.5, weight: FontWeight.w800, color: CD.accent)),
+          ),
       ],
     );
   }

@@ -60,7 +60,7 @@ class HomeScreen extends StatelessWidget {
         SectionHeader(title: '即將到來', trailing: '全部', onTap: () => state.setTab(AppTab.calendar)),
         const SizedBox(height: 10),
         for (final e in s.events.take(2)) ...[EventRow(event: e), const SizedBox(height: 10)],
-        SectionHeader(title: '今日用藥', trailing: '識別卡'),
+        SectionHeader(title: '今日用藥', trailing: '識別卡', onTap: () => state.setTab(AppTab.atlas)),
         const SizedBox(height: 10),
         for (final m in s.medications.take(3)) ...[
           MedicationRow(med: m, onTap: () => state.toggleMedication(m)),

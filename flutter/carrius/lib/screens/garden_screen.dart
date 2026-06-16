@@ -232,7 +232,11 @@ class MoodCardScreen extends StatelessWidget {
               const Spacer(),
               Padding(
                 padding: const EdgeInsets.fromLTRB(40, 0, 40, 40),
-                child: PillButton(title: '分享給家人', icon: Icons.send_outlined, style: PillStyle.lemon, onTap: () {}),
+                child: PillButton(
+                    title: '分享給家人',
+                    icon: Icons.send_outlined,
+                    style: PillStyle.lemon,
+                    onTap: () => showComingSoon(context, '分享給家人')),
               ),
             ],
           ),

@@ -12,12 +12,6 @@ class Medication {
   final String scheduledTime;
   bool takenToday;
 
-  /// 實拍外觀照片（bundled asset 路徑）。有則優先顯示實拍照，無則回退手繪向量。
-  final String? photoAsset;
-
-  /// 外觀來源（例如「食藥署」）。有值代表外觀已核實；null 代表外觀為示意。
-  final String? appearanceSource;
-
   Medication({
     required this.name,
     required this.dose,
@@ -34,11 +28,7 @@ class Medication {
     required this.plainNote,
     required this.scheduledTime,
     this.takenToday = false,
-    this.photoAsset,
-    this.appearanceSource,
   });
-
-  bool get appearanceVerified => appearanceSource != null;
 }
 
 enum EventKind { appointment, lab, medication, dressing }
@@ -87,8 +77,6 @@ class ChecklistItem {
   bool done;
   ChecklistItem(this.category, this.title, {this.detail, this.done = false});
 }
-
-enum TreeStageRef { seed, sprout, sapling, growing, bloom }
 
 enum HappyKind { breathing, gratitude, exercise, challenge, share }
 

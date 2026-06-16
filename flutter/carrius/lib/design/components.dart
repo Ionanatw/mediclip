@@ -267,11 +267,12 @@ class PageHeader extends StatelessWidget {
   }
 }
 
-/// 鎖定模糊遮罩（付費導流）
+/// 鎖定模糊遮罩（付費導流）。點 CTA 走 onTap（通常接 showComingSoon），不可只震動不做事。
 class BlurLock extends StatelessWidget {
   final String cta;
   final Widget child;
-  const BlurLock({super.key, required this.cta, required this.child});
+  final VoidCallback? onTap;
+  const BlurLock({super.key, required this.cta, required this.child, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -286,7 +287,10 @@ class BlurLock extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: Haptics.soft,
+          onTap: () {
+            Haptics.light();
+            onTap?.call();
+          },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
             decoration: BoxDecoration(color: CD.accent, borderRadius: BorderRadius.circular(999)),
@@ -316,6 +320,143 @@ class DisclaimerFooter extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text('此內容由 AI 輔助整理，請與原始醫療文件核對',
           textAlign: TextAlign.center, style: CDText.body(10.5, weight: FontWeight.w500, color: p.text3)),
+    );
+  }
+}
+
+/// 誠實「即將開放」提示（floating SnackBar，留出底部 TabBar 空間）。
+/// 觸覺由呼叫端負責（PillButton/BlurLock/各 GestureDetector 自帶），這裡不重複觸發。
+void showComingSoon(BuildContext context, String feature) {
+  ScaffoldMessenger.of(context)
+    ..clearSnackBars()
+    ..showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: CD.plumDeep,
+        elevation: 0,
+        duration: const Duration(milliseconds: 2200),
+        margin: const EdgeInsets.fromLTRB(18, 0, 18, 92),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        content: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.schedule, size: 15, color: CD.cream),
+            const SizedBox(width: 9),
+            Flexible(
+              child: Text('「$feature」即將在正式版開放',
+                  style: CDText.body(12.5, weight: FontWeight.w700, color: CD.cream)),
+            ),
+          ],
+        ),
+      ),
+    );
+}
+
+/// 底部資訊 sheet（隱私政策／同意書／方案／關於／文件詳情）
+Future<void> showCDSheet(BuildContext context, {required String title, required Widget body}) {
+  final p = PaletteScope.of(context);
+  return showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (ctx) {
+      final media = MediaQuery.of(ctx);
+      return Container(
+        constraints: BoxConstraints(maxHeight: media.size.height * 0.82),
+        decoration: BoxDecoration(
+          color: p.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 10),
+            Container(
+              width: 38,
+              height: 4,
+              decoration: BoxDecoration(color: p.surface3, borderRadius: BorderRadius.circular(999)),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 12, 4),
+              child: Row(
+                children: [
+                  Expanded(child: Text(title, style: CDText.title(16, color: p.text))),
+                  GestureDetector(
+                    key: const Key('cdSheetClose'),
+                    onTap: () {
+                      Haptics.light();
+                      Navigator.of(ctx).pop();
+                    },
+                    child: Container(
+                      width: 34,
+                      height: 34,
+                      decoration: BoxDecoration(color: p.surface2, shape: BoxShape.circle),
+                      child: Icon(Icons.close, size: 15, color: p.text2),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Flexible(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.fromLTRB(20, 4, 20, 20 + media.padding.bottom),
+                child: body,
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+/// sheet 內文：小節標題
+class SheetHeading extends StatelessWidget {
+  final String text;
+  const SheetHeading(this.text, {super.key});
+  @override
+  Widget build(BuildContext context) {
+    final p = PaletteScope.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(top: 14, bottom: 6),
+      child: Text(text, style: CDText.title(13.5, color: p.text)),
+    );
+  }
+}
+
+/// sheet 內文：段落
+class SheetParagraph extends StatelessWidget {
+  final String text;
+  const SheetParagraph(this.text, {super.key});
+  @override
+  Widget build(BuildContext context) {
+    final p = PaletteScope.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Text(text, style: CDText.body(13, weight: FontWeight.w500, color: p.text2, height: 1.5)),
+    );
+  }
+}
+
+/// sheet 內文：項目列（圓點）
+class SheetBullet extends StatelessWidget {
+  final String text;
+  const SheetBullet(this.text, {super.key});
+  @override
+  Widget build(BuildContext context) {
+    final p = PaletteScope.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 6, right: 9),
+            child: Container(width: 5, height: 5, decoration: const BoxDecoration(color: CD.accent, shape: BoxShape.circle)),
+          ),
+          Expanded(child: Text(text, style: CDText.body(13, weight: FontWeight.w500, color: p.text2, height: 1.5))),
+        ],
+      ),
     );
   }
 }

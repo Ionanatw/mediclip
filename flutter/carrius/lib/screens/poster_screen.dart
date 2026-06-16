@@ -30,7 +30,8 @@ class _PosterScreenState extends State<PosterScreen> {
               PageHeader(kicker: '貼在冰箱上，全家都看得懂', title: '圖解照護海報'),
               const SizedBox(height: 14),
               BlurLock(
-                cta: '加購 \$49 解鎖列印',
+                cta: '加購海報 \$49',
+                onTap: () => showComingSoon(context, '海報加購'),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(CD.rCardLarge),
                   child: SizedBox(
@@ -85,7 +86,11 @@ class _PosterScreenState extends State<PosterScreen> {
                 ),
               ),
               const SizedBox(height: 14),
-              PillButton(title: '加購海報 \$49', icon: Icons.print_outlined, style: PillStyle.lemon, onTap: Haptics.soft),
+              PillButton(
+                  title: '加購海報 \$49',
+                  icon: Icons.print_outlined,
+                  style: PillStyle.lemon,
+                  onTap: () => showComingSoon(context, '海報加購')),
               const SizedBox(height: 4),
               const DisclaimerFooter(),
             ],

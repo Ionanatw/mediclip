@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../design/tokens.dart';
 import '../design/components.dart';
+import '../models/models.dart';
 import '../state/app_state.dart';
 
 class DocumentsScreen extends StatelessWidget {
@@ -38,6 +39,7 @@ class DocumentsScreen extends StatelessWidget {
               title: doc.title,
               subtitle: '${doc.dateText} · ${doc.pages} 頁 · ${doc.kinds.join('、')}',
               trailing: Icon(Icons.chevron_right, size: 16, color: p.text3),
+              onTap: () => showCDSheet(context, title: doc.title, body: _docBody(p, doc)),
             ),
             const SizedBox(height: 10),
           ],
@@ -54,6 +56,40 @@ class DocumentsScreen extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _docBody(Palette p, DocumentRecord doc) {
+    Widget meta(String k, String v) => Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(width: 56, child: Text(k, style: CDText.body(12.5, weight: FontWeight.w800, color: p.text3))),
+              const SizedBox(width: 10),
+              Expanded(child: Text(v, style: CDText.body(13, weight: FontWeight.w500, color: p.text))),
+            ],
+          ),
+        );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        meta('階段', doc.phase),
+        meta('日期', doc.dateText),
+        meta('頁數', '${doc.pages} 頁'),
+        meta('類型', doc.kinds.join('、')),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            const Icon(Icons.lock_outline, size: 15, color: CD.success),
+            const SizedBox(width: 9),
+            Expanded(
+              child: Text('這份文件只存在你的手機，未上傳雲端。完整內容可在原始醫療文件查看。',
+                  style: CDText.body(12.5, weight: FontWeight.w500, color: p.text2, height: 1.5)),
+            ),
+          ],
         ),
       ],
     );

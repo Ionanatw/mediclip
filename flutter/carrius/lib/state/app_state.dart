@@ -17,7 +17,6 @@ class AppState extends ChangeNotifier {
 
   // 上傳流程暫存
   int pickedCount = 0;
-  String noteText = '';
   final followUps = [
     FollowUpQuestion(
         '胃藥「早餐前 30 分鐘」如果忘記吃，衛教單沒寫怎麼辦。要用哪個規則提醒？',
@@ -55,7 +54,6 @@ class AppState extends ChangeNotifier {
   int sunTotal = 132;
   int streak = 12;
   final happyTasks = MockData.happyTasks();
-  String gratitudeText = '';
 
   TreeStage get stage => TreeStage.forSun(sunTotal);
   int get nextThreshold {

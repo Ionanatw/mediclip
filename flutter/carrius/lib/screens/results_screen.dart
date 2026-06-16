@@ -41,7 +41,7 @@ class ResultsScreen extends StatelessWidget {
                 child: Text(s.summary, style: CDText.body(13.5, weight: FontWeight.w500, color: p.text, height: 1.45)),
               ),
               const SizedBox(height: 14),
-              SectionHeader(title: '用藥（${s.medications.length}）', trailing: '全部識別卡'),
+              SectionHeader(title: '用藥（${s.medications.length}）'),
               const SizedBox(height: 10),
               for (final med in s.medications.take(2)) ...[
                 ListRowCard(
