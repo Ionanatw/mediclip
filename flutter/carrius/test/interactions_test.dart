@@ -27,7 +27,10 @@ AppState _state() => AppState()..onboarded = true;
 
 void main() {
   testWidgets('settings 隱私政策 開出真內容 sheet', (tester) async {
-    await tester.pumpWidget(_wrap(SettingsScreen(onClose: () {})));
+    tester.view.physicalSize = const Size(393 * 3, 1400 * 3);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(_wrap(SettingsScreen(state: _state())));
     await tester.tap(find.text('隱私政策'));
     await tester.pumpAndSettle();
     expect(find.textContaining('你的醫療資料只存在這台手機'), findsOneWidget);
@@ -35,7 +38,10 @@ void main() {
   });
 
   testWidgets('settings 方案 開出三層定價 sheet', (tester) async {
-    await tester.pumpWidget(_wrap(SettingsScreen(onClose: () {})));
+    tester.view.physicalSize = const Size(393 * 3, 1400 * 3);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(_wrap(SettingsScreen(state: _state())));
     await tester.tap(find.textContaining('方案：免費'));
     await tester.pumpAndSettle();
     expect(find.text('方案與計費'), findsOneWidget);
@@ -44,13 +50,16 @@ void main() {
   });
 
   testWidgets('settings 同意書 + 關於 都開得出來', (tester) async {
-    await tester.pumpWidget(_wrap(SettingsScreen(onClose: () {})));
+    tester.view.physicalSize = const Size(393 * 3, 1400 * 3);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(_wrap(SettingsScreen(state: _state())));
     await tester.tap(find.text('使用者同意書'));
     await tester.pumpAndSettle();
     expect(find.textContaining('不是醫療器材'), findsOneWidget);
     await tester.tap(find.byKey(const Key('cdSheetClose'))); // sheet 的 close（用 Key 精準定位）
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Carrius v0.1 POC'));
+    await tester.tap(find.textContaining('Carrius v0.1 POC'));
     await tester.pumpAndSettle();
     expect(find.text('關於 Carrius'), findsOneWidget);
   });
@@ -103,7 +112,7 @@ void main() {
     expect(s.tab, AppTab.home);
     await tester.tap(find.text('識別卡'));
     await tester.pump();
-    expect(s.tab, AppTab.atlas);
+    expect(s.tab, AppTab.documents);
   });
 
   testWidgets('results 不再有假連結「全部識別卡」', (tester) async {

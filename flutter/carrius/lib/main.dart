@@ -19,24 +19,35 @@ class _CarriusAppState extends State<CarriusApp> {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = MediaQuery.maybePlatformBrightnessOf(context) ?? Brightness.light;
-    // 淺色為先：系統未明確指定深色就走淺色
-    final palette = widget.forcePalette ?? (brightness == Brightness.dark ? Palette.dark : Palette.light);
+    return ListenableBuilder(
+      listenable: state,
+      builder: (context, _) {
+        final brightness = MediaQuery.maybePlatformBrightnessOf(context) ?? Brightness.light;
+        final sysDark = brightness == Brightness.dark;
+        // 設定頁可覆寫系統；預設跟隨系統（淺色為先）
+        final isDark = switch (state.themePref) {
+          ThemePref.dark => true,
+          ThemePref.light => false,
+          ThemePref.system => sysDark,
+        };
+        final palette = widget.forcePalette ?? (isDark ? Palette.dark : Palette.light);
 
-    return MaterialApp(
-      title: 'Carrius',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        scaffoldBackgroundColor: palette.bg,
-        fontFamily: CD.body,
-        splashFactory: NoSplash.splashFactory,
-        highlightColor: Colors.transparent,
-      ),
-      home: PaletteScope(
-        palette: palette,
-        child: AppShell(state: state),
-      ),
+        return MaterialApp(
+          title: 'Carrius',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            useMaterial3: true,
+            scaffoldBackgroundColor: palette.bg,
+            fontFamily: CD.body,
+            splashFactory: NoSplash.splashFactory,
+            highlightColor: Colors.transparent,
+          ),
+          home: PaletteScope(
+            palette: palette,
+            child: AppShell(state: state),
+          ),
+        );
+      },
     );
   }
 }

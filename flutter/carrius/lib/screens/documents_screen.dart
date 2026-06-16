@@ -1,26 +1,75 @@
 import 'package:flutter/material.dart';
 import '../design/tokens.dart';
 import '../design/components.dart';
+import '../design/haptics.dart';
 import '../models/models.dart';
 import '../state/app_state.dart';
+import 'drug_atlas_screen.dart';
 
-class DocumentsScreen extends StatelessWidget {
+/// 文件分頁：頂部分段切換「文件」與「藥品圖鑑」（圖鑑併入文件）。
+class DocumentsScreen extends StatefulWidget {
   final AppState state;
   const DocumentsScreen({super.key, required this.state});
 
+  @override
+  State<DocumentsScreen> createState() => _DocumentsScreenState();
+}
+
+class _DocumentsScreenState extends State<DocumentsScreen> {
+  int _seg = 0;
+
   List<String> get _phases {
     final seen = <String>{};
-    return [for (final d in state.session.documents) if (seen.add(d.phase)) d.phase];
+    return [for (final d in widget.state.session.documents) if (seen.add(d.phase)) d.phase];
   }
 
   @override
   Widget build(BuildContext context) {
     final p = PaletteScope.of(context);
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(18, 12, 18, 120),
+    return Column(
       children: [
-        PageHeader(kicker: '時間軸', title: '文件紀錄'),
-        const SizedBox(height: 14),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(18, 12, 18, 8),
+          child: Row(
+            children: [
+              _segPill(p, 0, '文件'),
+              const SizedBox(width: 8),
+              _segPill(p, 1, '藥品圖鑑'),
+            ],
+          ),
+        ),
+        Expanded(
+          child: IndexedStack(
+            index: _seg,
+            children: [
+              _docsList(context, p),
+              DrugAtlasScreen(state: widget.state),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _segPill(Palette p, int i, String label) {
+    final on = _seg == i;
+    return GestureDetector(
+      onTap: () {
+        Haptics.light();
+        setState(() => _seg = i);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(color: on ? CD.accent : p.surface2, borderRadius: BorderRadius.circular(999)),
+        child: Text(label, style: CDText.body(13, weight: FontWeight.w900, color: on ? CD.plumDeep : p.text2)),
+      ),
+    );
+  }
+
+  Widget _docsList(BuildContext context, Palette p) {
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(18, 8, 18, 120),
+      children: [
         for (final phase in _phases) ...[
           Row(
             children: [
@@ -32,7 +81,7 @@ class DocumentsScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          for (final doc in state.session.documents.where((d) => d.phase == phase)) ...[
+          for (final doc in widget.state.session.documents.where((d) => d.phase == phase)) ...[
             ListRowCard(
               iconBg: CD.info.withValues(alpha: 0.14),
               icon: const Icon(Icons.description_outlined, size: 15, color: CD.info),

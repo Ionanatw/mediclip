@@ -4,13 +4,23 @@ import '../models/mock_data.dart';
 import '../design/haptics.dart';
 import '../design/illustrations/sakura_tree.dart';
 
-enum AppTab { home, calendar, atlas, documents, garden }
+enum AppTab { home, calendar, documents, garden, settings }
+
+/// 深色模式偏好（設定頁可切換；預設跟隨系統）
+enum ThemePref { system, light, dark }
 
 class AppState extends ChangeNotifier {
   bool onboarded = false;
   UserRole? role;
   String email = '';
   AppTab tab = AppTab.home;
+
+  ThemePref themePref = ThemePref.system;
+  void setThemePref(ThemePref t) {
+    themePref = t;
+    Haptics.light();
+    notifyListeners();
+  }
 
   CareSession session = MockData.session();
   int careDays = 47;

@@ -56,7 +56,7 @@ Widget _frame(Widget child, {Palette palette = Palette.light, bool tabBar = fals
             body: tabBar && state != null
                 ? Stack(children: [
                     Positioned.fill(child: SafeArea(bottom: false, child: child)),
-                    Positioned(left: 0, right: 0, bottom: 8, child: SafeArea(top: false, child: CarriusTabBar(state: state, onUpload: () {}))),
+                    Positioned(left: 0, right: 0, bottom: 8, child: SafeArea(top: false, child: CarriusTabBar(state: state))),
                   ])
                 : SafeArea(bottom: false, child: child),
           ),
@@ -119,22 +119,22 @@ void main() {
     final doc = homeState()..tab = AppTab.documents;
     await shoot(tester, '11-documents', _frame(DocumentsScreen(state: doc), tabBar: true, state: doc));
 
-    final atlas = homeState()..tab = AppTab.atlas;
+    final atlas = homeState()..tab = AppTab.documents;
     await shoot(tester, '16-atlas', _frame(DrugAtlasScreen(state: atlas), tabBar: true, state: atlas));
 
-    final atlasOpen = homeState()..tab = AppTab.atlas;
+    final atlasOpen = homeState()..tab = AppTab.documents;
     atlasOpen.atlasOpen.addAll(['ulcer_lansoprazole', 'ulcer_amoxicillin']);
     await shoot(tester, '17-atlas-open', _frame(DrugAtlasScreen(state: atlasOpen), tabBar: true, state: atlasOpen),
         size: const Size(393, 1680));
 
     // KSPH 完整標準表 showcase（舒脈優 = 鴿王參考卡本尊）
-    final atlasHtn = homeState()..tab = AppTab.atlas;
+    final atlasHtn = homeState()..tab = AppTab.documents;
     atlasHtn.atlasOpen.add('htn_sevikar_hct');
     await shoot(tester, '18-atlas-htn-full',
         _frame(DrugAtlasScreen(state: atlasHtn, focusDisease: '高血壓及併發心臟疾病'), tabBar: true, state: atlasHtn),
         size: const Size(393, 1700));
 
-    await shoot(tester, '12-settings', _frame(SettingsScreen(onClose: () {})));
+    await shoot(tester, '12-settings', _frame(SettingsScreen(state: homeState())));
 
     final g = homeState()..tab = AppTab.garden;
     await shoot(tester, '13-garden', _frame(GardenScreen(state: g, onBreathing: () {}, onGratitude: () {}, onMoodCard: () {}), tabBar: true, state: g));
@@ -153,7 +153,7 @@ void main() {
     // 補齊深色覆蓋（稽核項 E：原本只測 2 張）
     final cal = homeState()..tab = AppTab.calendar;
     await shoot(tester, 'dark-calendar', _frame(CalendarScreen(state: cal), palette: Palette.dark, tabBar: true, state: cal));
-    final atlas = homeState()..tab = AppTab.atlas;
+    final atlas = homeState()..tab = AppTab.documents;
     await shoot(tester, 'dark-atlas', _frame(DrugAtlasScreen(state: atlas), palette: Palette.dark, tabBar: true, state: atlas));
     final docs = homeState()..tab = AppTab.documents;
     await shoot(tester, 'dark-documents', _frame(DocumentsScreen(state: docs), palette: Palette.dark, tabBar: true, state: docs));
@@ -176,7 +176,7 @@ void main() {
 
   // 清死按鈕新增的 sheet / 內容頁 golden（含深色），看圖驗收 + 回歸保護
   Future<void> shootSheet(WidgetTester tester, String name, Widget widget, Finder tapTarget,
-      {Size size = const Size(393, 1000)}) async {
+      {Size size = const Size(393, 1500)}) async {
     tester.view.physicalSize = Size(size.width * 3, size.height * 3);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
@@ -191,9 +191,9 @@ void main() {
   }
 
   testWidgets('demo new-state sheets (light + dark)', (tester) async {
-    await shootSheet(tester, '19-sheet-privacy', _frame(SettingsScreen(onClose: () {})), find.text('隱私政策'));
-    await shootSheet(tester, '20-sheet-pricing', _frame(SettingsScreen(onClose: () {})), find.textContaining('方案：免費'));
-    await shootSheet(tester, '21-sheet-about', _frame(SettingsScreen(onClose: () {})), find.text('Carrius v0.1 POC'));
+    await shootSheet(tester, '19-sheet-privacy', _frame(SettingsScreen(state: homeState())), find.text('隱私政策'));
+    await shootSheet(tester, '20-sheet-pricing', _frame(SettingsScreen(state: homeState())), find.textContaining('方案：免費'));
+    await shootSheet(tester, '21-sheet-about', _frame(SettingsScreen(state: homeState())), find.textContaining('Carrius v0.1 POC'));
     final doc = homeState()..tab = AppTab.documents;
     await shootSheet(tester, '22-doc-detail', _frame(DocumentsScreen(state: doc)),
         find.text(doc.session.documents.first.title));
@@ -202,9 +202,9 @@ void main() {
         _frame(GardenScreen(state: gf, onBreathing: () {}, onGratitude: () {}, onMoodCard: () {})),
         find.text('看全部'));
     // 深色模式驗證（新 sheet 用 palette token，理應自適應）
-    await shootSheet(tester, 'dark-sheet-privacy', _frame(SettingsScreen(onClose: () {}), palette: Palette.dark),
+    await shootSheet(tester, 'dark-sheet-privacy', _frame(SettingsScreen(state: homeState()), palette: Palette.dark),
         find.text('隱私政策'));
-    await shootSheet(tester, 'dark-sheet-pricing', _frame(SettingsScreen(onClose: () {}), palette: Palette.dark),
+    await shootSheet(tester, 'dark-sheet-pricing', _frame(SettingsScreen(state: homeState()), palette: Palette.dark),
         find.textContaining('方案：免費'));
   });
 }

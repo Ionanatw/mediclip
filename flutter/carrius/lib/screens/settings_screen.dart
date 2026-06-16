@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import '../design/tokens.dart';
 import '../design/components.dart';
 import '../design/haptics.dart';
+import '../state/app_state.dart';
 
+/// 設定分頁（取代原本的設定 sheet）：帳號 hero + 提醒 + 外觀(深色) + 關於與隱私。
 class SettingsScreen extends StatefulWidget {
-  final VoidCallback onClose;
-  const SettingsScreen({super.key, required this.onClose});
+  final AppState state;
+  const SettingsScreen({super.key, required this.state});
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -19,65 +21,97 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final p = PaletteScope.of(context);
-    return Column(
+    final s = widget.state;
+    final sysDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+    final isDark = s.themePref == ThemePref.dark || (s.themePref == ThemePref.system && sysDark);
+    final email = s.email.isNotEmpty ? s.email : '尚未設定 email';
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(18, 10, 18, 120),
       children: [
-        FlowTopBar(title: '設定', onClose: widget.onClose),
-        Expanded(
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(18, 0, 18, 24),
+        // ---- 帳號 hero ----
+        Center(
+          child: Column(
             children: [
-              SectionHeader(title: '提醒（App 內）'),
-              const SizedBox(height: 10),
-              CDCard(
-                padding: const EdgeInsets.all(6),
-                child: Column(
-                  children: [
-                    _toggle(p, Icons.medication_outlined, '用藥時間輕震提醒', medReminder, (v) => setState(() => medReminder = v)),
-                    _divider(p),
-                    _toggle(p, Icons.directions_walk, '久坐提醒（等候時）', sitReminder, (v) => setState(() => sitReminder = v)),
-                    _divider(p),
-                    _toggle(p, Icons.vibration, '震動回饋', hapticsOn, (v) => setState(() => hapticsOn = v)),
-                  ],
-                ),
+              Container(
+                width: 72, height: 72,
+                decoration: BoxDecoration(color: CD.accent, borderRadius: BorderRadius.circular(24)),
+                child: const Icon(Icons.person, size: 36, color: CD.cream),
               ),
-              const SizedBox(height: 14),
-              SectionHeader(title: '帳號'),
               const SizedBox(height: 10),
-              CDCard(
-                padding: const EdgeInsets.all(6),
-                child: Column(
-                  children: [
-                    _nav(p, Icons.person_outline, 'ionachen@gamania.com', chevron: false),
-                    _divider(p),
-                    _nav(p, Icons.credit_card, '方案：免費（剩 1 次照護時段）',
-                        onTap: () => showCDSheet(context, title: '方案與計費', body: _pricingBody(p))),
-                  ],
-                ),
+              Text(email, style: CDText.title(16, color: p.text)),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 5),
+                decoration: BoxDecoration(color: CD.accentSoft, borderRadius: BorderRadius.circular(999)),
+                child: Text('免費方案 · 剩 1 次照護時段',
+                    style: CDText.body(12, weight: FontWeight.w700, color: CD.plumDeep)),
               ),
-              const SizedBox(height: 14),
-              SectionHeader(title: '關於'),
-              const SizedBox(height: 10),
-              CDCard(
-                padding: const EdgeInsets.all(6),
-                child: Column(
-                  children: [
-                    _nav(p, Icons.lock_outline, '隱私政策',
-                        onTap: () => showCDSheet(context, title: '隱私政策', body: _privacyBody(p))),
-                    _divider(p),
-                    _nav(p, Icons.article_outlined, '使用者同意書',
-                        onTap: () => showCDSheet(context, title: '使用者同意書', body: _consentBody(p))),
-                    _divider(p),
-                    _nav(p, Icons.info_outline, 'Carrius v0.1 POC',
-                        onTap: () => showCDSheet(context, title: '關於 Carrius', body: _aboutBody(p))),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 14),
-              Text('醫療資料只存在你的手機。伺服器只知道你的 email 和付費狀態。',
-                  textAlign: TextAlign.center, style: CDText.body(11.5, weight: FontWeight.w500, color: p.text3)),
             ],
           ),
         ),
+        const SizedBox(height: 20),
+
+        SectionHeader(title: '提醒'),
+        const SizedBox(height: 10),
+        CDCard(
+          padding: const EdgeInsets.all(6),
+          child: Column(
+            children: [
+              _toggle(p, Icons.medication_outlined, '用藥時間輕震提醒', medReminder, (v) => setState(() => medReminder = v)),
+              _divider(p),
+              _toggle(p, Icons.directions_walk, '久坐提醒（等候時）', sitReminder, (v) => setState(() => sitReminder = v)),
+              _divider(p),
+              _toggle(p, Icons.vibration, '震動回饋', hapticsOn, (v) => setState(() => hapticsOn = v)),
+            ],
+          ),
+        ),
+        const SizedBox(height: 14),
+
+        SectionHeader(title: '外觀'),
+        const SizedBox(height: 10),
+        CDCard(
+          padding: const EdgeInsets.all(6),
+          child: _toggle(p, Icons.dark_mode_outlined, '深色模式', isDark,
+              (v) => s.setThemePref(v ? ThemePref.dark : ThemePref.light)),
+        ),
+        const SizedBox(height: 14),
+
+        SectionHeader(title: '帳號'),
+        const SizedBox(height: 10),
+        CDCard(
+          padding: const EdgeInsets.all(6),
+          child: Column(
+            children: [
+              _nav(p, Icons.mail_outline, email, chevron: false),
+              _divider(p),
+              _nav(p, Icons.credit_card, '方案：免費（剩 1 次照護時段）',
+                  onTap: () => showCDSheet(context, title: '方案與計費', body: _pricingBody(p))),
+            ],
+          ),
+        ),
+        const SizedBox(height: 14),
+
+        SectionHeader(title: '關於與隱私'),
+        const SizedBox(height: 10),
+        CDCard(
+          padding: const EdgeInsets.all(6),
+          child: Column(
+            children: [
+              _nav(p, Icons.lock_outline, '隱私政策',
+                  onTap: () => showCDSheet(context, title: '隱私政策', body: _privacyBody(p))),
+              _divider(p),
+              _nav(p, Icons.article_outlined, '使用者同意書',
+                  onTap: () => showCDSheet(context, title: '使用者同意書', body: _consentBody(p))),
+              _divider(p),
+              _nav(p, Icons.info_outline, '關於 Carrius v0.1 POC',
+                  onTap: () => showCDSheet(context, title: '關於 Carrius', body: _aboutBody(p))),
+            ],
+          ),
+        ),
+        const SizedBox(height: 14),
+        Text('醫療資料只存在你的手機。伺服器只知道你的 email 和付費狀態。',
+            textAlign: TextAlign.center, style: CDText.body(11.5, weight: FontWeight.w500, color: p.text3)),
       ],
     );
   }
