@@ -240,6 +240,7 @@ class GardenScreen extends StatelessWidget {
 
   Widget _activityCard(BuildContext context, GardenActivity a) {
     final p = PaletteScope.of(context);
+    final done = state.activityDone(a.title);
     final cardBg = p.brightness == Brightness.dark ? p.surface : Color.alphaBlend(a.tint.withValues(alpha: 0.10), CD.cream);
     final blobBg = p.brightness == Brightness.dark
         ? a.tint.withValues(alpha: 0.22)
@@ -274,28 +275,43 @@ class GardenScreen extends StatelessWidget {
             ),
             Row(
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: CD.cream.withValues(alpha: 0.72),
-                    borderRadius: BorderRadius.circular(999),
+                if (done)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(color: CD.success.withValues(alpha: 0.18), borderRadius: BorderRadius.circular(999)),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.check_circle, size: 11, color: CD.success),
+                        const SizedBox(width: 3),
+                        Text('已完成', style: CDText.body(9.5, weight: FontWeight.w800, color: CD.success)),
+                      ],
+                    ),
+                  )
+                else
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: CD.cream.withValues(alpha: 0.72),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('+${a.sun}', style: CDText.display(10, color: _sunOrange)),
+                        const SizedBox(width: 2),
+                        const Icon(Icons.wb_sunny_outlined, size: 10, color: _sunOrange),
+                      ],
+                    ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('+${a.sun}', style: CDText.display(10, color: _sunOrange)),
-                      const SizedBox(width: 2),
-                      const Icon(Icons.wb_sunny_outlined, size: 10, color: _sunOrange),
-                    ],
-                  ),
-                ),
                 const SizedBox(width: 6),
-                Flexible(
-                  child: Text(a.chem,
-                      style: CDText.body(9.5, weight: FontWeight.w800, color: p.text3),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
-                ),
+                if (!done)
+                  Flexible(
+                    child: Text(a.chem,
+                        style: CDText.body(9.5, weight: FontWeight.w800, color: p.text3),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                  ),
               ],
             ),
           ],
@@ -317,7 +333,7 @@ class GardenScreen extends StatelessWidget {
         onMoodCard();
       case HappyKind.exercise:
       case HappyKind.challenge:
-        state.completeTask(HappyTask(a.title, a.guide, a.sun, a.kind));
+        state.completeActivity(a.title, a.sun);
     }
   }
 

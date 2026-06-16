@@ -53,7 +53,10 @@ class HomeScreen extends StatelessWidget {
           _heroEventCard(_nextEvent!),
           const SizedBox(height: 20),
         ],
-        SectionHeader(title: '今日用藥', trailing: '識別卡', onTap: () => state.setTab(AppTab.documents)),
+        SectionHeader(title: '今日用藥', trailing: '識別卡', onTap: () {
+          state.setDocumentsTab(1);
+          state.setTab(AppTab.documents);
+        }),
         const SizedBox(height: 10),
         _medProgressCard(p, s),
         const SizedBox(height: 20),
@@ -196,6 +199,7 @@ class HomeScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Haptics.light();
+        state.setDocumentsTab(1);
         state.setTab(AppTab.documents);
       },
       child: CDCard(
@@ -361,8 +365,19 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 7),
-                  Text('$sun / ${TreeStage.bloom.threshold} ☀ · ${species.tagline}',
-                      style: CDText.body(11, weight: FontWeight.w600, color: green)),
+                  Row(
+                    children: [
+                      Text('$sun / ${TreeStage.bloom.threshold} ',
+                          style: CDText.body(11, weight: FontWeight.w600, color: green)),
+                      Icon(Icons.wb_sunny_outlined, size: 12, color: green),
+                      Flexible(
+                        child: Text(' · ${species.tagline}',
+                            style: CDText.body(11, weight: FontWeight.w600, color: green),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

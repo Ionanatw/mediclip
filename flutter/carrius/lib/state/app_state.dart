@@ -22,6 +22,13 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  // 文件分頁的分段（0=文件清單，1=藥品圖鑑）；首頁「識別卡」可深連到圖鑑
+  int documentsTab = 0;
+  void setDocumentsTab(int i) {
+    documentsTab = i;
+    notifyListeners();
+  }
+
   CareSession session = MockData.session();
   int careDays = 47;
 
@@ -118,6 +125,32 @@ class AppState extends ChangeNotifier {
   void toggleChecklist(ChecklistItem item) {
     item.done = !item.done;
     if (item.done) Haptics.success();
+    notifyListeners();
+  }
+
+  // 花園快樂活動完成態（exercise/challenge 類卡片用 title 當 key），擋重複加陽光、給卡片打勾
+  final Set<String> doneActivities = {};
+  bool activityDone(String key) => doneActivities.contains(key);
+  void completeActivity(String key, int sun) {
+    if (doneActivities.contains(key)) return;
+    doneActivities.add(key);
+    idleDays = 0;
+    final gain = sun.clamp(0, (15 - sunToday).clamp(0, 15));
+    if (gain == 0 || allGrown) {
+      sunToday += gain;
+      Haptics.success();
+      notifyListeners();
+      return;
+    }
+    final cur = currentSpecies;
+    final before = stage;
+    sunToday += gain;
+    treeSun[cur] = (sunFor(cur) + gain).clamp(0, TreeStage.bloom.threshold);
+    if (stage != before || isGrown(cur)) {
+      Haptics.levelUp();
+    } else {
+      Haptics.success();
+    }
     notifyListeners();
   }
 

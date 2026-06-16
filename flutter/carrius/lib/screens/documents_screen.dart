@@ -16,8 +16,6 @@ class DocumentsScreen extends StatefulWidget {
 }
 
 class _DocumentsScreenState extends State<DocumentsScreen> {
-  int _seg = 0;
-
   List<String> get _phases {
     final seen = <String>{};
     return [for (final d in widget.state.session.documents) if (seen.add(d.phase)) d.phase];
@@ -40,7 +38,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
         ),
         Expanded(
           child: IndexedStack(
-            index: _seg,
+            index: widget.state.documentsTab,
             children: [
               _docsList(context, p),
               DrugAtlasScreen(state: widget.state),
@@ -52,11 +50,11 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
   }
 
   Widget _segPill(Palette p, int i, String label) {
-    final on = _seg == i;
+    final on = widget.state.documentsTab == i;
     return GestureDetector(
       onTap: () {
         Haptics.light();
-        setState(() => _seg = i);
+        widget.state.setDocumentsTab(i);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
