@@ -197,6 +197,10 @@ void main() {
     final doc = homeState()..tab = AppTab.documents;
     await shootSheet(tester, '22-doc-detail', _frame(DocumentsScreen(state: doc)),
         find.text(doc.session.documents.first.title));
+    final gf = homeState()..tab = AppTab.garden;
+    await shootSheet(tester, '23-forest',
+        _frame(GardenScreen(state: gf, onBreathing: () {}, onGratitude: () {}, onMoodCard: () {})),
+        find.text('看全部'));
     // 深色模式驗證（新 sheet 用 palette token，理應自適應）
     await shootSheet(tester, 'dark-sheet-privacy', _frame(SettingsScreen(onClose: () {}), palette: Palette.dark),
         find.text('隱私政策'));

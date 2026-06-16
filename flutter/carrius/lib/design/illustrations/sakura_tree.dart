@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../tokens.dart';
 
-/// 成長階段（對應 SwiftUI TreeStage）
+/// 成長階段（所有樹種共用，門檻對齊 PRD：0/20/60/120/200）
 enum TreeStage {
   seed(0, '種子'),
   sprout(20, '發芽'),
@@ -23,20 +23,73 @@ enum TreeStage {
   }
 }
 
-/// 櫻花樹（A 描邊錯位塗鴉風）— ⚠️ 已知佔位，鴿王將以樂高/抽象概念替換。
+/// POC 三棵樹（依序解鎖）。新增品種 = 加一筆 enum + 一組 TreePalette（JSON-config 精神）。
+enum TreeSpecies {
+  sakura('櫻花樹', '療癒的開始', '註冊即可開始'),
+  tea('茶樹', '泡杯茶，休息一下', '第 1 棵長成後解鎖'),
+  orange('橘子樹', '照護旅程的收穫', '第 2 棵長成後解鎖');
+
+  const TreeSpecies(this.nameZh, this.tagline, this.unlockHint);
+  final String nameZh;
+  final String tagline;
+  final String unlockHint;
+
+  // 荒廢訊息（溫和，永不死亡）
+  static const idle3d = '我有點渴了…';
+  static const idle7d = '沒關係，你先忙，我等你';
+  static const idle14d = '我還在這裡。';
+}
+
+/// 樹種美術配色（描邊塗鴉風）。⚠️ 佔位，待鴿王拍板樹概念後替換，架構不變。
+class TreePalette {
+  final Color canopy, canopyInner, accentDot, fruit;
+  const TreePalette({
+    required this.canopy,
+    required this.canopyInner,
+    required this.accentDot,
+    this.fruit = const Color(0x00000000),
+  });
+
+  static const sakura = TreePalette(canopy: CD.pink, canopyInner: CD.pinkLight, accentDot: CD.pinkHot);
+  static const tea = TreePalette(
+      canopy: Color(0xFF8FD3A6), canopyInner: Color(0xFFCFEDD9), accentDot: CD.cream);
+  static const orange = TreePalette(
+      canopy: Color(0xFF8ACB97), canopyInner: Color(0xFFC9E8CC), accentDot: Color(0xFFFFFFFF), fruit: Color(0xFFFF9D42));
+
+  static TreePalette of(TreeSpecies s) => switch (s) {
+        TreeSpecies.sakura => sakura,
+        TreeSpecies.tea => tea,
+        TreeSpecies.orange => orange,
+      };
+}
+
+/// 養成樹（描邊錯位塗鴉風）。依品種換配色與結果裝飾。
+class GardenTree extends StatelessWidget {
+  final TreeSpecies species;
+  final TreeStage stage;
+  const GardenTree({super.key, this.species = TreeSpecies.sakura, required this.stage});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(painter: _TreePainter(species, stage), size: Size.infinite);
+  }
+}
+
+/// 櫻花樹（向後相容：welcome 頁與 golden 用）。
 class SakuraTree extends StatelessWidget {
   final TreeStage stage;
   const SakuraTree({super.key, required this.stage});
 
   @override
-  Widget build(BuildContext context) {
-    return CustomPaint(painter: _TreePainter(stage), size: Size.infinite);
-  }
+  Widget build(BuildContext context) => GardenTree(species: TreeSpecies.sakura, stage: stage);
 }
 
 class _TreePainter extends CustomPainter {
+  final TreeSpecies species;
   final TreeStage stage;
-  _TreePainter(this.stage);
+  _TreePainter(this.species, this.stage);
+
+  TreePalette get pal => TreePalette.of(species);
 
   static const double _design = 300;
   static const double _lineW = 9;
@@ -102,7 +155,7 @@ class _TreePainter extends CustomPainter {
     _fillOffset(c, mound, CD.accentSoft, dx: 5, dy: -4);
     _strokePath(c, mound, width: 5);
     final seed = Path()..addOval(const Rect.fromLTWH(138, 196, 26, 32));
-    _fillOffset(c, seed, CD.pink, dx: 4, dy: -4);
+    _fillOffset(c, seed, pal.canopy, dx: 4, dy: -4);
     _strokePath(c, seed, width: 5);
   }
 
@@ -123,7 +176,7 @@ class _TreePainter extends CustomPainter {
     _leaf(c, const Offset(148, 190), -1, 46);
     _leaf(c, const Offset(148, 168), 1, 52);
     final bud = _cloudPath(148, 132, 34, 26);
-    _fillOffset(c, bud, CD.pinkLight, dx: 6, dy: -6);
+    _fillOffset(c, bud, pal.canopyInner, dx: 6, dy: -6);
     _strokePath(c, bud, width: 5);
   }
 
@@ -142,21 +195,35 @@ class _TreePainter extends CustomPainter {
     _strokePath(c, b2, width: 7);
 
     final canopy = _cloudPath(150, 96, 86, 56);
-    _fillOffset(c, canopy, CD.pink);
+    _fillOffset(c, canopy, pal.canopy);
     _strokePath(c, canopy, width: 5.5);
     final inner = _cloudPath(158, 88, 44, 28);
-    _fillOffset(c, inner, CD.pinkLight, dx: 6, dy: -6);
+    _fillOffset(c, inner, pal.canopyInner, dx: 6, dy: -6);
 
     for (final pt in const [Offset(116, 102), Offset(184, 76), Offset(150, 118)]) {
-      c.drawCircle(pt, 3.5, Paint()..color = CD.pinkHot);
+      c.drawCircle(pt, 3.5, Paint()..color = pal.accentDot);
     }
 
-    if (full) {
-      for (final pt in const [Offset(104, 88), Offset(170, 60), Offset(196, 104)]) {
-        _blossom(c, pt);
-      }
-      _petal(c, const Offset(232, 176), 0.4);
-      _petal(c, const Offset(70, 196), -0.5);
+    if (full) _decorate(c);
+  }
+
+  /// 大樹結果裝飾，依品種：櫻花＝花瓣、茶樹＝白花點、橘子＝橘子果實
+  void _decorate(Canvas c) {
+    switch (species) {
+      case TreeSpecies.sakura:
+        for (final pt in const [Offset(104, 88), Offset(170, 60), Offset(196, 104)]) {
+          _blossom(c, pt);
+        }
+        _petal(c, const Offset(232, 176), 0.4);
+        _petal(c, const Offset(70, 196), -0.5);
+      case TreeSpecies.tea:
+        for (final pt in const [Offset(104, 88), Offset(170, 60), Offset(196, 104), Offset(138, 78)]) {
+          _teaFlower(c, pt);
+        }
+      case TreeSpecies.orange:
+        for (final pt in const [Offset(108, 96), Offset(176, 70), Offset(196, 110)]) {
+          _orangeFruit(c, pt);
+        }
     }
   }
 
@@ -208,6 +275,34 @@ class _TreePainter extends CustomPainter {
     c.drawCircle(center, 2.4, Paint()..color = CD.lemon);
   }
 
+  /// 茶樹小白花（五瓣，黃蕊，較櫻花小巧）
+  void _teaFlower(Canvas c, Offset center) {
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..color = CD.plum
+      ..strokeWidth = 2;
+    for (var i = 0; i < 5; i++) {
+      final a = i / 5 * 2 * math.pi - math.pi / 2;
+      final o = Offset(center.dx + math.cos(a) * 4.4, center.dy + math.sin(a) * 4.4);
+      c.drawCircle(o, 3.4, Paint()..color = CD.cream);
+      c.drawCircle(o, 3.4, stroke);
+    }
+    c.drawCircle(center, 2, Paint()..color = CD.caution);
+  }
+
+  /// 橘子果實（橘圓 + 描邊 + 高光）
+  void _orangeFruit(Canvas c, Offset center) {
+    c.drawCircle(center, 8, Paint()..color = pal.fruit);
+    c.drawCircle(
+        center,
+        8,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..color = CD.plum
+          ..strokeWidth = 2.6);
+    c.drawCircle(center.translate(-2.4, -2.6), 2, Paint()..color = CD.cream.withValues(alpha: 0.7));
+  }
+
   void _petal(Canvas c, Offset center, double rotation) {
     final p = Path()
       ..moveTo(0, 0)
@@ -216,7 +311,7 @@ class _TreePainter extends CustomPainter {
     c.save();
     c.translate(center.dx, center.dy);
     c.rotate(rotation);
-    c.drawPath(p, Paint()..color = CD.pink);
+    c.drawPath(p, Paint()..color = pal.canopy);
     c.restore();
   }
 
@@ -240,5 +335,5 @@ class _TreePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_TreePainter old) => old.stage != stage;
+  bool shouldRepaint(_TreePainter old) => old.stage != stage || old.species != species;
 }

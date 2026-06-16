@@ -361,7 +361,10 @@ Future<void> showCDSheet(BuildContext context, {required String title, required 
     backgroundColor: Colors.transparent,
     builder: (ctx) {
       final media = MediaQuery.of(ctx);
-      return Container(
+      // modal route 在 PaletteScope 之上，內文需重新提供色票，否則深色模式 sheet 內文會用到淺色
+      return PaletteScope(
+        palette: p,
+        child: Container(
         constraints: BoxConstraints(maxHeight: media.size.height * 0.82),
         decoration: BoxDecoration(
           color: p.surface,
@@ -405,6 +408,7 @@ Future<void> showCDSheet(BuildContext context, {required String title, required 
             ),
           ],
         ),
+      ),
       );
     },
   );

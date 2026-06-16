@@ -30,18 +30,30 @@ class GardenScreen extends StatelessWidget {
     final prev = state.stage.threshold.toDouble();
     final next = state.nextThreshold.toDouble();
     if (next <= prev) return 1;
-    return (state.sunTotal - prev) / (next - prev);
+    return (state.currentSun - prev) / (next - prev);
   }
 
   @override
   Widget build(BuildContext context) {
     final p = PaletteScope.of(context);
+    final cur = state.currentSpecies;
+    final treeNo = state.allGrown ? TreeSpecies.values.length : state.grownSpecies.length + 1;
+    final idle = state.idleMessage;
     return ListView(
       padding: const EdgeInsets.fromLTRB(18, 12, 18, 120),
       children: [
-        PageHeader(kicker: '快樂花園 · 第 1 棵', title: '你的櫻花樹'),
+        PageHeader(
+          kicker: '快樂花園 · 第 $treeNo 棵 / ${TreeSpecies.values.length}',
+          title: state.allGrown ? '你的快樂森林' : '你的${cur.nameZh}',
+        ),
         const SizedBox(height: 14),
-        SizedBox(height: 220, child: SakuraTree(stage: state.stage)),
+        SizedBox(height: 220, child: GardenTree(species: cur, stage: state.stage)),
+        if (idle != null) ...[
+          const SizedBox(height: 6),
+          Center(
+            child: Text(idle, style: CDText.body(12.5, weight: FontWeight.w600, color: p.text2)),
+          ),
+        ],
         const SizedBox(height: 14),
         CDCard(
           padding: const EdgeInsets.all(14),
@@ -52,20 +64,32 @@ class GardenScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.alphabetic,
                 children: [
-                  Text('${state.stage.label}期 · 陽光 ${state.sunTotal}', style: CDText.title(14, color: p.text)),
+                  Text(
+                      state.allGrown
+                          ? '三棵都長成了'
+                          : '${state.stage.label}期 · 陽光 ${state.currentSun} / 200',
+                      style: CDText.title(14, color: p.text)),
                   const Spacer(),
-                  Text('距離$_nextStageName ${(state.nextThreshold - state.sunTotal).clamp(0, 999)}',
-                      style: CDText.body(11.5, weight: FontWeight.w700, color: p.text2)),
+                  if (!state.allGrown)
+                    Text('距離$_nextStageName ${(state.nextThreshold - state.currentSun).clamp(0, 999)}',
+                        style: CDText.body(11.5, weight: FontWeight.w700, color: p.text2)),
                 ],
               ),
               const SizedBox(height: 8),
               SunProgressBar(value: _progress),
               const SizedBox(height: 8),
-              Text('今日陽光 ${state.sunToday} / 15 · 連續 ${state.streak} 天',
+              Text(
+                  state.allGrown
+                      ? '更多品種即將到來 · 今日陽光 ${state.sunToday} / 15'
+                      : '${cur.tagline} · 今日陽光 ${state.sunToday} / 15 · 連續 ${state.streak} 天',
                   style: CDText.body(11.5, weight: FontWeight.w500, color: p.text2)),
             ],
           ),
         ),
+        const SizedBox(height: 14),
+        SectionHeader(title: '快樂森林', trailing: '看全部', onTap: () => _openForest(context)),
+        const SizedBox(height: 10),
+        _forestRow(context, p),
         const SizedBox(height: 14),
         SectionHeader(title: '今天的快樂任務'),
         const SizedBox(height: 10),
@@ -103,6 +127,125 @@ class GardenScreen extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  // 快樂森林：3 樹種一列（已長成／養成中／未解鎖）
+  Widget _forestRow(BuildContext context, Palette p) {
+    return Row(
+      children: [
+        for (final s in TreeSpecies.values) ...[
+          Expanded(child: _speciesTile(context, p, s)),
+          if (s != TreeSpecies.values.last) const SizedBox(width: 8),
+        ],
+      ],
+    );
+  }
+
+  Widget _speciesTile(BuildContext context, Palette p, TreeSpecies s) {
+    final grown = state.isGrown(s);
+    final unlocked = state.isUnlocked(s);
+    return GestureDetector(
+      onTap: () => _openForest(context),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: p.surface,
+          borderRadius: BorderRadius.circular(CD.rRow),
+          border: Border.all(color: grown ? CD.accent.withValues(alpha: 0.4) : p.cardBorder, width: 1),
+        ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 56,
+              child: unlocked
+                  ? GardenTree(species: s, stage: grown ? TreeStage.bloom : state.stage)
+                  : Center(child: Icon(Icons.lock_outline, size: 18, color: p.text3)),
+            ),
+            const SizedBox(height: 4),
+            Text(s.nameZh, style: CDText.body(11.5, weight: FontWeight.w800, color: unlocked ? p.text : p.text3)),
+            const SizedBox(height: 2),
+            Text(
+              grown ? '已長成' : (unlocked ? '${state.sunFor(s)}/200' : '未解鎖'),
+              style: CDText.body(10, weight: FontWeight.w700, color: grown ? CD.accent : p.text3),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _openForest(BuildContext context) {
+    Haptics.light();
+    showCDSheet(context, title: '快樂森林', body: _forestBody(context));
+  }
+
+  Widget _forestBody(BuildContext context) {
+    final p = PaletteScope.of(context);
+    final grownCount = state.grownSpecies.length;
+    final scene = grownCount <= 1
+        ? '空地上種著你的樹'
+        : grownCount == 2
+            ? '兩棵樹之間多了一條小路'
+            : '柵欄圍起小花園，蝴蝶飛來了';
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SheetParagraph('完成快樂任務累積陽光，每棵樹 200 陽光長成，長成後解鎖下一棵。樹永遠不會死亡，荒廢只會垂頭打瞌睡。'),
+        const SizedBox(height: 6),
+        for (final s in TreeSpecies.values) _forestSpeciesRow(p, s),
+        const SizedBox(height: 14),
+        Row(
+          children: [
+            const Icon(Icons.park_outlined, size: 15, color: CD.success),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text('森林場景：$scene（已長成 $grownCount / ${TreeSpecies.values.length}）',
+                  style: CDText.body(12.5, weight: FontWeight.w500, color: p.text2)),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _forestSpeciesRow(Palette p, TreeSpecies s) {
+    final grown = state.isGrown(s);
+    final unlocked = state.isUnlocked(s);
+    final status = grown ? '已長成 · 收進森林' : (unlocked ? '養成中 ${state.sunFor(s)} / 200' : '尚未解鎖 · ${s.unlockHint}');
+    return Container(
+      margin: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: p.surface2,
+        borderRadius: BorderRadius.circular(CD.rRow),
+        border: Border.all(color: grown ? CD.accent.withValues(alpha: 0.4) : p.cardBorder, width: 1),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 52,
+            height: 52,
+            child: unlocked
+                ? GardenTree(species: s, stage: grown ? TreeStage.bloom : state.stage)
+                : Center(child: Icon(Icons.lock_outline, size: 18, color: p.text3)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(s.nameZh, style: CDText.title(14, color: unlocked ? p.text : p.text3)),
+                const SizedBox(height: 2),
+                Text(status, style: CDText.body(11.5, weight: FontWeight.w600, color: grown ? CD.accent : p.text2)),
+                const SizedBox(height: 1),
+                Text(s.tagline, style: CDText.body(10.5, weight: FontWeight.w500, color: p.text3)),
+              ],
+            ),
+          ),
+          if (grown) const Icon(Icons.check_circle, size: 18, color: CD.accent),
+        ],
+      ),
     );
   }
 
