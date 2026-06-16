@@ -149,6 +149,21 @@ void main() {
     await shoot(tester, 'dark-home', _frame(HomeScreen(state: h, onOpenGarden: () {}, onOpenChecklist: () {}, onOpenSettings: () {}), palette: Palette.dark, tabBar: true, state: h));
     final g = homeState()..tab = AppTab.garden;
     await shoot(tester, 'dark-garden', _frame(GardenScreen(state: g, onBreathing: () {}, onGratitude: () {}, onMoodCard: () {}), palette: Palette.dark, tabBar: true, state: g));
+
+    // 補齊深色覆蓋（稽核項 E：原本只測 2 張）
+    final cal = homeState()..tab = AppTab.calendar;
+    await shoot(tester, 'dark-calendar', _frame(CalendarScreen(state: cal), palette: Palette.dark, tabBar: true, state: cal));
+    final atlas = homeState()..tab = AppTab.atlas;
+    await shoot(tester, 'dark-atlas', _frame(DrugAtlasScreen(state: atlas), palette: Palette.dark, tabBar: true, state: atlas));
+    final docs = homeState()..tab = AppTab.documents;
+    await shoot(tester, 'dark-documents', _frame(DocumentsScreen(state: docs), palette: Palette.dark, tabBar: true, state: docs));
+    await shoot(tester, 'dark-results', _frame(ResultsScreen(state: homeState(), onClose: () {}, onOpenMed: (_) {}, onOpenPoster: () {}, onFinish: () {}), palette: Palette.dark), size: const Size(393, 1100));
+    await shoot(tester, 'dark-medcard', _frame(MedCardScreen(med: MockData.medications()[0], onClose: () {}), palette: Palette.dark), size: const Size(393, 1000));
+    final up = homeState()..pickedCount = 3;
+    await shoot(tester, 'dark-upload', _frame(UploadScreen(state: up, onClose: () {}, onStart: () {}), palette: Palette.dark), size: const Size(393, 1000));
+    await shoot(tester, 'dark-poster', _frame(PosterScreen(state: homeState(), onClose: () {}), palette: Palette.dark), size: const Size(393, 1000));
+    await shoot(tester, 'dark-checklist', _frame(ChecklistScreen(state: homeState(), onClose: () {}), palette: Palette.dark), size: const Size(393, 1000));
+    await shoot(tester, 'dark-breathing', _frame(BreathingScreen(onClose: () {}), palette: Palette.dark));
   });
 
   testWidgets('tree stages', (tester) async {

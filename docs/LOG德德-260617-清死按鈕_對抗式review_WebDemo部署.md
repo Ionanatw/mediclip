@@ -88,6 +88,10 @@
 | 9 | Flutter Web 平台支援 | scaffold | flutter/carrius/web/ | ✅ |
 | 10 | **Live Demo** | 部署 | https://ionanatw.github.io/mediclip/ | ✅ |
 | 11 | 6 張 golden 更新 | assets | test/goldens/{04,06,08,10,12,17} | ✅ |
+| 12 | 新 sheet/內容頁 golden（light+dark，看圖驗收+回歸） | test | test/goldens/{19,20,21,22,dark-sheet-*} | ✅ |
+| 13 | 深色覆蓋補齊（稽核項 E：原只測 2 張→現 13 張） | test | test/goldens/dark-* | ✅ |
+
+> 📌 demo 部署後追加 QA（鴿王「keep on」）：補上新 sheet 的 light+dark golden、把深色模式從只測 2 張擴到 13 張（calendar/atlas/documents/results/medcard/upload/poster/checklist/breathing + 2 sheet）。**深色全程健康、零硬編色 bug**（app 一致用 Palette token）。測試數 12→14 全綠。goldens 不影響 web build，live demo 不需重部署。
 
 死碼清單：`Medication.photoAsset`/`appearanceSource`/`appearanceVerified`、`TreeStageRef` enum、`AppState.noteText`/`gratitudeText`（圖鑑 `DrugFull` 同名欄位保留）。
 
