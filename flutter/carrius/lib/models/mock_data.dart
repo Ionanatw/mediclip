@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'models.dart';
 
 /// 擬真化療出院衛教單整理結果（mock，貫穿全畫面）。
@@ -86,6 +87,39 @@ class MockData {
         HappyTask('頸部伸展一組', '2 分鐘微運動', 3, HappyKind.exercise),
         HappyTask('小挑戰：跟一位陌生人微笑', '微辣', 3, HappyKind.challenge),
         HappyTask('分享心情小卡', '給家人或朋友', 1, HappyKind.share),
+      ];
+
+  // 花園頁分組快樂活動（對齊 docs/carrius-garden-full.html mockup）。
+  // tint 為各卡的色相基準，卡片背景與圖塊以此調淡。
+  static const _blue = Color(0xFF3F7BC4);
+  static const _green = Color(0xFF2E8B72);
+  static const _amber = Color(0xFFC2872E);
+  static const _purple = Color(0xFF6B5FC0);
+  static const _pink = Color(0xFFC75E8A);
+  static const _olive = Color(0xFF5C8A2A);
+  static const _coral = Color(0xFFC26A45);
+
+  static List<GardenActivityGroup> happyActivities() => const [
+        GardenActivityGroup('想放鬆一下', '安撫神經、補一點血清素', [
+          GardenActivity(icon: Icons.air, tint: _blue, title: '478 呼吸', guide: '吸4 停7 吐8，3 分鐘', chem: '血清素', sun: 2, kind: HappyKind.breathing),
+          GardenActivity(icon: Icons.self_improvement, tint: _green, title: '身體掃描', guide: '從頭到腳放鬆 2 分鐘', chem: '副交感', sun: 2, kind: HappyKind.exercise),
+          GardenActivity(icon: Icons.visibility_outlined, tint: _amber, title: '五感著陸', guide: '看4 摸3 聽2，回到當下', chem: '焦慮↓', sun: 2, kind: HappyKind.exercise),
+          GardenActivity(icon: Icons.local_cafe_outlined, tint: _purple, title: '慢慢喝杯茶', guide: '專心感受溫度與香氣', chem: '正念', sun: 1, kind: HappyKind.exercise),
+          GardenActivity(icon: Icons.music_note_outlined, tint: _pink, title: '聽一首歌', guide: '放你最近喜歡的那首', chem: '多巴胺', sun: 1, kind: HappyKind.exercise),
+        ]),
+        GardenActivityGroup('想振奮一點', '動起來、給自己一點成就感', [
+          GardenActivity(icon: Icons.accessibility_new, tint: _olive, title: '微運動伸展', guide: '頸肩一組，2 分鐘', chem: '腦內啡', sun: 3, kind: HappyKind.exercise),
+          GardenActivity(icon: Icons.wb_sunny_outlined, tint: _amber, title: '曬太陽散步', guide: '出門走 10 分鐘', chem: '血清素', sun: 3, kind: HappyKind.exercise),
+          GardenActivity(icon: Icons.flag_outlined, tint: _blue, title: '寫個小目標', guide: '今天想完成的一件小事', chem: '多巴胺', sun: 2, kind: HappyKind.exercise),
+          GardenActivity(icon: Icons.celebration_outlined, tint: _coral, title: '慶祝小成就', guide: '記下一件做得不錯的', chem: '多巴胺', sun: 2, kind: HappyKind.exercise),
+          GardenActivity(icon: Icons.sentiment_satisfied_alt_outlined, tint: _pink, title: '舒適圈小挑戰', guide: '微辣：跟一個人微笑', chem: '腎上腺素', sun: 3, kind: HappyKind.challenge),
+        ]),
+        GardenActivityGroup('想被在乎、被連結', '和人靠近一點，補催產素', [
+          GardenActivity(icon: Icons.chat_bubble_outline, tint: _pink, title: '跟家人說說話', guide: '傳一則訊息或打給他', chem: '催產素', sun: 2, kind: HappyKind.share),
+          GardenActivity(icon: Icons.volunteer_activism_outlined, tint: _purple, title: '給自己一個擁抱', guide: '雙手環抱 20 秒', chem: '催產素', sun: 1, kind: HappyKind.exercise),
+          GardenActivity(icon: Icons.menu_book_outlined, tint: _green, title: '寫一件感恩', guide: '今天讓你鬆口氣的小事', chem: '血清素', sun: 2, kind: HappyKind.gratitude),
+          GardenActivity(icon: Icons.photo_outlined, tint: _amber, title: '翻一張老照片', guide: '想一段溫暖的回憶', chem: '催產素', sun: 1, kind: HappyKind.exercise),
+        ]),
       ];
 
   static final moodCards = [

@@ -88,6 +88,33 @@ class HappyTask {
   HappyTask(this.title, this.subtitle, this.sun, this.kind, {this.done = false});
 }
 
+/// 花園頁的快樂活動卡（依「想放鬆／想振奮／想被在乎」分組橫向滑動）。
+/// kind 決定點擊路由：breathing→呼吸、gratitude→感恩、share→心情小卡，
+/// 其餘（exercise/challenge）走 state.completeTask。
+class GardenActivity {
+  final IconData icon;
+  final Color tint; // 圖示底色基準（卡片背景與圖塊以此調出）
+  final String title, guide, chem;
+  final int sun;
+  final HappyKind kind;
+  const GardenActivity({
+    required this.icon,
+    required this.tint,
+    required this.title,
+    required this.guide,
+    required this.chem,
+    required this.sun,
+    required this.kind,
+  });
+}
+
+/// 一組活動（含分組標題與引導）。
+class GardenActivityGroup {
+  final String title, subtitle;
+  final List<GardenActivity> activities;
+  const GardenActivityGroup(this.title, this.subtitle, this.activities);
+}
+
 class MoodCard {
   final String text, author;
   MoodCard(this.text, this.author);
