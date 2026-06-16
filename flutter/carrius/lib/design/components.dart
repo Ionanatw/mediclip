@@ -478,8 +478,6 @@ class FlowTopBar extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(18, 14, 18, 0),
       child: Row(
         children: [
-          Text(title, style: CDText.title(16, color: p.text)),
-          const Spacer(),
           GestureDetector(
             onTap: () {
               Haptics.light();
@@ -489,9 +487,11 @@ class FlowTopBar extends StatelessWidget {
               width: 34,
               height: 34,
               decoration: BoxDecoration(color: p.surface2, shape: BoxShape.circle),
-              child: Icon(Icons.close, size: 15, color: p.text2),
+              child: Icon(Icons.arrow_back, size: 18, color: p.text2),
             ),
           ),
+          const SizedBox(width: 12),
+          Text(title, style: CDText.title(16, color: p.text)),
         ],
       ),
     );

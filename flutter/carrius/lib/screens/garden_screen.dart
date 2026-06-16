@@ -488,7 +488,6 @@ class MoodCardScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(18),
                 child: Row(
                   children: [
-                    const Spacer(),
                     GestureDetector(
                       onTap: () {
                         Haptics.light();
@@ -498,9 +497,10 @@ class MoodCardScreen extends StatelessWidget {
                         width: 34,
                         height: 34,
                         decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.15), shape: BoxShape.circle),
-                        child: const Icon(Icons.close, size: 15, color: CD.cream),
+                        child: const Icon(Icons.arrow_back, size: 18, color: CD.cream),
                       ),
                     ),
+                    const Spacer(),
                   ],
                 ),
               ),

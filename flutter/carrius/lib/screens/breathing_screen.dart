@@ -116,9 +116,6 @@ class _BreathingScreenState extends State<BreathingScreen> with SingleTickerProv
                 padding: const EdgeInsets.all(18),
                 child: Row(
                   children: [
-                    Text('478 呼吸法 · 第 ${(_round + 1).clamp(1, _totalRounds)} / $_totalRounds 輪',
-                        style: CDText.body(13, weight: FontWeight.w900, color: CD.cream.withValues(alpha: 0.85))),
-                    const Spacer(),
                     GestureDetector(
                       onTap: () {
                         Haptics.light();
@@ -128,9 +125,12 @@ class _BreathingScreenState extends State<BreathingScreen> with SingleTickerProv
                         width: 34,
                         height: 34,
                         decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.15), shape: BoxShape.circle),
-                        child: const Icon(Icons.close, size: 15, color: CD.cream),
+                        child: const Icon(Icons.arrow_back, size: 18, color: CD.cream),
                       ),
                     ),
+                    const SizedBox(width: 12),
+                    Text('478 呼吸法 · 第 ${(_round + 1).clamp(1, _totalRounds)} / $_totalRounds 輪',
+                        style: CDText.body(13, weight: FontWeight.w900, color: CD.cream.withValues(alpha: 0.85))),
                   ],
                 ),
               ),
