@@ -29,7 +29,7 @@ class GardenScreen extends StatelessWidget {
     final p = PaletteScope.of(context);
     final groups = MockData.happyActivities();
     return ListView(
-      padding: const EdgeInsets.fromLTRB(0, 12, 0, 120),
+      padding: const EdgeInsets.fromLTRB(0, 12, 0, 150),
       children: [
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 18),
@@ -226,14 +226,24 @@ class GardenScreen extends StatelessWidget {
   }
 
   Widget _rail(BuildContext context, GardenActivityGroup g) {
+    // 右緣漸層遮罩：把最右卡片淡出，暗示「還有更多、可橫滑」（取代硬切在字中間）。
     return SizedBox(
       height: 138,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 18),
-        itemCount: g.activities.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 11),
-        itemBuilder: (ctx, i) => _activityCard(ctx, g.activities[i]),
+      child: ShaderMask(
+        shaderCallback: (rect) => const LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [Colors.white, Colors.white, Colors.transparent],
+          stops: [0, 0.9, 1.0],
+        ).createShader(rect),
+        blendMode: BlendMode.dstIn,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 18),
+          itemCount: g.activities.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 11),
+          itemBuilder: (ctx, i) => _activityCard(ctx, g.activities[i]),
+        ),
       ),
     );
   }

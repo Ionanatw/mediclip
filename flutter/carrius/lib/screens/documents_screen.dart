@@ -66,7 +66,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
 
   Widget _docsList(BuildContext context, Palette p) {
     return ListView(
-      padding: const EdgeInsets.fromLTRB(18, 8, 18, 120),
+      padding: const EdgeInsets.fromLTRB(18, 8, 18, 150),
       children: [
         for (final phase in _phases) ...[
           Row(

@@ -95,7 +95,7 @@ void main() {
     await shoot(tester, '02-email-identity', _frame(EmailGateScreen(state: s2, onContinue: () {})));
 
     final h = homeState();
-    await shoot(tester, '03-home', _frame(HomeScreen(state: h, onOpenGarden: () {}, onOpenChecklist: () {}, onOpenSettings: () {}), tabBar: true, state: h));
+    await shoot(tester, '03-home', _frame(HomeScreen(state: h, onOpenGarden: () {}, onOpenChecklist: () {}, onOpenSettings: () {}, nowHour: 9), tabBar: true, state: h));
 
     final up = homeState()..pickedCount = 3;
     await shoot(tester, '04-upload', _frame(UploadScreen(state: up, onClose: () {}, onStart: () {})));
@@ -146,7 +146,7 @@ void main() {
 
   testWidgets('dark samples', (tester) async {
     final h = homeState();
-    await shoot(tester, 'dark-home', _frame(HomeScreen(state: h, onOpenGarden: () {}, onOpenChecklist: () {}, onOpenSettings: () {}), palette: Palette.dark, tabBar: true, state: h));
+    await shoot(tester, 'dark-home', _frame(HomeScreen(state: h, onOpenGarden: () {}, onOpenChecklist: () {}, onOpenSettings: () {}, nowHour: 9), palette: Palette.dark, tabBar: true, state: h));
     final g = homeState()..tab = AppTab.garden;
     await shoot(tester, 'dark-garden', _frame(GardenScreen(state: g, onBreathing: () {}, onGratitude: () {}, onMoodCard: () {}), palette: Palette.dark, tabBar: true, state: g));
 

@@ -12,13 +12,28 @@ class HomeScreen extends StatelessWidget {
   final VoidCallback onOpenGarden;
   final VoidCallback onOpenChecklist;
   final VoidCallback onOpenSettings;
+
+  /// 測試用固定時段（null＝跟隨系統時鐘）。讓問候在 golden 測試保持決定性。
+  final int? nowHour;
+
   const HomeScreen({
     super.key,
     required this.state,
     required this.onOpenGarden,
     required this.onOpenChecklist,
     required this.onOpenSettings,
+    this.nowHour,
   });
+
+  // 依時段給問候：清晨/上午/下午/晚上/深夜（陪伴語氣）
+  String get _greetingWord {
+    final h = nowHour ?? DateTime.now().hour;
+    if (h < 5) return '夜深了';
+    if (h < 11) return '早安';
+    if (h < 17) return '午安';
+    if (h < 22) return '晚安';
+    return '夜深了';
+  }
 
   // 倒數參考日：以衛教單給藥起始日為「今天」，讓行程倒數穩定可預期（不依系統時鐘）。
   static const int _refMonth = 6;
@@ -45,7 +60,7 @@ class HomeScreen extends StatelessWidget {
     final s = state.session;
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(18, 8, 18, 120),
+      padding: const EdgeInsets.fromLTRB(18, 8, 18, 150),
       children: [
         _greeting(p),
         const SizedBox(height: 16),
@@ -68,9 +83,11 @@ class HomeScreen extends StatelessWidget {
         const SizedBox(height: 10),
         _gardenPeek(p),
         const SizedBox(height: 14),
-        _companionBubble(p),
-        const SizedBox(height: 12),
+        // checklist（右側有 3/8 數字）放上面 → 不被右下 FAB 切；
+        // 暖陪伴泡泡墊最底（FAB 只掠過其右下空白，且收在溫暖語氣）。
         _checklistEntry(p, s),
+        const SizedBox(height: 12),
+        _companionBubble(p),
       ],
     );
   }
@@ -96,7 +113,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('早安', style: CDText.body(13, weight: FontWeight.w600, color: p.text2)),
+              Text(_greetingWord, style: CDText.body(13, weight: FontWeight.w600, color: p.text2)),
               const SizedBox(height: 2),
               Text('今天，和${state.session.familyName}一起',
                   style: CDText.display(21, color: p.text)),
@@ -416,6 +433,8 @@ class HomeScreen extends StatelessWidget {
             child: Text('記得喝口水、深呼吸三次。我陪你一起顧${state.session.familyName}。',
                 style: CDText.body(12.5, weight: FontWeight.w500, color: p.text2, height: 1.5)),
           ),
+          // 右側留白給浮動 FAB：泡泡保持滿版背景，但文字不延伸到 FAB 區（FAB 浮在空白上、不碰字）。
+          const SizedBox(width: 50),
         ],
       ),
     );

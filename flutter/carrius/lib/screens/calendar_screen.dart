@@ -32,7 +32,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget build(BuildContext context) {
     final p = PaletteScope.of(context);
     return ListView(
-      padding: const EdgeInsets.fromLTRB(18, 12, 18, 120),
+      padding: const EdgeInsets.fromLTRB(18, 12, 18, 150),
       children: [
         PageHeader(kicker: '2026 年', title: '6 月'),
         const SizedBox(height: 14),

@@ -27,7 +27,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final email = s.email.isNotEmpty ? s.email : '尚未設定 email';
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(18, 10, 18, 120),
+      padding: const EdgeInsets.fromLTRB(18, 10, 18, 150),
       children: [
         // ---- 帳號 hero ----
         Center(

@@ -17,7 +17,7 @@ class DrugAtlasScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = PaletteScope.of(context);
     return ListView(
-      padding: const EdgeInsets.fromLTRB(18, 18, 18, 120),
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 150),
       children: [
         PageHeader(kicker: '藥品圖鑑 · 四種常見病', title: '常見藥物外觀與說明'),
         const SizedBox(height: 14),
