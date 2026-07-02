@@ -41,6 +41,41 @@ class AppState extends ChangeNotifier {
   CareSession session = MockData.session();
   int careDays = 47;
 
+  // ---- 首頁「今天要做的」餐錨點時段流（H3+版3 定案） ----
+  final List<DaySlot> daySlots = MockData.daySlots();
+  final List<CareTask> anytimeTasks = MockData.anytimeTasks();
+
+  /// 已展開的時段欄（收合欄點開回看／預看；仿 atlasOpen 模式）
+  final Set<String> openSlots = {};
+  void toggleSlotOpen(String id) {
+    if (!openSlots.remove(id)) openSlots.add(id);
+    Haptics.light();
+    notifyListeners();
+  }
+
+  void toggleCareTask(CareTask t) {
+    t.done = !t.done;
+    if (t.done) {
+      Haptics.success();
+    } else {
+      Haptics.light();
+    }
+    notifyListeners();
+  }
+
+  /// 「全部吃了」：整組打勾（已勾的維持）
+  void completeCareGroup(Iterable<CareTask> tasks) {
+    for (final t in tasks) {
+      t.done = true;
+    }
+    Haptics.success();
+    notifyListeners();
+  }
+
+  int get todayTotal => daySlots.expand((s) => s.tasks).length + anytimeTasks.length;
+  int get todayDone =>
+      daySlots.expand((s) => s.tasks).where((t) => t.done).length + anytimeTasks.where((t) => t.done).length;
+
   // 上傳流程暫存
   int pickedCount = 0;
   final followUps = [

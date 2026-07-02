@@ -16,7 +16,6 @@ import 'screens/processing_screen.dart';
 import 'screens/followup_screen.dart';
 import 'screens/results_screen.dart';
 import 'screens/med_card_screen.dart';
-import 'screens/checklist_screen.dart';
 import 'screens/poster_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/breathing_screen.dart';
@@ -25,6 +24,9 @@ import 'screens/observe_breath_screen.dart';
 import 'screens/micro_move_screen.dart';
 import 'screens/sunbathe_screen.dart';
 import 'screens/goal_screen.dart';
+import 'screens/gratitude_screen.dart';
+import 'screens/hug_screen.dart';
+import 'screens/family_talk_screen.dart';
 
 enum _Onboard { welcome, email }
 
@@ -100,7 +102,6 @@ class _AppShellState extends State<AppShell> {
         return HomeScreen(
           state: state,
           onOpenGarden: () => state.setTab(AppTab.garden),
-          onOpenChecklist: () => _openSheet(ChecklistScreen(state: state, onClose: _closeSheet)),
           onOpenSettings: () => state.setTab(AppTab.settings),
         );
       case AppTab.calendar:
@@ -112,8 +113,8 @@ class _AppShellState extends State<AppShell> {
           state: state,
           onBreathing: (a) => _openSheet(BreathingScreen(
               onClose: _closeSheet, onComplete: () => state.completeActivity(a.title, a.sun))),
-          onGratitude: () => _openSheet(GratitudeScreen(state: state, onClose: _closeSheet)),
-          onMoodCard: () => _openSheet(MoodCardScreen(onClose: _closeSheet)),
+          onGratitude: (a) => _openSheet(GratitudeScreen(
+              state: state, onClose: _closeSheet, onComplete: () => state.completeActivity(a.title, a.sun))),
           onBodyScan: (a) => _openSheet(BodyScanScreen(
               onClose: _closeSheet, onComplete: () => state.completeActivity(a.title, a.sun))),
           onObserveBreath: (a) => _openSheet(ObserveBreathScreen(
@@ -123,6 +124,10 @@ class _AppShellState extends State<AppShell> {
           onSunbathe: (a) => _openSheet(SunbatheScreen(
               onClose: _closeSheet, onComplete: () => state.completeActivity(a.title, a.sun))),
           onGoal: (a) => _openSheet(GoalScreen(
+              onClose: _closeSheet, onComplete: () => state.completeActivity(a.title, a.sun))),
+          onHug: (a) => _openSheet(HugScreen(
+              onClose: _closeSheet, onComplete: () => state.completeActivity(a.title, a.sun))),
+          onFamilyTalk: (a) => _openSheet(FamilyTalkScreen(
               onClose: _closeSheet, onComplete: () => state.completeActivity(a.title, a.sun))),
         );
       case AppTab.settings:

@@ -78,7 +78,49 @@ class ChecklistItem {
   ChecklistItem(this.category, this.title, {this.detail, this.done = false});
 }
 
-enum HappyKind { breathing, gratitude, exercise, challenge, share, bodyScan, observeBreath, microMove, sunbathe, goal }
+// ---- 首頁「今天要做的」：餐錨點時段流（2026-07-02 首頁改版定案 H3+版3） ----
+
+/// 一項可勾選的照護任務（用藥或照護動作）。
+/// fullName＝藥單上的正確全名（小字顯示）；warn＝紅字仿單警告（false 為溫和提醒）。
+class CareTask {
+  final String title;
+  final String? fullName;
+  final String note;
+  final bool warn;
+  bool done;
+  CareTask(this.title, this.note, {this.fullName, this.warn = false, this.done = false});
+}
+
+/// 時段內的小節（例：餐前 30 分 3 顆／餐後 1 顆）。
+class CareGroup {
+  final String label, hint;
+  final List<CareTask> tasks;
+  const CareGroup(this.label, this.hint, this.tasks);
+}
+
+/// 時段色相（早餐暖黃／午餐橘／照護綠／晚餐藍／睡前紫）。
+enum SlotTint { breakfast, lunch, care, dinner, night }
+
+/// 一個餐錨點時段（早餐／午餐／中午照護／晚餐／睡前）。
+/// nowLabel／nowTitle 為該時段成為「現在」聚焦卡時的文案。
+class DaySlot {
+  final String id, title, nowLabel, nowTitle;
+  final String? hint; // 參考時間小字（約 07:30）
+  final SlotTint tint;
+  final List<CareGroup> groups;
+  const DaySlot({
+    required this.id,
+    required this.title,
+    required this.nowLabel,
+    required this.nowTitle,
+    this.hint,
+    required this.tint,
+    required this.groups,
+  });
+  Iterable<CareTask> get tasks => groups.expand((g) => g.tasks);
+}
+
+enum HappyKind { breathing, gratitude, exercise, challenge, share, bodyScan, observeBreath, microMove, sunbathe, goal, hug, familyTalk }
 
 class HappyTask {
   final String title, subtitle;
@@ -89,8 +131,8 @@ class HappyTask {
 }
 
 /// 花園頁的快樂活動卡（依「想放鬆／想振奮／想被在乎」分組橫向滑動）。
-/// kind 決定點擊路由：breathing→呼吸、gratitude→感恩、share→心情小卡，
-/// 其餘（exercise/challenge）走 state.completeTask。
+/// kind 決定點擊路由：各活動有專屬引導畫面，
+/// 其餘（exercise/challenge/share）走 state.completeActivity。
 class GardenActivity {
   final IconData icon;
   final Color tint; // 圖示底色基準（卡片背景與圖塊以此調出）
@@ -113,11 +155,6 @@ class GardenActivityGroup {
   final String title, subtitle;
   final List<GardenActivity> activities;
   const GardenActivityGroup(this.title, this.subtitle, this.activities);
-}
-
-class MoodCard {
-  final String text, author;
-  MoodCard(this.text, this.author);
 }
 
 /// 身分（Email 註冊頁單選）

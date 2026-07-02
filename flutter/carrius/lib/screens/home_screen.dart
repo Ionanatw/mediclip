@@ -7,33 +7,25 @@ import '../design/illustrations/sakura_tree.dart';
 import '../models/models.dart';
 import '../state/app_state.dart';
 
+/// 首頁（2026-07-02 改版定案）：H3 順序（頂部 T3 → 回診 hero → 花園 →
+/// 「今天要做的」餐錨點任務流 → 今天隨時 → 注意 → 陪伴泡泡）。
+/// 任務流＝版 3 聚焦現在：過完的時段自動灰收合、「現在」聚焦卡套時段色、
+/// 未到的收合待辦；藥名大字＋藥單正確全名小字；單顆勾＋「全部吃了」。
 class HomeScreen extends StatelessWidget {
   final AppState state;
   final VoidCallback onOpenGarden;
-  final VoidCallback onOpenChecklist;
   final VoidCallback onOpenSettings;
 
-  /// 測試用固定時段（null＝跟隨系統時鐘）。讓問候在 golden 測試保持決定性。
+  /// 測試用固定時段（null＝跟隨系統時鐘）。決定「現在」聚焦哪個時段。
   final int? nowHour;
 
   const HomeScreen({
     super.key,
     required this.state,
     required this.onOpenGarden,
-    required this.onOpenChecklist,
     required this.onOpenSettings,
     this.nowHour,
   });
-
-  // 依時段給問候：清晨/上午/下午/晚上/深夜（陪伴語氣）
-  String get _greetingWord {
-    final h = nowHour ?? DateTime.now().hour;
-    if (h < 5) return '夜深了';
-    if (h < 11) return '早安';
-    if (h < 17) return '午安';
-    if (h < 22) return '晚安';
-    return '夜深了';
-  }
 
   // 倒數參考日：以衛教單給藥起始日為「今天」，讓行程倒數穩定可預期（不依系統時鐘）。
   static const int _refMonth = 6;
@@ -54,6 +46,17 @@ class HomeScreen extends StatelessWidget {
 
   int _daysUntil(ScheduleEvent e) => (e.month - _refMonth) * 30 + (e.day - _refDay);
 
+  /// 現在時段（餐錨點）：深夜歸睡前；用餐時間未來可在設定調整。
+  int get _currentSlot {
+    final h = nowHour ?? DateTime.now().hour;
+    if (h < 5) return 4; // 深夜 → 睡前
+    if (h < 10) return 0; // 早餐
+    if (h < 14) return 1; // 午餐
+    if (h < 16) return 2; // 中午照護
+    if (h < 21) return 3; // 晚餐
+    return 4; // 睡前
+  }
+
   @override
   Widget build(BuildContext context) {
     final p = PaletteScope.of(context);
@@ -62,61 +65,74 @@ class HomeScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(18, 8, 18, 150),
       children: [
-        _greeting(p),
+        _topBar(p),
         const SizedBox(height: 16),
         if (_nextEvent != null) ...[
           _heroEventCard(_nextEvent!),
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
         ],
-        SectionHeader(title: '今日用藥', trailing: '識別卡', onTap: () {
+        _gardenPeek(p),
+        const SizedBox(height: 20),
+        SectionHeader(title: '今天要做的', trailing: '識別卡', onTap: () {
           state.setDocumentsTab(1);
           state.setTab(AppTab.documents);
         }),
         const SizedBox(height: 10),
-        _medProgressCard(p, s),
+        ..._taskFlow(p),
+        const SizedBox(height: 12),
+        _anytimeCard(p),
         const SizedBox(height: 20),
         _highNote(p, s),
-        SectionHeader(title: '你的快樂花園', trailing: '進花園', onTap: () {
-          Haptics.light();
-          onOpenGarden();
-        }),
-        const SizedBox(height: 10),
-        _gardenPeek(p),
-        const SizedBox(height: 14),
-        // checklist（右側有 3/8 數字）放上面 → 不被右下 FAB 切；
-        // 暖陪伴泡泡墊最底（FAB 只掠過其右下空白，且收在溫暖語氣）。
-        _checklistEntry(p, s),
-        const SizedBox(height: 12),
         _companionBubble(p),
       ],
     );
   }
 
-  // ① 暖問候：頭像 + 早安 + 陪伴語 + 今日陽光小標
-  Widget _greeting(Palette p) {
-    final initial = state.session.familyName.characters.first;
+  // ---- 時段色 ----
+  static (Color, Color, Color) _tint(SlotTint t) => switch (t) {
+        SlotTint.breakfast => (const Color(0xFFC2872E), const Color(0xFFFFF3DA), const Color(0xFFFFE9C4)),
+        SlotTint.lunch => (const Color(0xFFD2691E), const Color(0xFFFFEAD8), const Color(0xFFFFDDBE)),
+        SlotTint.care => (const Color(0xFF2E8B72), const Color(0xFFE2F4E9), const Color(0xFFD2EDDD)),
+        SlotTint.dinner => (const Color(0xFF3F7BC4), const Color(0xFFE2EEFC), const Color(0xFFD0E2F8)),
+        SlotTint.night => (const Color(0xFF6B5FC0), const Color(0xFFEBE4FC), const Color(0xFFDED4F8)),
+      };
+
+  static const _warnText = Color(0xFFB3552E);
+
+  /// 完成態＝無色相：整塊去飽和＋降不透明（含勾勾，對齊 mockup）。
+  static const _grayscale = ColorFilter.matrix([
+    0.2126, 0.7152, 0.0722, 0, 0, //
+    0.2126, 0.7152, 0.0722, 0, 0,
+    0.2126, 0.7152, 0.0722, 0, 0,
+    0, 0, 0, 1, 0,
+  ]);
+
+  Widget _fade(bool done, Widget child) =>
+      done ? Opacity(opacity: 0.55, child: ColorFiltered(colorFilter: _grayscale, child: child)) : child;
+
+  // ---- ① 頂部 T3：今日進度環 + 日期/照護天數 + ☀ ----
+  Widget _topBar(Palette p) {
+    final done = state.todayDone, total = state.todayTotal;
+    final frac = total == 0 ? 0.0 : done / total;
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          width: 42,
-          height: 42,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: CD.accent,
-            borderRadius: BorderRadius.circular(14),
+        SizedBox(
+          width: 46,
+          height: 46,
+          child: CustomPaint(
+            painter: _RingPainter(frac, track: p.surface3),
+            child: Center(child: Text('$done/$total', style: CDText.display(9.5, color: p.text))),
           ),
-          child: Text(initial, style: CDText.title(16, color: CD.cream)),
         ),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(_greetingWord, style: CDText.body(13, weight: FontWeight.w600, color: p.text2)),
+              Text('$_refMonth/$_refDay（五）· 第 ${state.careDays} 天',
+                  style: CDText.body(12, weight: FontWeight.w600, color: p.text2)),
               const SizedBox(height: 2),
-              Text('今天，和${state.session.familyName}一起',
-                  style: CDText.display(21, color: p.text)),
+              Text('今天完成 $done / $total', style: CDText.display(19, color: p.text)),
             ],
           ),
         ),
@@ -141,7 +157,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // ② 下一個重要行程 hero 卡（藍色、突出，倒數大數字）
+  // ---- ② 下一個重要行程 hero 卡（藍色、倒數大數字） ----
   Widget _heroEventCard(ScheduleEvent e) {
     final days = _daysUntil(e);
     final countdown = days <= 0 ? '今天' : '$days';
@@ -206,137 +222,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // ③ 今日用藥進度（環形 + 藥丸點點，形狀不同於 hero）
-  Widget _medProgressCard(Palette p, CareSession s) {
-    final meds = s.medications;
-    final total = meds.length;
-    final taken = meds.where((m) => m.takenToday).length;
-    final remaining = total - taken;
-    final frac = total == 0 ? 0.0 : taken / total;
-    return GestureDetector(
-      onTap: () {
-        Haptics.light();
-        state.setDocumentsTab(1);
-        state.setTab(AppTab.documents);
-      },
-      child: CDCard(
-        radius: CD.rCardLarge,
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            SizedBox(
-              width: 56,
-              height: 56,
-              child: CustomPaint(
-                painter: _RingPainter(frac, track: p.surface3),
-                child: Center(
-                  child: Text('$taken/$total', style: CDText.display(14, color: p.text)),
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    remaining == 0 ? '今天的藥都吃完了' : '還有 $remaining 種要吃',
-                    style: CDText.title(14, color: p.text),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      for (final m in meds) ...[
-                        _pillDot(m.takenToday),
-                        const SizedBox(width: 6),
-                      ],
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Icon(Icons.chevron_right, size: 18, color: p.text3),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _pillDot(bool taken) {
-    return Container(
-      width: 24,
-      height: 24,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: taken ? CD.accentSoft : CD.lemon.withValues(alpha: 0.7),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Icon(
-        taken ? Icons.check : Icons.medication_outlined,
-        size: 13,
-        color: CD.plumDeep,
-      ),
-    );
-  }
-
-  // ④ 今天要注意（珊瑚色警示帶；取第一則高嚴重度）
-  Widget _highNote(Palette p, CareSession s) {
-    CareNote? note;
-    for (final n in s.notes) {
-      if (n.severity == Severity.high) {
-        note = n;
-        break;
-      }
-    }
-    if (note == null) return const SizedBox.shrink();
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SectionHeader(title: '今天要注意'),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: CD.danger.withValues(alpha: 0.10),
-              borderRadius: BorderRadius.circular(CD.rCard),
-              border: Border.all(color: CD.danger.withValues(alpha: 0.18), width: 1),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 32,
-                  height: 32,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: CD.danger,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(Icons.priority_high, size: 18, color: CD.cream),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(note.title, style: CDText.title(13.5, color: p.text)),
-                      const SizedBox(height: 3),
-                      Text(note.detail,
-                          style: CDText.body(11.5, weight: FontWeight.w500, color: p.text2, height: 1.45)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ⑤ 花園一角（綠色 peek 卡）
+  // ---- ③ 花園一角（移到行程卡正下方） ----
   Widget _gardenPeek(Palette p) {
     final species = state.currentSpecies;
     final stage = state.stage;
@@ -404,7 +290,271 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // ⑥ 陪伴小語泡泡
+  // ---- ④ 餐錨點任務流：過去→灰收合、現在→聚焦卡、未來→收合待辦 ----
+  List<Widget> _taskFlow(Palette p) {
+    final cur = _currentSlot;
+    final widgets = <Widget>[];
+    for (var i = 0; i < state.daySlots.length; i++) {
+      final slot = state.daySlots[i];
+      if (i == cur && slot.groups.length == 2) {
+        // 現在是某一餐：餐前聚焦、餐後獨立收合欄
+        widgets
+          ..add(_nowCard(p, slot, slot.groups[0].tasks))
+          ..add(const SizedBox(height: 7))
+          ..add(_slotBar(p, slot, tasks: slot.groups[1].tasks, label: '${slot.title}後', openKey: '${slot.id}-post'));
+      } else if (i == cur) {
+        widgets.add(_nowCard(p, slot, slot.tasks.toList()));
+      } else {
+        widgets.add(_slotBar(p, slot, tasks: slot.tasks.toList(), label: _barLabel(slot), openKey: slot.id));
+      }
+      widgets.add(const SizedBox(height: 7));
+    }
+    widgets.removeLast();
+    return widgets;
+  }
+
+  String _barLabel(DaySlot slot) =>
+      slot.groups.length == 2 ? '${slot.title}（餐前 3＋餐後 1）' : slot.title;
+
+  /// 「現在」聚焦卡：時段色漸層＋live 點＋任務列＋全部吃了
+  Widget _nowCard(Palette p, DaySlot slot, List<CareTask> tasks) {
+    final (_, bg1, bg2) = _tint(slot.tint);
+    final allDone = tasks.every((t) => t.done);
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 13, 12, 12),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [bg1, bg2]),
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(width: 8, height: 8, decoration: const BoxDecoration(color: _warnText, shape: BoxShape.circle)),
+              const SizedBox(width: 7),
+              Text('現在 · ${slot.nowLabel}',
+                  style: CDText.body(10.5, weight: FontWeight.w900, color: _warnText).copyWith(letterSpacing: 1)),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(slot.nowTitle, style: CDText.display(16, color: CD.plumDeep)),
+          const SizedBox(height: 8),
+          for (final t in tasks) ...[
+            _taskRow(t),
+            const SizedBox(height: 6),
+          ],
+          if (!allDone && tasks.length > 1)
+            Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
+                onTap: () => state.completeCareGroup(tasks),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    borderRadius: BorderRadius.circular(999),
+                    boxShadow: [BoxShadow(color: CD.plumDeep.withValues(alpha: 0.10), blurRadius: 6, offset: const Offset(0, 2))],
+                  ),
+                  child: Text(slot.tint == SlotTint.care ? '都做完了' : '全部吃了',
+                      style: CDText.body(10.5, weight: FontWeight.w900, color: CD.plumDeep)),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  /// 收合時段欄：標題＋進度＋箭頭，點開展開任務列；全完成整欄無色相。
+  Widget _slotBar(Palette p, DaySlot slot,
+      {required List<CareTask> tasks, required String label, required String openKey}) {
+    final (_, bg1, bg2) = _tint(slot.tint);
+    final done = tasks.where((t) => t.done).length;
+    final open = state.openSlots.contains(openKey);
+    return _fade(
+      done == tasks.length,
+      Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [bg1, bg2]),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Column(
+          children: [
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => state.toggleSlotOpen(openKey),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                child: Row(
+                  children: [
+                    Text(label, style: CDText.title(13, color: CD.plumDeep)),
+                    const SizedBox(width: 8),
+                    Text('$done / ${tasks.length}',
+                        style: CDText.body(10.5, weight: FontWeight.w900, color: CD.plumDeep.withValues(alpha: 0.55))),
+                    const Spacer(),
+                    AnimatedRotation(
+                      turns: open ? 0.25 : 0,
+                      duration: const Duration(milliseconds: 180),
+                      child: Icon(Icons.chevron_right, size: 17, color: CD.plumDeep.withValues(alpha: 0.45)),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if (open)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                child: Column(
+                  children: [
+                    for (final t in tasks) ...[
+                      _taskRow(t),
+                      const SizedBox(height: 6),
+                    ],
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 任務列：藥名大字＋正確全名小字＋注意事項（紅字警告／灰字提醒）＋勾框。
+  Widget _taskRow(CareTask t) {
+    return GestureDetector(
+      onTap: () => state.toggleCareTask(t),
+      child: _fade(
+        t.done,
+        Container(
+          padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.62),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(t.title, style: CDText.title(13, color: CD.plumDeep)),
+                    if (t.fullName != null) ...[
+                      const SizedBox(height: 1),
+                      Text(t.fullName!,
+                          style: CDText.body(9, weight: FontWeight.w600, color: CD.plumDeep.withValues(alpha: 0.45))),
+                    ],
+                    const SizedBox(height: 2),
+                    Text(t.note,
+                        style: CDText.body(10.5,
+                            weight: FontWeight.w700,
+                            color: t.warn ? _warnText : const Color(0xFF5D5478))),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 9),
+              Container(
+                width: 25,
+                height: 25,
+                decoration: BoxDecoration(
+                  color: t.done ? CD.success : Colors.white.withValues(alpha: 0.6),
+                  borderRadius: BorderRadius.circular(9),
+                  border: t.done ? null : Border.all(color: CD.plumDeep.withValues(alpha: 0.25), width: 2.5),
+                ),
+                child: t.done ? const Icon(Icons.check, size: 15, color: Colors.white) : null,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ---- ⑤ 今天隨時（不綁時段；承接原 checklist 的飲食／活動） ----
+  Widget _anytimeCard(Palette p) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 11, 12, 12),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFFFDEBF2), Color(0xFFF8DCE8)]),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Text('今天隨時', style: CDText.title(13, color: CD.plumDeep)),
+              const SizedBox(width: 7),
+              Text('不綁時段，做到就勾',
+                  style: CDText.body(10, weight: FontWeight.w800, color: CD.plumDeep.withValues(alpha: 0.5))),
+            ],
+          ),
+          const SizedBox(height: 7),
+          for (final t in state.anytimeTasks) ...[
+            _taskRow(t),
+            const SizedBox(height: 6),
+          ],
+        ],
+      ),
+    );
+  }
+
+  // ---- ⑥ 今天要注意（珊瑚色警示帶；取第一則高嚴重度） ----
+  Widget _highNote(Palette p, CareSession s) {
+    CareNote? note;
+    for (final n in s.notes) {
+      if (n.severity == Severity.high) {
+        note = n;
+        break;
+      }
+    }
+    if (note == null) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: CD.danger.withValues(alpha: 0.10),
+          borderRadius: BorderRadius.circular(CD.rCard),
+          border: Border.all(color: CD.danger.withValues(alpha: 0.18), width: 1),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: CD.danger,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(Icons.priority_high, size: 18, color: CD.cream),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(note.title, style: CDText.title(13.5, color: p.text)),
+                  const SizedBox(height: 3),
+                  Text(note.detail,
+                      style: CDText.body(11.5, weight: FontWeight.w500, color: p.text2, height: 1.45)),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ---- ⑦ 陪伴小語泡泡 ----
   Widget _companionBubble(Palette p) {
     return Container(
       padding: const EdgeInsets.all(14),
@@ -439,33 +589,9 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-
-  // 每日 checklist 入口（保留 onOpenChecklist）
-  Widget _checklistEntry(Palette p, CareSession s) {
-    final done = s.checklist.where((c) => c.done).length;
-    return GestureDetector(
-      onTap: () {
-        Haptics.light();
-        onOpenChecklist();
-      },
-      child: CDCard(
-        child: Row(
-          children: [
-            const Icon(Icons.checklist, size: 15, color: CD.accent),
-            const SizedBox(width: 8),
-            Text('今日 checklist', style: CDText.title(13.5, color: p.text)),
-            const Spacer(),
-            Text('$done/${s.checklist.length}', style: CDText.body(12, weight: FontWeight.w900, color: p.text2)),
-            const SizedBox(width: 4),
-            Icon(Icons.chevron_right, size: 16, color: p.text3),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
-// 用藥進度環
+// 今日進度環（頂部 T3）
 class _RingPainter extends CustomPainter {
   final double value;
   final Color track;

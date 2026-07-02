@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>首頁改版 — 三版資訊架構</title>
+<style>
+  :root{
+    --cream:#FDFBF7; --plum:#3C315B; --plumDeep:#2A2342; --ink:#4A3F66;
+    --lav:#AB9FF2; --lavSoft:#EBE6FB;
+    --bk:#C2872E;  --bkBg1:#FFF3DA; --bkBg2:#FFE9C4;
+    --ln:#D2691E;  --lnBg1:#FFEAD8; --lnBg2:#FFDDBE;
+    --dn:#3F7BC4;  --dnBg1:#E2EEFC; --dnBg2:#D0E2F8;
+    --nt:#6B5FC0;  --ntBg1:#EBE4FC; --ntBg2:#DED4F8;
+    --care:#2E8B72; --careBg1:#E2F4E9; --careBg2:#D2EDDD;
+    --day:#C75E8A; --dayBg1:#FDEBF2; --dayBg2:#F8DCE8;
+    --info:#6FA8F5; --success:#4CAF87; --warn:#B3552E;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#f4f0e9;font-family:"Noto Sans TC",-apple-system,system-ui,sans-serif;color:var(--plumDeep);padding:28px 18px 60px}
+  h1{font-size:21px;margin:0 0 4px;text-align:center}
+  .sub{text-align:center;color:#6b5f87;font-size:13.5px;margin:0 0 8px;line-height:1.6}
+  .try{text-align:center;color:#b3552e;font-size:13px;font-weight:800;margin:0 0 26px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:26px;max-width:1280px;margin:0 auto}
+  .card{background:#fff;border-radius:22px;padding:16px 16px 18px;box-shadow:0 10px 30px rgba(80,60,130,.10)}
+  .tag{display:inline-block;font-size:11px;font-weight:800;color:#544A9E;background:var(--lavSoft);padding:3px 10px;border-radius:999px;margin-bottom:10px}
+  .title{font-size:15.5px;font-weight:900;margin:0 0 2px}
+  .desc{font-size:12.5px;color:#6b5f87;line-height:1.55;margin:10px 2px 0;min-height:96px}
+  .stage{position:relative;width:100%;border-radius:24px;overflow:hidden;background:var(--cream);padding:16px 13px 18px;border:1px solid #EDE7DB}
+
+  .tick{transition:all .22s ease;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .tick.done{filter:grayscale(1);opacity:.5}
+  .ck{width:25px;height:25px;border-radius:9px;border:2.5px solid rgba(60,49,91,.25);
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:transparent;flex:none;transition:all .2s;background:rgba(255,255,255,.6)}
+  .tick.done .ck{background:var(--success);border-color:var(--success);color:#fff}
+
+  /* 問候 */
+  .greet{display:flex;align-items:center;gap:10px;margin-bottom:13px}
+  .greet .ava{width:40px;height:40px;border-radius:13px;background:var(--lav);display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:15px;font-weight:900}
+  .greet .g1{font-size:12px;font-weight:700;color:#6b5f87}
+  .greet .g2{font-size:17.5px;font-weight:900;color:var(--plumDeep)}
+  .greet .sunbox{margin-left:auto;display:flex;align-items:center;gap:4px;background:#F3EFE4;border-radius:12px;padding:7px 11px;
+    font-size:13px;font-weight:900;color:var(--plumDeep)}
+  .greet .sunbox s{font-size:12px;color:var(--bk);text-decoration:none}
+
+  /* 總覽 chips 條 */
+  .ovRow{display:flex;gap:7px;margin-bottom:13px}
+  .ov{flex:1;border-radius:14px;padding:9px 10px;text-align:left}
+  .ov b{display:block;font-size:15px;color:var(--plumDeep)}
+  .ov span{font-size:10px;font-weight:800;color:rgba(42,35,66,.55)}
+
+  /* 回診 hero */
+  .hero{border-radius:18px;padding:13px 14px;margin-bottom:13px;color:#fff;
+    background:linear-gradient(120deg,#6FA8F5,#8FB8FC);display:flex;align-items:flex-start;gap:10px}
+  .hero .badge{font-size:10px;font-weight:900;background:rgba(255,255,255,.28);padding:3px 9px;border-radius:999px}
+  .hero .t{font-size:15px;font-weight:900;margin-top:6px}
+  .hero .d{font-size:10.5px;font-weight:600;opacity:.95;margin-top:2px}
+  .hero .num{margin-left:auto;text-align:right}
+  .hero .num b{font-size:26px}
+  .hero .num span{display:block;font-size:10px;font-weight:800;opacity:.95}
+  .hero.slim{padding:10px 14px;margin-bottom:13px}
+  .hero.slim .t{margin-top:0;font-size:13px}
+  .hero.slim .num b{font-size:18px}
+
+  .secTitle{display:flex;align-items:baseline;gap:8px;margin:2px 2px 8px}
+  .secTitle b{font-size:14.5px;color:var(--plumDeep)}
+  .secTitle span{font-size:11px;font-weight:800;color:#8a7d68;margin-left:auto}
+
+  /* 現在卡（版3 定案） */
+  .nowCard{border-radius:18px;padding:13px 12px;margin-bottom:9px;background:linear-gradient(150deg,var(--bkBg1),var(--bkBg2))}
+  .nowKick{display:flex;align-items:center;gap:7px}
+  .nowKick .live{width:8px;height:8px;border-radius:50%;background:var(--warn);animation:blink 1.6s ease-in-out infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+  .nowKick b{font-size:10.5px;font-weight:900;color:var(--warn);letter-spacing:1px}
+  .nowTitle{font-size:16px;font-weight:900;color:var(--plumDeep);margin:4px 0 8px}
+  .medRow{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.62)}
+  .medRow + .medRow{margin-top:6px}
+  .medRow .nm{font-size:13px;font-weight:900;color:var(--plumDeep)}
+  .medRow .full{font-size:9px;font-weight:600;color:rgba(42,35,66,.45);margin-top:1px}
+  .medRow .nt2{font-size:10.5px;font-weight:700;color:var(--warn);margin-top:2px}
+  .medRow .nt2.soft{color:#5d5478}
+  .medRow .ck{margin-left:auto}
+  .batch{margin-left:auto;font-size:10.5px;font-weight:900;color:var(--plumDeep);background:rgba(255,255,255,.9);
+    border:none;padding:5px 12px;border-radius:999px;cursor:pointer;font-family:inherit;box-shadow:0 2px 6px rgba(60,49,91,.10)}
+  .batchRow{display:flex;margin-top:9px}
+
+  /* 收合橫欄 */
+  .acc{border-radius:14px;margin-bottom:7px;overflow:hidden}
+  .accHead{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer}
+  .accHead .anchor{font-size:13px;font-weight:900;color:var(--plumDeep)}
+  .accHead .cnt{font-size:10.5px;font-weight:900;color:rgba(42,35,66,.55)}
+  .accHead .arrow{margin-left:auto;font-size:12px;font-weight:900;color:rgba(42,35,66,.45);transition:transform .2s}
+  .acc.open .accHead .arrow{transform:rotate(90deg)}
+  .accBody{display:none;padding:0 10px 10px}
+  .acc.open .accBody{display:block}
+  .acc.allDone{filter:grayscale(1);opacity:.55}
+  .subHead{display:flex;align-items:center;gap:6px;margin:8px 2px 6px}
+  .subHead b{font-size:11.5px;color:var(--ink)}
+  .subHead i{font-style:normal;font-size:10px;font-weight:800;color:#8a7d68}
+
+  /* 整天隨時 */
+  .dayCard{border-radius:16px;padding:11px 12px;margin:0 0 13px;background:linear-gradient(150deg,var(--dayBg1),var(--dayBg2))}
+  .dayCard .dh{display:flex;align-items:baseline;gap:7px;margin-bottom:7px}
+  .dayCard .dh b{font-size:13px;color:var(--plumDeep)}
+  .dayCard .dh span{font-size:10px;font-weight:800;color:rgba(42,35,66,.5)}
+
+  /* 花園 peek */
+  .garden{display:flex;align-items:center;gap:11px;border-radius:16px;padding:11px 12px;background:rgba(143,211,166,.20)}
+  .garden .tree{width:44px;height:52px;position:relative;flex:none}
+  .garden .tree::before{content:'';position:absolute;left:50%;bottom:0;width:7px;height:20px;margin-left:-3.5px;border-radius:4px;background:#8A6B4A}
+  .garden .tree::after{content:'';position:absolute;left:50%;top:0;width:38px;height:34px;margin-left:-19px;border-radius:50%;
+    background:radial-gradient(circle at 40% 35%,#A9DEBC,#8FD3A6 70%)}
+  .garden .g1{font-size:12.5px;font-weight:900;color:var(--plumDeep)}
+  .garden .bar{height:6px;border-radius:99px;background:rgba(255,255,255,.75);margin-top:6px;overflow:hidden}
+  .garden .bar i{display:block;height:100%;width:62%;background:var(--care)}
+  .garden .g2{font-size:10px;font-weight:800;color:var(--care);margin-top:4px}
+  .garden > div:nth-child(2){flex:1}
+
+  .reco{max-width:1280px;margin:26px auto 0;background:#fff;border-radius:22px;padding:18px 20px;box-shadow:0 10px 30px rgba(80,60,130,.10)}
+  .reco h3{margin:0 0 8px;font-size:15px}
+  .reco p{margin:4px 0;font-size:13px;color:#4A3F66;line-height:1.6}
+</style>
+</head>
+<body>
+  <h1>首頁改版 · 三版資訊架構</h1>
+  <p class="sub">整合你四點：① 一目了然今天要做什麼＋近期重點 ② 用藥＝版 3 聚焦現在（藥名＋小字正確全名）<br>③ checklist 全上首頁（傷口→中午照護；飲食活動→「今天隨時」粉卡）④ 問候語改「媽媽的照護 · 第 47 天」不再歧義</p>
+  <p class="try">三版的用藥區塊都可以點；差別在「今天的重點」怎麼排</p>
+
+  <div class="grid" id="root"></div>
+
+  <div class="reco">
+    <h3>德德的建議</h3>
+    <p><b>H2 總覽儀表</b>——你第 1 點要「一目了然今天＋這段時間的重點」：H2 用一條總覽（用藥進度／照護進度／回診倒數）先給全貌，回診從大 hero 縮成細條（它是「重點」但不是「現在要動手的事」），空間讓給任務流。H1 最沉浸但少了全貌；H3 是現況的最小改動，回診大卡漂亮但把「現在要吃藥」推到第二屏。</p>
+    <p style="color:#8a7d68;font-size:12px">三版共通（都會做）：問候語第二行改「媽媽的照護 · 第 47 天」（媽媽＝AI 整理時抓到的家人稱呼，設定可改）、版 3 用藥區（含小字全名、全部吃了、換敷料）、「今天隨時」承接 checklist 的飲食／活動項、花園 peek 收尾。挑定後我開始寫 Flutter。</p>
+  </div>
+
+<script>
+const PRE = [
+  {nm:'胃藥 40mg', full:'艾美拉唑膜衣錠 40 毫克', nt:'不可與胃散胃乳同服', warn:true},
+  {nm:'血壓藥 5mg', full:'氨氯地平錠 5 毫克', nt:'不可自行停藥', warn:true},
+  {nm:'抗生素 250mg', full:'阿莫西林膠囊 250 毫克', nt:'整顆吞服，不可剝半', warn:false},
+];
+const row = m => `
+  <div class="medRow tick">
+    <div><div class="nm">${m.nm}</div><div class="full">${m.full}</div><div class="nt2 ${m.warn?'':'soft'}">${m.nt}</div></div>
+    <div class="ck">✓</div>
+  </div>`;
+const trow = (nm,nt) => `
+  <div class="medRow tick">
+    <div><div class="nm">${nm}</div><div class="nt2 soft">${nt}</div></div>
+    <div class="ck">✓</div>
+  </div>`;
+
+const greet = `
+  <div class="greet">
+    <div class="ava">媽</div>
+    <div><div class="g1">早安，辛苦了</div><div class="g2">媽媽的照護 · 第 47 天</div></div>
+    <div class="sunbox"><s>☀</s>6</div>
+  </div>`;
+
+const nowBlock = `
+  <div class="nowCard">
+    <div class="nowKick"><span class="live"></span><b>現在 · 早餐前</b></div>
+    <div class="nowTitle">早餐前要吃 3 顆</div>
+    ${PRE.map(row).join('')}
+    <div class="batchRow"><button class="batch">全部吃了</button></div>
+  </div>`;
+
+const accBars = `
+  <div class="acc" style="background:linear-gradient(150deg,var(--bkBg1),var(--bkBg2))">
+    <div class="accHead"><span class="anchor">早餐後</span><span class="cnt" data-mprog>0 / 1</span><span class="arrow">›</span></div>
+    <div class="accBody">${trow('鐵劑 100mg','葡萄糖酸亞鐵錠 · 避免與茶咖啡同服')}</div>
+  </div>
+  <div class="acc" style="background:linear-gradient(150deg,var(--lnBg1),var(--lnBg2))">
+    <div class="accHead"><span class="anchor">午餐（餐前 3＋餐後 1）</span><span class="cnt" data-mprog>0 / 4</span><span class="arrow">›</span></div>
+    <div class="accBody">${PRE.map(row).join('')}${trow('鐵劑 100mg','避免與茶咖啡同服')}</div>
+  </div>
+  <div class="acc" style="background:linear-gradient(150deg,var(--careBg1),var(--careBg2))">
+    <div class="accHead"><span class="anchor">中午 · 傷口換敷料</span><span class="cnt" data-mprog>0 / 2</span><span class="arrow">›</span></div>
+    <div class="accBody">${trow('更換紗布','紗布＋生理食鹽水')}${trow('檢查傷口紅腫','換藥時順便看，紅腫熱痛要回報')}</div>
+  </div>
+  <div class="acc" style="background:linear-gradient(150deg,var(--dnBg1),var(--dnBg2))">
+    <div class="accHead"><span class="anchor">晚餐（餐前 3＋餐後 1）</span><span class="cnt" data-mprog>0 / 4</span><span class="arrow">›</span></div>
+    <div class="accBody">${PRE.map(row).join('')}${trow('鐵劑 100mg','避免與茶咖啡同服')}</div>
+  </div>
+  <div class="acc" style="background:linear-gradient(150deg,var(--ntBg1),var(--ntBg2))">
+    <div class="accHead"><span class="anchor">睡前</span><span class="cnt" data-mprog>0 / 2</span><span class="arrow">›</span></div>
+    <div class="accBody">${trow('止吐藥 8mg','昂丹司瓊錠 · 想吐可提前')}${trow('軟便劑 1 包','氧化鎂粉 · 配一整杯水')}</div>
+  </div>`;
+
+const dayCard = `
+  <div class="dayCard">
+    <div class="dh"><b>今天隨時</b><span>不綁時段，做到就勾</span></div>
+    ${trow('三餐全熟食','化療期間避免生食')}
+    ${trow('喝水 2000ml','目前約 1200ml')}
+    ${trow('散步 20 分鐘','傍晚涼一點再去')}
+  </div>`;
+
+const heroBig = `
+  <div class="hero">
+    <div>
+      <span class="badge">下一個重要行程</span>
+      <div class="t">抽血檢驗＋血液腫瘤科回診</div>
+      <div class="d">6/16（一）08:30 · 前一晚 12 點後禁食</div>
+    </div>
+    <div class="num"><b>3</b><span>天後</span></div>
+  </div>`;
+
+const heroSlim = `
+  <div class="hero slim">
+    <div><div class="t">6/16 回診＋抽血 · 前晚禁食</div></div>
+    <div class="num"><b>3</b><span>天後</span></div>
+  </div>`;
+
+const ovRow = `
+  <div class="ovRow">
+    <div class="ov" style="background:linear-gradient(150deg,var(--bkBg1),var(--bkBg2))"><b data-ov-med>0/19</b><span>今日待辦</span></div>
+    <div class="ov" style="background:linear-gradient(150deg,var(--careBg1),var(--careBg2))"><b data-ov-care>0/5</b><span>照護任務</span></div>
+    <div class="ov" style="background:linear-gradient(150deg,#E2EEFC,#D0E2F8)"><b>3 天</b><span>回診倒數</span></div>
+  </div>`;
+
+const garden = `
+  <div class="garden">
+    <div class="tree"></div>
+    <div>
+      <div class="g1">你的茶樹 · 茁壯期</div>
+      <div class="bar"><i></i></div>
+      <div class="g2">124 / 200 ☀ · 做完今天的事＋6</div>
+    </div>
+  </div>`;
+
+const cards = [
+  {tag:'H1 · 任務流優先', title:'進來就是「現在要做什麼」',
+   body: greet + nowBlock + accBars + dayCard + heroSlim + garden,
+   desc:'問候完直接進「現在 · 早餐前」，時段欄、今天隨時一路往下，回診縮成細條放後面，花園收尾。最沉浸的待辦流，「今天要做什麼」零思考；代價是少了開場全貌，回診這種「近期重點」被壓低。'},
+  {tag:'H2 · 總覽儀表', title:'先給全貌，再進任務流',
+   body: greet + ovRow + heroSlim + nowBlock + accBars + dayCard + garden,
+   desc:'問候下面一條三格總覽（用藥進度／照護進度／回診倒數）——你要的「一目了然今天＋這段時間重點」就是這一條；回診細條緊跟著，然後才進「現在」任務流。全貌和行動兼顧，總覽數字會隨勾選即時跳。'},
+  {tag:'H3 · 重點卡先行', title:'回診大卡開場（最接近現況）',
+   body: greet + heroBig + nowBlock + accBars + dayCard + garden,
+   desc:'保留現在首頁的藍色回診 hero 大卡當開場明星，其後接版 3 任務流。改動最小、「這段時間最大的事」最搶眼；但大卡吃掉第一屏空間，「現在要吃藥」被推低半屏，且回診資訊其實不是每天都需要這麼大。'},
+];
+document.getElementById('root').innerHTML = cards.map(c=>`
+  <div class="card">
+    <span class="tag">${c.tag}</span>
+    <p class="title">${c.title}</p>
+    <div class="stage">${c.body}</div>
+    <p class="desc">${c.desc}</p>
+  </div>`).join('');
+
+document.querySelectorAll('.stage').forEach(stage=>{
+  const update = ()=>{
+    stage.querySelectorAll('.acc').forEach(mc=>{
+      const t = mc.querySelectorAll('.tick'), d = mc.querySelectorAll('.tick.done');
+      mc.classList.toggle('allDone', t.length>0 && t.length===d.length);
+      const mp = mc.querySelector('[data-mprog]');
+      if (mp) mp.textContent = `${d.length} / ${t.length}`;
+    });
+    const med = stage.querySelectorAll('.nowCard .tick, .acc:not(.careAcc) .tick');
+    const ovM = stage.querySelector('[data-ov-med]');
+    if (ovM) ovM.textContent = `${stage.querySelectorAll('.tick.done').length}/${stage.querySelectorAll('.tick').length}`;
+  };
+  stage.querySelectorAll('.tick').forEach(t=>t.addEventListener('click', ()=>{ t.classList.toggle('done'); update(); }));
+  stage.querySelectorAll('.batch').forEach(b=>b.addEventListener('click', e=>{
+    e.stopPropagation();
+    b.closest('.nowCard').querySelectorAll('.tick').forEach(t=>t.classList.add('done'));
+    update();
+  }));
+  stage.querySelectorAll('.accHead').forEach(h=>h.addEventListener('click', ()=>h.parentElement.classList.toggle('open')));
+  update();
+});
+</script>
+</body>
+</html>

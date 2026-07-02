@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>今日用藥 — A×C 融合三版本</title>
+<style>
+  :root{
+    --cream:#FDFBF7; --plum:#3C315B; --plumDeep:#2A2342; --ink:#4A3F66;
+    --morn:#C2872E; --mornBg1:#FFF3DA; --mornBg2:#FFE7BC;
+    --eve:#3F7BC4; --eveBg1:#E2EEFC; --eveBg2:#CBE0F8;
+    --night:#6B5FC0; --nightBg1:#EBE4FC; --nightBg2:#DCD2F7;
+    --prn:#2E8B72; --prnBg1:#E2F4E9; --prnBg2:#CFEBDA;
+    --success:#4CAF87; --warn:#B3552E;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#f4f0e9;font-family:"Noto Sans TC",-apple-system,system-ui,sans-serif;color:var(--plumDeep);padding:28px 18px 60px}
+  h1{font-size:21px;margin:0 0 4px;text-align:center}
+  .sub{text-align:center;color:#6b5f87;font-size:13.5px;margin:0 0 8px}
+  .try{text-align:center;color:#b3552e;font-size:13px;font-weight:800;margin:0 0 26px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:26px;max-width:1240px;margin:0 auto}
+  .card{background:#fff;border-radius:22px;padding:16px 16px 18px;box-shadow:0 10px 30px rgba(80,60,130,.10)}
+  .tag{display:inline-block;font-size:11px;font-weight:800;color:#544A9E;background:#EBE6FB;padding:3px 10px;border-radius:999px;margin-bottom:10px}
+  .title{font-size:15.5px;font-weight:900;margin:0 0 2px}
+  .desc{font-size:12.5px;color:#6b5f87;line-height:1.55;margin:10px 2px 0;min-height:80px}
+  .stage{position:relative;width:100%;min-height:470px;border-radius:20px;overflow:hidden;background:var(--cream);padding:14px 12px 16px}
+  .secHead{display:flex;align-items:baseline;justify-content:space-between;margin:0 2px 12px}
+  .secHead b{font-size:15px;color:var(--plumDeep)}
+  .prog{font-size:12px;font-weight:900;color:#6b5f87}
+
+  .tick{transition:all .25s ease;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .tick.done{filter:grayscale(1);opacity:.55}
+  .ckbox{width:30px;height:30px;border-radius:11px;border:2.5px solid rgba(60,49,91,.25);
+    display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:transparent;flex:none;transition:all .2s;background:rgba(255,255,255,.55)}
+  .tick.done .ckbox{background:var(--success);border-color:var(--success);color:#fff}
+
+  .medName{font-size:14.5px;font-weight:900;color:var(--plumDeep)}
+  .medHow{font-size:11px;font-weight:700;color:#5d5478;margin-top:1px}
+  .note{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:11px;font-weight:800;
+    background:rgba(255,255,255,.8);padding:4px 10px;border-radius:999px;color:var(--warn)}
+  .note.soft{color:#5d5478}
+  .note i{width:6px;height:6px;border-radius:50%;background:currentColor;flex:none;font-style:normal}
+
+  /* ========= V1 左時間軸＋彩磚 ========= */
+  .v1 .tl{position:relative;padding-left:66px}
+  .v1 .tl::before{content:'';position:absolute;left:47px;top:10px;bottom:10px;width:3px;border-radius:2px;background:#E5DFF5}
+  .v1 .row{position:relative;margin-bottom:12px}
+  .v1 .time{position:absolute;left:-66px;top:12px;width:40px;text-align:right}
+  .v1 .time b{display:block;font-size:12.5px;color:var(--plumDeep)}
+  .v1 .time span{font-size:9.5px;font-weight:800;color:#8a7d68}
+  .v1 .dot{position:absolute;left:-24px;top:18px;width:12px;height:12px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px currentColor}
+  .v1 .tile{display:flex;align-items:flex-start;gap:10px;border-radius:16px;padding:12px 13px}
+  .v1 .ckbox{margin-left:auto}
+
+  /* ========= V2 彩磚串聯（時間在磚內） ========= */
+  .v2 .chain{position:relative;padding-left:14px}
+  .v2 .chain::before{content:'';position:absolute;left:14px;top:16px;bottom:16px;width:3px;border-radius:2px;background:#E5DFF5;z-index:0}
+  .v2 .tile{position:relative;z-index:1;border-radius:18px;padding:12px 13px 13px;margin-bottom:10px;margin-left:-14px}
+  .v2 .top{display:flex;align-items:center;gap:8px}
+  .v2 .slot{font-size:11px;font-weight:900;padding:3px 11px;border-radius:999px;background:rgba(255,255,255,.85)}
+  .v2 .ckbox{margin-left:auto}
+  .v2 .body{margin-top:8px}
+
+  /* ========= V3 票根式（左時間存根） ========= */
+  .v3 .tile{display:flex;border-radius:16px;overflow:hidden;margin-bottom:11px}
+  .v3 .stub{width:74px;flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    border-right:2px dashed rgba(255,255,255,.9);padding:12px 6px}
+  .v3 .stub b{font-size:15px;color:var(--plumDeep)}
+  .v3 .stub span{font-size:10px;font-weight:900;color:rgba(42,35,66,.55)}
+  .v3 .main{flex:1;padding:11px 12px;display:flex;align-items:flex-start;gap:8px}
+  .v3 .ckbox{margin-left:auto;margin-top:4px}
+
+  .reco{max-width:1240px;margin:26px auto 0;background:#fff;border-radius:22px;padding:18px 20px;box-shadow:0 10px 30px rgba(80,60,130,.10)}
+  .reco h3{margin:0 0 8px;font-size:15px}
+  .reco p{margin:4px 0;font-size:13px;color:#4A3F66;line-height:1.6}
+</style>
+</head>
+<body>
+  <h1>今日用藥 · A×C 融合（三版本）</h1>
+  <p class="sub">時段彩磚 × 時間軸 · 逐列列藥 · 不畫藥品外型，只放藥名＋怎麼吃＋注意事項</p>
+  <p class="try">三版都可以真的點：點藥卡 → 變無色＋打勾，再點復原</p>
+
+  <div class="grid">
+
+    <!-- ========= V1 ========= -->
+    <div class="card">
+      <span class="tag">V1 · 左時間軸＋彩磚</span>
+      <p class="title">時間在軸上，磚是主角</p>
+      <div class="stage v1">
+        <div class="secHead"><b>今日用藥</b><span class="prog" data-prog></span></div>
+        <div class="tl">
+          <div class="row">
+            <div class="time"><b>07:30</b><span>早餐前</span></div>
+            <div class="dot" style="color:var(--morn)"></div>
+            <div class="tile tick" style="background:linear-gradient(150deg,var(--mornBg1),var(--mornBg2))">
+              <div>
+                <div class="medName">胃藥 40mg</div>
+                <div class="medHow">飯前 30 分鐘 · 1 顆</div>
+                <div class="note"><i></i>不可與胃散胃乳同服，隔 2 小時</div>
+              </div>
+              <div class="ckbox">✓</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="time"><b>19:00</b><span>晚餐後</span></div>
+            <div class="dot" style="color:var(--eve)"></div>
+            <div class="tile tick" style="background:linear-gradient(150deg,var(--eveBg1),var(--eveBg2))">
+              <div>
+                <div class="medName">癒妥 50mg</div>
+                <div class="medHow">晚餐後 · 1 顆 · 配開水</div>
+                <div class="note"><i></i>不可配柚子類（葡萄柚、文旦）</div>
+              </div>
+              <div class="ckbox">✓</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="time"><b>21:30</b><span>睡前</span></div>
+            <div class="dot" style="color:var(--night)"></div>
+            <div class="tile tick" style="background:linear-gradient(150deg,var(--nightBg1),var(--nightBg2))">
+              <div>
+                <div class="medName">止吐藥 8mg</div>
+                <div class="medHow">睡前 1 顆 · 想吐時可提前</div>
+                <div class="note soft"><i></i>可能便祕，多喝水多吃蔬菜</div>
+              </div>
+              <div class="ckbox">✓</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="time"><b>—</b><span>依醫囑</span></div>
+            <div class="dot" style="color:var(--prn)"></div>
+            <div class="tile tick" style="background:linear-gradient(150deg,var(--prnBg1),var(--prnBg2))">
+              <div>
+                <div class="medName">升白血球藥 300mcg</div>
+                <div class="medHow">醫囑日皮下注射</div>
+                <div class="note"><i></i>發燒超過 38 度立即回診</div>
+              </div>
+              <div class="ckbox">✓</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="desc">C 的骨架＋A 的皮膚：左欄時間＋時段、軸上圓點走時段色，右邊整張是時段色漸層磚。時間掃視最快（視線沿軸下來），磚內乾淨：藥名、怎麼吃、一顆注意事項膠囊。</p>
+    </div>
+
+    <!-- ========= V2 ========= -->
+    <div class="card">
+      <span class="tag">V2 · 彩磚串聯</span>
+      <p class="title">時間收進磚裡，一條線串起來</p>
+      <div class="stage v2">
+        <div class="secHead"><b>今日用藥</b><span class="prog" data-prog></span></div>
+        <div class="chain">
+          <div class="tile tick" style="background:linear-gradient(150deg,var(--mornBg1),var(--mornBg2))">
+            <div class="top"><span class="slot" style="color:var(--morn)">早餐前 07:30</span><div class="ckbox">✓</div></div>
+            <div class="body">
+              <div class="medName">胃藥 40mg</div>
+              <div class="medHow">飯前 30 分鐘 · 1 顆</div>
+              <div class="note"><i></i>不可與胃散胃乳同服，隔 2 小時</div>
+            </div>
+          </div>
+          <div class="tile tick" style="background:linear-gradient(150deg,var(--eveBg1),var(--eveBg2))">
+            <div class="top"><span class="slot" style="color:var(--eve)">晚餐後 19:00</span><div class="ckbox">✓</div></div>
+            <div class="body">
+              <div class="medName">癒妥 50mg</div>
+              <div class="medHow">晚餐後 · 1 顆 · 配開水</div>
+              <div class="note"><i></i>不可配柚子類（葡萄柚、文旦）</div>
+            </div>
+          </div>
+          <div class="tile tick" style="background:linear-gradient(150deg,var(--nightBg1),var(--nightBg2))">
+            <div class="top"><span class="slot" style="color:var(--night)">睡前 21:30</span><div class="ckbox">✓</div></div>
+            <div class="body">
+              <div class="medName">止吐藥 8mg</div>
+              <div class="medHow">睡前 1 顆 · 想吐時可提前</div>
+              <div class="note soft"><i></i>可能便祕，多喝水多吃蔬菜</div>
+            </div>
+          </div>
+          <div class="tile tick" style="background:linear-gradient(150deg,var(--prnBg1),var(--prnBg2))">
+            <div class="top"><span class="slot" style="color:var(--prn)">依醫囑</span><div class="ckbox">✓</div></div>
+            <div class="body">
+              <div class="medName">升白血球藥 300mcg</div>
+              <div class="medHow">醫囑日皮下注射</div>
+              <div class="note"><i></i>發燒超過 38 度立即回診</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="desc">最像 A 的一版：時段徽章（含時間）收進磚的左上角，磚與磚之間背後一條淡淡的軸線暗示先後。磚滿版、最大氣，內容空間也最寬（注意事項長也放得下），但「幾點」要進磚裡找。</p>
+    </div>
+
+    <!-- ========= V3 ========= -->
+    <div class="card">
+      <span class="tag">V3 · 票根式</span>
+      <p class="title">左邊撕票存根＝時間</p>
+      <div class="stage v3">
+        <div class="secHead"><b>今日用藥</b><span class="prog" data-prog></span></div>
+        <div class="tile tick" style="background:linear-gradient(150deg,var(--mornBg1),var(--mornBg2))">
+          <div class="stub"><b>07:30</b><span>早餐前</span></div>
+          <div class="main">
+            <div>
+              <div class="medName">胃藥 40mg</div>
+              <div class="medHow">飯前 30 分鐘 · 1 顆</div>
+              <div class="note"><i></i>不可與胃散胃乳同服</div>
+            </div>
+            <div class="ckbox">✓</div>
+          </div>
+        </div>
+        <div class="tile tick" style="background:linear-gradient(150deg,var(--eveBg1),var(--eveBg2))">
+          <div class="stub"><b>19:00</b><span>晚餐後</span></div>
+          <div class="main">
+            <div>
+              <div class="medName">癒妥 50mg</div>
+              <div class="medHow">1 顆 · 配開水</div>
+              <div class="note"><i></i>不可配柚子類</div>
+            </div>
+            <div class="ckbox">✓</div>
+          </div>
+        </div>
+        <div class="tile tick" style="background:linear-gradient(150deg,var(--nightBg1),var(--nightBg2))">
+          <div class="stub"><b>21:30</b><span>睡前</span></div>
+          <div class="main">
+            <div>
+              <div class="medName">止吐藥 8mg</div>
+              <div class="medHow">1 顆 · 想吐可提前</div>
+              <div class="note soft"><i></i>可能便祕，多喝水</div>
+            </div>
+            <div class="ckbox">✓</div>
+          </div>
+        </div>
+        <div class="tile tick" style="background:linear-gradient(150deg,var(--prnBg1),var(--prnBg2))">
+          <div class="stub"><b>—</b><span>依醫囑</span></div>
+          <div class="main">
+            <div>
+              <div class="medName">升白血球藥 300mcg</div>
+              <div class="medHow">醫囑日皮下注射</div>
+              <div class="note"><i></i>發燒 38 度立即回診</div>
+            </div>
+            <div class="ckbox">✓</div>
+          </div>
+        </div>
+      </div>
+      <p class="desc">每張磚做成藥局號碼牌／票根：左邊虛線撕邊的存根放大字時間＋時段，右邊藥名＋注意事項＋勾框。時間跟磚合為一體（不用另外一欄），大字時間對長輩最好認，勾完像「撕掉一張票」。</p>
+    </div>
+  </div>
+
+  <div class="reco">
+    <h3>德德的建議</h3>
+    <p><b>V3 票根式</b>——時間是磚的一部分（不佔獨立欄位、不用進磚裡找），大字時間最好認，「吃完撕一張」的比喻也和打卡心智最合。V1 時間掃視最順但左欄窄、字小；V2 版面最大氣但時間感最弱。</p>
+    <p style="color:#8a7d68;font-size:12px">三版共通：無藥品外型（藥名＋怎麼吃＋注意事項膠囊）、點擊 toggle＋變無色相＋打勾、進度同步、紅字注意事項＝仿單警告、灰字＝溫和提醒。挑定後我接著排第 1、3、4 點。</p>
+  </div>
+
+<script>
+  document.querySelectorAll('.stage').forEach(stage => {
+    const prog = stage.querySelector('[data-prog]');
+    const ticks = stage.querySelectorAll('.tick');
+    const update = () => {
+      prog.textContent = `${stage.querySelectorAll('.tick.done').length} / ${ticks.length} 完成`;
+    };
+    ticks.forEach(t => t.addEventListener('click', () => { t.classList.toggle('done'); update(); }));
+    update();
+  });
+</script>
+</body>
+</html>

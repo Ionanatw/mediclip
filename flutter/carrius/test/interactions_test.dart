@@ -9,7 +9,7 @@ import 'package:carrius/models/mock_data.dart';
 import 'package:carrius/screens/settings_screen.dart';
 import 'package:carrius/screens/calendar_screen.dart';
 import 'package:carrius/screens/documents_screen.dart';
-import 'package:carrius/screens/garden_screen.dart';
+import 'package:carrius/screens/family_talk_screen.dart';
 import 'package:carrius/screens/home_screen.dart';
 import 'package:carrius/screens/results_screen.dart';
 import 'package:carrius/screens/med_card_screen.dart';
@@ -85,12 +85,17 @@ void main() {
     expect(find.textContaining('只存在你的手機，未上傳雲端'), findsOneWidget);
   });
 
-  testWidgets('moodcard 分享給家人跳 Coming Soon', (tester) async {
-    await tester.pumpWidget(_wrap(MoodCardScreen(onClose: () {})));
-    await tester.tap(find.text('分享給家人'));
+  testWidgets('familytalk 複製後出現「我傳出去了」領陽光按鈕', (tester) async {
+    var completed = false;
+    await tester.pumpWidget(_wrap(FamilyTalkScreen(onClose: () {}, onComplete: () => completed = true)));
+    expect(find.textContaining('我傳出去了'), findsNothing);
+    await tester.tap(find.text('複製這段話'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
-    expect(find.textContaining('即將在正式版開放'), findsOneWidget);
+    expect(find.textContaining('已複製'), findsOneWidget);
+    await tester.tap(find.textContaining('我傳出去了'));
+    await tester.pump();
+    expect(completed, isTrue);
   });
 
   testWidgets('med_card 白話版付費鎖（BlurLock）跳 Coming Soon', (tester) async {
@@ -105,14 +110,41 @@ void main() {
   });
 
   testWidgets('home 識別卡 header 切到藥品圖鑑分頁（不再是死按鈕）', (tester) async {
+    tester.view.physicalSize = const Size(393 * 3, 1500 * 3);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
     final s = _state();
     await tester.pumpWidget(_wrap(
-      HomeScreen(state: s, onOpenGarden: () {}, onOpenChecklist: () {}, onOpenSettings: () {}),
+      HomeScreen(state: s, onOpenGarden: () {}, onOpenSettings: () {}, nowHour: 9),
     ));
     expect(s.tab, AppTab.home);
     await tester.tap(find.text('識別卡'));
     await tester.pump();
     expect(s.tab, AppTab.documents);
+  });
+
+  testWidgets('home 任務流：單顆勾選＋全部吃了＋進度連動', (tester) async {
+    tester.view.physicalSize = const Size(393 * 3, 1500 * 3);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    final s = _state();
+    await tester.pumpWidget(_wrap(
+      HomeScreen(state: s, onOpenGarden: () {}, onOpenSettings: () {}, nowHour: 9),
+    ));
+    expect(s.todayDone, 0);
+    // 單顆勾選（早餐前第一顆）
+    await tester.tap(find.text('胃藥 40mg').first);
+    await tester.pump();
+    expect(s.todayDone, 1);
+    // 全部吃了 → 早餐前 3 顆全完成
+    await tester.tap(find.text('全部吃了'));
+    await tester.pump();
+    expect(s.daySlots.first.groups.first.tasks.every((t) => t.done), isTrue);
+    expect(s.todayDone, 3);
+    // 再點一次已完成的 → 復原
+    await tester.tap(find.text('胃藥 40mg').first);
+    await tester.pump();
+    expect(s.todayDone, 2);
   });
 
   testWidgets('results 不再有假連結「全部識別卡」', (tester) async {

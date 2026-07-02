@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>首頁 H3 定案 — 頂部三選＋早晚兩時段狀態</title>
+<style>
+  :root{
+    --cream:#FDFBF7; --plum:#3C315B; --plumDeep:#2A2342; --ink:#4A3F66;
+    --lav:#AB9FF2; --lavSoft:#EBE6FB;
+    --bk:#C2872E;  --bkBg1:#FFF3DA; --bkBg2:#FFE9C4;
+    --ln:#D2691E;  --lnBg1:#FFEAD8; --lnBg2:#FFDDBE;
+    --dn:#3F7BC4;  --dnBg1:#E2EEFC; --dnBg2:#D0E2F8;
+    --nt:#6B5FC0;  --ntBg1:#EBE4FC; --ntBg2:#DED4F8;
+    --care:#2E8B72; --careBg1:#E2F4E9; --careBg2:#D2EDDD;
+    --day:#C75E8A; --dayBg1:#FDEBF2; --dayBg2:#F8DCE8;
+    --success:#4CAF87; --warn:#B3552E;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#f4f0e9;font-family:"Noto Sans TC",-apple-system,system-ui,sans-serif;color:var(--plumDeep);padding:28px 18px 60px}
+  h1{font-size:21px;margin:0 0 4px;text-align:center}
+  h2{font-size:16px;max-width:1280px;margin:34px auto 12px}
+  .sub{text-align:center;color:#6b5f87;font-size:13.5px;margin:0 0 22px;line-height:1.6}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;max-width:1280px;margin:0 auto}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;max-width:900px;margin:0 auto}
+  .card{background:#fff;border-radius:22px;padding:16px 16px 18px;box-shadow:0 10px 30px rgba(80,60,130,.10)}
+  .tag{display:inline-block;font-size:11px;font-weight:800;color:#544A9E;background:var(--lavSoft);padding:3px 10px;border-radius:999px;margin-bottom:10px}
+  .title{font-size:15px;font-weight:900;margin:0 0 8px}
+  .desc{font-size:12.5px;color:#6b5f87;line-height:1.55;margin:10px 2px 0}
+  .stage{position:relative;width:100%;border-radius:24px;overflow:hidden;background:var(--cream);padding:16px 13px 18px;border:1px solid #EDE7DB}
+
+  .tick{transition:all .22s ease;cursor:pointer}
+  .tick.done{filter:grayscale(1);opacity:.5}
+  .ck{width:25px;height:25px;border-radius:9px;border:2.5px solid rgba(60,49,91,.25);
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:transparent;flex:none;transition:all .2s;background:rgba(255,255,255,.6)}
+  .tick.done .ck{background:var(--success);border-color:var(--success);color:#fff}
+
+  .top{display:flex;align-items:center;gap:10px;margin-bottom:13px}
+  .top .ava{width:40px;height:40px;border-radius:13px;background:var(--lav);display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:15px;font-weight:900;flex:none}
+  .top .l1{font-size:11.5px;font-weight:700;color:#6b5f87}
+  .top .l2{font-size:17px;font-weight:900;color:var(--plumDeep)}
+  .top .big{font-size:19px;font-weight:900;color:var(--plumDeep)}
+  .top .sunbox{margin-left:auto;display:flex;align-items:center;gap:4px;background:#F3EFE4;border-radius:12px;padding:7px 11px;
+    font-size:13px;font-weight:900;color:var(--plumDeep)}
+  .top .sunbox s{font-size:12px;color:var(--bk);text-decoration:none}
+  .ring{width:42px;height:42px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+    font-size:10px;font-weight:900;color:var(--plumDeep)}
+
+  .hero{border-radius:18px;padding:13px 14px;margin-bottom:11px;color:#fff;
+    background:linear-gradient(120deg,#6FA8F5,#8FB8FC);display:flex;align-items:flex-start;gap:10px}
+  .hero .badge{font-size:10px;font-weight:900;background:rgba(255,255,255,.28);padding:3px 9px;border-radius:999px}
+  .hero .t{font-size:15px;font-weight:900;margin-top:6px}
+  .hero .d{font-size:10.5px;font-weight:600;opacity:.95;margin-top:2px}
+  .hero .num{margin-left:auto;text-align:right}
+  .hero .num b{font-size:26px}
+  .hero .num span{display:block;font-size:10px;font-weight:800;opacity:.95}
+
+  .garden{display:flex;align-items:center;gap:11px;border-radius:16px;padding:11px 12px;background:rgba(143,211,166,.20);margin-bottom:13px}
+  .garden .tree{width:40px;height:48px;position:relative;flex:none}
+  .garden .tree::before{content:'';position:absolute;left:50%;bottom:0;width:7px;height:18px;margin-left:-3.5px;border-radius:4px;background:#8A6B4A}
+  .garden .tree::after{content:'';position:absolute;left:50%;top:0;width:34px;height:31px;margin-left:-17px;border-radius:50%;
+    background:radial-gradient(circle at 40% 35%,#A9DEBC,#8FD3A6 70%)}
+  .garden .g1{font-size:12.5px;font-weight:900;color:var(--plumDeep)}
+  .garden .bar{height:6px;border-radius:99px;background:rgba(255,255,255,.75);margin-top:6px;overflow:hidden}
+  .garden .bar i{display:block;height:100%;background:var(--care)}
+  .garden .g2{font-size:10px;font-weight:800;color:var(--care);margin-top:4px}
+  .garden > div:nth-child(2){flex:1}
+
+  .nowCard{border-radius:18px;padding:13px 12px;margin-bottom:9px}
+  .nowKick{display:flex;align-items:center;gap:7px}
+  .nowKick .live{width:8px;height:8px;border-radius:50%;background:var(--warn);animation:blink 1.6s ease-in-out infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+  .nowKick b{font-size:10.5px;font-weight:900;color:var(--warn);letter-spacing:1px}
+  .nowTitle{font-size:16px;font-weight:900;color:var(--plumDeep);margin:4px 0 8px}
+  .medRow{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.62)}
+  .medRow + .medRow{margin-top:6px}
+  .medRow .nm{font-size:13px;font-weight:900;color:var(--plumDeep)}
+  .medRow .full{font-size:9px;font-weight:600;color:rgba(42,35,66,.45);margin-top:1px}
+  .medRow .nt2{font-size:10.5px;font-weight:700;color:var(--warn);margin-top:2px}
+  .medRow .nt2.soft{color:#5d5478}
+  .medRow .ck{margin-left:auto}
+  .batch{margin-left:auto;font-size:10.5px;font-weight:900;color:var(--plumDeep);background:rgba(255,255,255,.9);
+    border:none;padding:5px 12px;border-radius:999px;cursor:pointer;font-family:inherit;box-shadow:0 2px 6px rgba(60,49,91,.10)}
+  .batchRow{display:flex;margin-top:9px}
+
+  .acc{border-radius:14px;margin-bottom:7px;overflow:hidden}
+  .accHead{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer}
+  .accHead .anchor{font-size:13px;font-weight:900;color:var(--plumDeep)}
+  .accHead .cnt{font-size:10.5px;font-weight:900;color:rgba(42,35,66,.55)}
+  .accHead .arrow{margin-left:auto;font-size:12px;font-weight:900;color:rgba(42,35,66,.45);transition:transform .2s}
+  .acc.open .accHead .arrow{transform:rotate(90deg)}
+  .accBody{display:none;padding:0 10px 10px}
+  .acc.open .accBody{display:block}
+  .acc.allDone{filter:grayscale(1);opacity:.55}
+
+  .dayCard{border-radius:16px;padding:11px 12px;margin:12px 0 0;background:linear-gradient(150deg,var(--dayBg1),var(--dayBg2))}
+  .dayCard .dh{display:flex;align-items:baseline;gap:7px;margin-bottom:7px}
+  .dayCard .dh b{font-size:13px;color:var(--plumDeep)}
+  .dayCard .dh span{font-size:10px;font-weight:800;color:rgba(42,35,66,.5)}
+
+  .reco{max-width:1280px;margin:26px auto 0;background:#fff;border-radius:22px;padding:18px 20px;box-shadow:0 10px 30px rgba(80,60,130,.10)}
+  .reco h3{margin:0 0 8px;font-size:15px}
+  .reco p{margin:4px 0;font-size:13px;color:#4A3F66;line-height:1.6}
+</style>
+</head>
+<body>
+  <h1>首頁 H3 定案 · 兩個待選</h1>
+  <p class="sub">已套用：H3 順序調整（行程卡 → 花園移到其下方 → 用藥流）、拿掉「辛苦了」<br>上排＝頂部區（無問候語）三選；下排＝完整首頁的「早餐前 vs 晚餐前」兩個時段狀態（用藥區可點）</p>
+
+  <h2>① 頂部區（無問候語）— 三選一</h2>
+  <div class="grid" id="tops"></div>
+
+  <h2>② H3 完整版 · 時段狀態對照（頂部先套 T1，以你挑的為準）</h2>
+  <div class="grid2" id="phones"></div>
+
+  <div class="reco">
+    <h3>德德的建議</h3>
+    <p><b>T1 狀態行</b>——不寒暄、直接交代「這是誰的照護、第幾天、今天日期」，資訊最扎實也最不像 AI 客套話。T2 適合把 App 當「每日日曆」用的人；T3 把今日進度放到最頂，但和下面任務流的進度重複。</p>
+    <p style="color:#8a7d68;font-size:12px">晚餐前狀態展示的邏輯：過完的時段（早餐前後／午餐／中午照護）自動收合＋變灰打勾、「現在」卡換成晚餐前並套晚餐藍、還沒到的（晚餐後／睡前）維持收合待辦、今天隨時照常。時段判定用系統時間對餐錨點（可在設定調整用餐時間）。</p>
+  </div>
+
+<script>
+const PRE = [
+  {nm:'胃藥 40mg', full:'艾美拉唑膜衣錠 40 毫克', nt:'不可與胃散胃乳同服', warn:true},
+  {nm:'血壓藥 5mg', full:'氨氯地平錠 5 毫克', nt:'不可自行停藥', warn:true},
+  {nm:'抗生素 250mg', full:'阿莫西林膠囊 250 毫克', nt:'整顆吞服，不可剝半', warn:false},
+];
+const row = (m, done=false) => `
+  <div class="medRow tick ${done?'done':''}">
+    <div><div class="nm">${m.nm}</div><div class="full">${m.full}</div><div class="nt2 ${m.warn?'':'soft'}">${m.nt}</div></div>
+    <div class="ck">✓</div>
+  </div>`;
+const trow = (nm,nt,done=false) => `
+  <div class="medRow tick ${done?'done':''}">
+    <div><div class="nm">${nm}</div><div class="nt2 soft">${nt}</div></div>
+    <div class="ck">✓</div>
+  </div>`;
+
+// ---------- ① 頂部三選 ----------
+const tops = [
+  {tag:'T1 · 狀態行', title:'照護狀態＋日期',
+   html:`<div class="top">
+      <div class="ava">媽</div>
+      <div><div class="l1">6/13（五）</div><div class="l2">媽媽的照護 · 第 47 天</div></div>
+      <div class="sunbox"><s>☀</s>6</div>
+    </div>`,
+   desc:'第一行小字日期，第二行主角是「媽媽的照護 · 第 47 天」。不寒暄、資訊最扎實，天數像勳章一樣每天 +1。'},
+  {tag:'T2 · 日期主角', title:'今天是幾月幾號',
+   html:`<div class="top">
+      <div class="ava">媽</div>
+      <div><div class="l1">媽媽的照護 · 第 47 天</div><div class="big">6 月 13 日 星期五</div></div>
+      <div class="sunbox"><s>☀</s>6</div>
+    </div>`,
+   desc:'大字日期當主角（照護生活常常「不知道今天星期幾」），照護天數退為小字。最像一本每日日曆的開頁。'},
+  {tag:'T3 · 進度合體', title:'照護天數＋今日完成度',
+   html:`<div class="top">
+      <div class="ring" style="background:conic-gradient(var(--success) 0 32%, #EDE7DB 32% 100%)"><span style="background:var(--cream);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center">6/19</span></div>
+      <div><div class="l1">6/13（五）· 第 47 天</div><div class="l2">今天完成 6 / 19</div></div>
+      <div class="sunbox"><s>☀</s>6</div>
+    </div>`,
+   desc:'頭像換成今日待辦進度環，主行直接顯示「今天完成 6/19」。一抬頭就知道今天做到哪，但和下面任務流的數字重複。'},
+];
+document.getElementById('tops').innerHTML = tops.map(t=>`
+  <div class="card">
+    <span class="tag">${t.tag}</span>
+    <p class="title">${t.title}</p>
+    <div class="stage" style="padding-bottom:6px">${t.html}</div>
+    <p class="desc">${t.desc}</p>
+  </div>`).join('');
+
+// ---------- ② 完整版 兩時段 ----------
+const topT1 = sun => `
+  <div class="top">
+    <div class="ava">媽</div>
+    <div><div class="l1">6/13（五）</div><div class="l2">媽媽的照護 · 第 47 天</div></div>
+    <div class="sunbox"><s>☀</s>${sun}</div>
+  </div>`;
+const hero = `
+  <div class="hero">
+    <div>
+      <span class="badge">下一個重要行程</span>
+      <div class="t">抽血檢驗＋血液腫瘤科回診</div>
+      <div class="d">6/16（一）08:30 · 前一晚 12 點後禁食</div>
+    </div>
+    <div class="num"><b>3</b><span>天後</span></div>
+  </div>`;
+const garden = pct => `
+  <div class="garden">
+    <div class="tree"></div>
+    <div>
+      <div class="g1">你的茶樹 · 茁壯期</div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="g2">${pct===62?'124':'130'} / 200 ☀ · 做完今天的事再＋</div>
+    </div>
+  </div>`;
+const now = (label,title,bg,items) => `
+  <div class="nowCard" style="background:${bg}">
+    <div class="nowKick"><span class="live"></span><b>現在 · ${label}</b></div>
+    <div class="nowTitle">${title}</div>
+    ${items}
+    <div class="batchRow"><button class="batch">全部吃了</button></div>
+  </div>`;
+const acc = (label,bg,inner,open=false,doneAll=false) => `
+  <div class="acc ${open?'open':''}" style="background:${bg}">
+    <div class="accHead"><span class="anchor">${label}</span><span class="cnt" data-mprog></span><span class="arrow">›</span></div>
+    <div class="accBody">${inner}</div>
+  </div>`;
+const dayCard = (d1,d2,d3) => `
+  <div class="dayCard">
+    <div class="dh"><b>今天隨時</b><span>不綁時段，做到就勾</span></div>
+    ${trow('三餐全熟食','化療期間避免生食',d1)}
+    ${trow('喝水 2000ml','目前約 1200ml',d2)}
+    ${trow('散步 20 分鐘','傍晚涼一點再去',d3)}
+  </div>`;
+
+const bgBk='linear-gradient(150deg,var(--bkBg1),var(--bkBg2))';
+const bgLn='linear-gradient(150deg,var(--lnBg1),var(--lnBg2))';
+const bgDn='linear-gradient(150deg,var(--dnBg1),var(--dnBg2))';
+const bgNt='linear-gradient(150deg,var(--ntBg1),var(--ntBg2))';
+const bgCr='linear-gradient(150deg,var(--careBg1),var(--careBg2))';
+
+const morning =
+  topT1(6) + hero + garden(62) +
+  now('早餐前','早餐前要吃 3 顆',bgBk, PRE.map(m=>row(m)).join('')) +
+  acc('早餐後',bgBk, trow('鐵劑 100mg','葡萄糖酸亞鐵錠 · 避免與茶咖啡同服')) +
+  acc('午餐（餐前 3＋餐後 1）',bgLn, PRE.map(m=>row(m)).join('')+trow('鐵劑 100mg','避免與茶咖啡同服')) +
+  acc('中午 · 傷口換敷料',bgCr, trow('更換紗布','紗布＋生理食鹽水')+trow('檢查傷口紅腫','紅腫熱痛要回報')) +
+  acc('晚餐（餐前 3＋餐後 1）',bgDn, PRE.map(m=>row(m)).join('')+trow('鐵劑 100mg','避免與茶咖啡同服')) +
+  acc('睡前',bgNt, trow('止吐藥 8mg','昂丹司瓊錠 · 想吐可提前')+trow('軟便劑 1 包','氧化鎂粉 · 配一整杯水')) +
+  dayCard(false,false,false);
+
+const evening =
+  topT1(12) + hero + garden(65) +
+  acc('早餐（餐前 3＋餐後 1）',bgBk, PRE.map(m=>row(m,true)).join('')+trow('鐵劑 100mg','避免與茶咖啡同服',true)) +
+  acc('午餐（餐前 3＋餐後 1）',bgLn, PRE.map(m=>row(m,true)).join('')+trow('鐵劑 100mg','避免與茶咖啡同服',true)) +
+  acc('中午 · 傷口換敷料',bgCr, trow('更換紗布','紗布＋生理食鹽水',true)+trow('檢查傷口紅腫','紅腫熱痛要回報',true)) +
+  now('晚餐前','晚餐前要吃 3 顆',bgDn, PRE.map(m=>row(m)).join('')) +
+  acc('晚餐後',bgDn, trow('鐵劑 100mg','避免與茶咖啡同服')) +
+  acc('睡前',bgNt, trow('止吐藥 8mg','昂丹司瓊錠 · 想吐可提前')+trow('軟便劑 1 包','氧化鎂粉 · 配一整杯水')) +
+  dayCard(true,false,true);
+
+document.getElementById('phones').innerHTML = [
+  {tag:'狀態 1 · 早餐前（07:10 打開 App）', body:morning,
+   desc:'一天的起點：所有時段都還沒動，「現在」卡＝早餐前（暖黃）。過了的事不會出現在上面，還沒到的收成一條條。'},
+  {tag:'狀態 2 · 晚餐前（17:50 打開 App）', body:evening,
+   desc:'白天過完：早餐／午餐／中午照護整欄變灰打勾（可展開回看），「現在」卡換成晚餐前（晚餐藍），睡前還在等。今天隨時勾了 2 項、陽光累積到 12。'},
+].map(c=>`
+  <div class="card">
+    <span class="tag">${c.tag}</span>
+    <div class="stage">${c.body}</div>
+    <p class="desc">${c.desc}</p>
+  </div>`).join('');
+
+// ---------- 互動 ----------
+document.querySelectorAll('#phones .stage').forEach(stage=>{
+  const update = ()=>{
+    stage.querySelectorAll('.acc').forEach(mc=>{
+      const t = mc.querySelectorAll('.tick'), d = mc.querySelectorAll('.tick.done');
+      mc.classList.toggle('allDone', t.length>0 && t.length===d.length);
+      const mp = mc.querySelector('[data-mprog]');
+      if (mp) mp.textContent = `${d.length} / ${t.length}`;
+    });
+  };
+  stage.querySelectorAll('.tick').forEach(t=>t.addEventListener('click', ()=>{ t.classList.toggle('done'); update(); }));
+  stage.querySelectorAll('.batch').forEach(b=>b.addEventListener('click', e=>{
+    e.stopPropagation();
+    b.closest('.nowCard').querySelectorAll('.tick').forEach(t=>t.classList.add('done'));
+    update();
+  }));
+  stage.querySelectorAll('.accHead').forEach(h=>h.addEventListener('click', ()=>h.parentElement.classList.toggle('open')));
+  update();
+});
+</script>
+</body>
+</html>

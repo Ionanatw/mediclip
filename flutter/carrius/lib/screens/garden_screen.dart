@@ -3,7 +3,6 @@ import '../design/tokens.dart';
 import '../design/components.dart';
 import '../design/haptics.dart';
 import '../design/illustrations/sakura_tree.dart';
-import '../design/illustrations/backgrounds.dart';
 import '../models/models.dart';
 import '../models/mock_data.dart';
 import '../state/app_state.dart';
@@ -14,24 +13,26 @@ const _sunOrange = Color(0xFFE08A2B);
 class GardenScreen extends StatelessWidget {
   final AppState state;
   final void Function(GardenActivity) onBreathing;
-  final VoidCallback onGratitude;
-  final VoidCallback onMoodCard;
+  final void Function(GardenActivity) onGratitude;
   final void Function(GardenActivity) onBodyScan;
   final void Function(GardenActivity) onObserveBreath;
   final void Function(GardenActivity) onMicroMove;
   final void Function(GardenActivity) onSunbathe;
   final void Function(GardenActivity) onGoal;
+  final void Function(GardenActivity) onHug;
+  final void Function(GardenActivity) onFamilyTalk;
   const GardenScreen({
     super.key,
     required this.state,
     required this.onBreathing,
     required this.onGratitude,
-    required this.onMoodCard,
     required this.onBodyScan,
     required this.onObserveBreath,
     required this.onMicroMove,
     required this.onSunbathe,
     required this.onGoal,
+    required this.onHug,
+    required this.onFamilyTalk,
   });
 
   @override
@@ -356,10 +357,7 @@ class GardenScreen extends StatelessWidget {
         onBreathing(a);
       case HappyKind.gratitude:
         Haptics.light();
-        onGratitude();
-      case HappyKind.share:
-        Haptics.light();
-        onMoodCard();
+        onGratitude(a);
       case HappyKind.bodyScan:
         Haptics.light();
         onBodyScan(a);
@@ -375,8 +373,15 @@ class GardenScreen extends StatelessWidget {
       case HappyKind.goal:
         Haptics.light();
         onGoal(a);
+      case HappyKind.hug:
+        Haptics.light();
+        onHug(a);
+      case HappyKind.familyTalk:
+        Haptics.light();
+        onFamilyTalk(a);
       case HappyKind.exercise:
       case HappyKind.challenge:
+      case HappyKind.share:
         state.completeActivity(a.title, a.sun);
     }
   }
@@ -491,101 +496,3 @@ class _ScenePainter extends CustomPainter {
   bool shouldRepaint(_ScenePainter old) => old.dark != dark;
 }
 
-/// 感恩日記
-class GratitudeScreen extends StatelessWidget {
-  final AppState state;
-  final VoidCallback onClose;
-  const GratitudeScreen({super.key, required this.state, required this.onClose});
-
-  @override
-  Widget build(BuildContext context) {
-    final p = PaletteScope.of(context);
-    return Column(
-      children: [
-        FlowTopBar(title: '感恩日記', onClose: onClose),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 8),
-                PageHeader(kicker: MockData.gratitudePrompts[0], title: '寫下一件感恩的事'),
-                const SizedBox(height: 14),
-                CDCard(
-                  padding: const EdgeInsets.all(16),
-                  child: TextField(
-                    maxLines: 6,
-                    style: CDText.body(15, color: p.text),
-                    decoration: InputDecoration.collapsed(hintText: '今天…', hintStyle: CDText.body(15, color: p.text3)),
-                  ),
-                ),
-                const SizedBox(height: 14),
-                PillButton(title: '存下來', icon: Icons.favorite_border, style: PillStyle.lemon, onTap: onClose),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// 心情小卡（C 風格全幅）
-class MoodCardScreen extends StatelessWidget {
-  final VoidCallback onClose;
-  const MoodCardScreen({super.key, required this.onClose});
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        const MoodBlobBackground(),
-        SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(18),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Haptics.light();
-                        onClose();
-                      },
-                      child: Container(
-                        width: 34,
-                        height: 34,
-                        decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.15), shape: BoxShape.circle),
-                        child: const Icon(Icons.arrow_back, size: 18, color: CD.cream),
-                      ),
-                    ),
-                    const Spacer(),
-                  ],
-                ),
-              ),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 36),
-                child: Text(MockData.moodCards[0].text,
-                    textAlign: TextAlign.center, style: CDText.display(22, color: CD.cream)),
-              ),
-              const SizedBox(height: 14),
-              Text('— ${MockData.moodCards[0].author}', style: CDText.body(13, weight: FontWeight.w700, color: CD.cream.withValues(alpha: 0.7))),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(40, 0, 40, 40),
-                child: PillButton(
-                    title: '分享給家人',
-                    icon: Icons.send_outlined,
-                    style: PillStyle.lemon,
-                    onTap: () => showComingSoon(context, '分享給家人')),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}

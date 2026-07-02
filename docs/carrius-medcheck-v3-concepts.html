@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>今日用藥 — 餐錨點三版本</title>
+<style>
+  :root{
+    --cream:#FDFBF7; --plum:#3C315B; --plumDeep:#2A2342; --ink:#4A3F66;
+    --bk:#C2872E;  --bkBg1:#FFF3DA; --bkBg2:#FFE9C4;   /* 早餐 */
+    --ln:#D2691E;  --lnBg1:#FFEAD8; --lnBg2:#FFDDBE;   /* 午餐 */
+    --dn:#3F7BC4;  --dnBg1:#E2EEFC; --dnBg2:#D0E2F8;   /* 晚餐 */
+    --nt:#6B5FC0;  --ntBg1:#EBE4FC; --ntBg2:#DED4F8;   /* 睡前 */
+    --care:#2E8B72; --careBg1:#E2F4E9; --careBg2:#D2EDDD; /* 照護任務 */
+    --success:#4CAF87; --warn:#B3552E;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#f4f0e9;font-family:"Noto Sans TC",-apple-system,system-ui,sans-serif;color:var(--plumDeep);padding:28px 18px 60px}
+  h1{font-size:21px;margin:0 0 4px;text-align:center}
+  .sub{text-align:center;color:#6b5f87;font-size:13.5px;margin:0 0 8px;line-height:1.6}
+  .try{text-align:center;color:#b3552e;font-size:13px;font-weight:800;margin:0 0 26px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:26px;max-width:1280px;margin:0 auto}
+  .card{background:#fff;border-radius:22px;padding:16px 16px 18px;box-shadow:0 10px 30px rgba(80,60,130,.10)}
+  .tag{display:inline-block;font-size:11px;font-weight:800;color:#544A9E;background:#EBE6FB;padding:3px 10px;border-radius:999px;margin-bottom:10px}
+  .title{font-size:15.5px;font-weight:900;margin:0 0 2px}
+  .desc{font-size:12.5px;color:#6b5f87;line-height:1.55;margin:10px 2px 0;min-height:96px}
+  .stage{position:relative;width:100%;border-radius:20px;overflow:hidden;background:var(--cream);padding:14px 12px 16px}
+  .secHead{display:flex;align-items:baseline;justify-content:space-between;margin:0 2px 12px}
+  .secHead b{font-size:15px;color:var(--plumDeep)}
+  .prog{font-size:12px;font-weight:900;color:#6b5f87}
+
+  .tick{transition:all .22s ease;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .tick.done{filter:grayscale(1);opacity:.5}
+  .ck{width:26px;height:26px;border-radius:9px;border:2.5px solid rgba(60,49,91,.25);
+    display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:transparent;flex:none;transition:all .2s;background:rgba(255,255,255,.6)}
+  .tick.done .ck{background:var(--success);border-color:var(--success);color:#fff}
+
+  .medRow{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.62)}
+  .medRow + .medRow{margin-top:6px}
+  .medRow .nm{font-size:13px;font-weight:900;color:var(--plumDeep)}
+  .medRow .nt2{font-size:10.5px;font-weight:700;color:var(--warn);margin-top:1px}
+  .medRow .nt2.soft{color:#5d5478}
+  .medRow .ck{margin-left:auto}
+
+  .batch{margin-left:auto;font-size:10.5px;font-weight:900;color:var(--plumDeep);background:rgba(255,255,255,.85);
+    border:none;padding:4px 11px;border-radius:999px;cursor:pointer;font-family:inherit;box-shadow:0 2px 6px rgba(60,49,91,.10)}
+  .subHead{display:flex;align-items:center;gap:6px;margin:10px 2px 6px}
+  .subHead b{font-size:12px;color:var(--ink)}
+  .subHead i{font-style:normal;font-size:10px;font-weight:800;color:#8a7d68}
+
+  /* ===== 版1 餐卡分組 ===== */
+  .mealCard{border-radius:18px;padding:12px 12px 12px;margin-bottom:11px}
+  .mealHead{display:flex;align-items:center;gap:8px}
+  .mealHead .anchor{font-size:15px;font-weight:900;color:var(--plumDeep)}
+  .mealHead .hint{font-size:10.5px;font-weight:800;color:rgba(42,35,66,.5)}
+  .mealHead .mprog{margin-left:auto;font-size:11px;font-weight:900;color:rgba(42,35,66,.6)}
+  .mealCard.allDone{filter:grayscale(1);opacity:.55}
+
+  /* ===== 版2 全攤票列 ===== */
+  .v2 .anchorBar{display:flex;align-items:center;gap:8px;margin:12px 2px 7px}
+  .v2 .anchorBar .pillTag{font-size:12px;font-weight:900;padding:4px 13px;border-radius:999px;color:#fff}
+  .v2 .anchorBar i{font-style:normal;font-size:10.5px;font-weight:800;color:#8a7d68}
+  .v2 .tk{display:flex;align-items:center;gap:9px;border-radius:13px;padding:9px 11px;margin-bottom:6px}
+  .v2 .tk .ck{margin-left:auto}
+
+  /* ===== 版3 聚焦現在 ===== */
+  .nowCard{border-radius:18px;padding:13px 12px;margin-bottom:12px}
+  .nowKick{display:flex;align-items:center;gap:7px}
+  .nowKick .live{width:8px;height:8px;border-radius:50%;background:var(--warn);animation:blink 1.6s ease-in-out infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+  .nowKick b{font-size:11px;font-weight:900;color:var(--warn);letter-spacing:1px}
+  .nowTitle{font-size:17px;font-weight:900;color:var(--plumDeep);margin:4px 0 8px}
+  .acc{border-radius:14px;margin-bottom:8px;overflow:hidden}
+  .accHead{display:flex;align-items:center;gap:8px;padding:11px 12px;cursor:pointer}
+  .accHead .anchor{font-size:13.5px;font-weight:900;color:var(--plumDeep)}
+  .accHead .cnt{font-size:11px;font-weight:900;color:rgba(42,35,66,.55)}
+  .accHead .arrow{margin-left:auto;font-size:12px;font-weight:900;color:rgba(42,35,66,.45);transition:transform .2s}
+  .acc.open .accHead .arrow{transform:rotate(90deg)}
+  .accBody{display:none;padding:0 10px 10px}
+  .acc.open .accBody{display:block}
+  .acc.allDone{filter:grayscale(1);opacity:.55}
+
+  .reco{max-width:1280px;margin:26px auto 0;background:#fff;border-radius:22px;padding:18px 20px;box-shadow:0 10px 30px rgba(80,60,130,.10)}
+  .reco h3{margin:0 0 8px;font-size:15px}
+  .reco p{margin:4px 0;font-size:13px;color:#4A3F66;line-height:1.6}
+</style>
+</head>
+<body>
+  <h1>今日用藥 · 餐錨點版（三版本）</h1>
+  <p class="sub">改用真實邏輯：<b>餐前／餐後／睡前錨點</b>（不用絕對時間）· 一個時段多顆藥 · 中午換敷料混入流程<br>
+  模擬資料：三餐各「餐前 3 顆＋餐後 1 顆」、睡前 2 顆、中午換敷料——共 15 項</p>
+  <p class="try">都可以真的點：點單顆勾選、點「全部吃了」整組勾，再點可復原</p>
+
+  <div class="grid" id="root"></div>
+
+  <div class="reco">
+    <h3>德德的建議</h3>
+    <p><b>版 1 餐卡分組</b>——15 項不可能全攤還好讀，「一餐一張卡」正好對到真實動作：到了早餐時間打開早餐卡、餐前一把勾、餐後吃完再勾。換敷料自成一卡插在午餐後，之後 checklist 搬上首頁（第 3 點）就是同一套卡片語言。版 2 全攤最誠實但一頁太長；版 3 聚焦現在最不干擾，但「往後看晚上要吃什麼」要多點一下。</p>
+    <p style="color:#8a7d68;font-size:12px">三版共通：餐錨點取代時鐘時間（括號附參考時間小字）、單顆勾＋整組「全部吃了」、換敷料＝照護任務綠卡、完成變無色相、紅字＝仿單警告。挑定後我接著排第 1、3、4 點的首頁整體。</p>
+  </div>
+
+<script>
+// ---- 模擬資料（鴿王指定：每餐 餐前3+餐後1、睡前2、中午換敷料） ----
+const PRE = [
+  {nm:'胃藥 40mg', nt:'不可與胃散胃乳同服，隔 2 小時', warn:true},
+  {nm:'血壓藥 5mg', nt:'不可自行停藥', warn:true},
+  {nm:'抗生素 250mg', nt:'整顆吞服，不可剝半', warn:false},
+];
+const POST = [{nm:'鐵劑 100mg', nt:'避免與茶、咖啡同服', warn:false}];
+const NIGHT = [
+  {nm:'止吐藥 8mg', nt:'想吐時可提前吃', warn:false},
+  {nm:'軟便劑 1 包', nt:'配一整杯水', warn:false},
+];
+const DRESS = {nm:'傷口換敷料', nt:'紗布＋生理食鹽水，觀察紅腫熱痛', warn:true};
+
+const MEALS = [
+  {key:'bk', name:'早餐', hint:'約 07:30', c:'var(--bk)', bg:'linear-gradient(150deg,var(--bkBg1),var(--bkBg2))'},
+  {key:'ln', name:'午餐', hint:'約 12:00', c:'var(--ln)', bg:'linear-gradient(150deg,var(--lnBg1),var(--lnBg2))'},
+  {key:'dn', name:'晚餐', hint:'約 18:30', c:'var(--dn)', bg:'linear-gradient(150deg,var(--dnBg1),var(--dnBg2))'},
+];
+const NIGHTMETA = {name:'睡前', hint:'約 21:30', c:'var(--nt)', bg:'linear-gradient(150deg,var(--ntBg1),var(--ntBg2))'};
+const CAREMETA = {name:'中午 · 照護', hint:'午餐後', c:'var(--care)', bg:'linear-gradient(150deg,var(--careBg1),var(--careBg2))'};
+
+const row = m => `
+  <div class="medRow tick">
+    <div><div class="nm">${m.nm}</div><div class="nt2 ${m.warn?'':'soft'}">${m.nt}</div></div>
+    <div class="ck">✓</div>
+  </div>`;
+
+const sub = (label, hint, items, batch=true) => `
+  <div class="group">
+    <div class="subHead"><b>${label}</b><i>${hint}</i>${batch&&items.length>1?'<button class="batch">全部吃了</button>':''}</div>
+    ${items.map(row).join('')}
+  </div>`;
+
+// ---------- 版1 餐卡分組 ----------
+function v1(){
+  let h = '';
+  for (const m of MEALS){
+    h += `<div class="mealCard mealWatch" style="background:${m.bg}">
+      <div class="mealHead"><span class="anchor">${m.name}</span><span class="hint">${m.hint}</span><span class="mprog" data-mprog></span></div>
+      ${sub('餐前 30 分', '3 顆', PRE)}
+      ${sub('餐後', '1 顆', POST)}
+    </div>`;
+    if (m.key==='ln'){
+      h += `<div class="mealCard mealWatch" style="background:${CAREMETA.bg}">
+        <div class="mealHead"><span class="anchor">${CAREMETA.name}</span><span class="hint">${CAREMETA.hint}</span><span class="mprog" data-mprog></span></div>
+        ${row(DRESS)}
+      </div>`;
+    }
+  }
+  h += `<div class="mealCard mealWatch" style="background:${NIGHTMETA.bg}">
+    <div class="mealHead"><span class="anchor">${NIGHTMETA.name}</span><span class="hint">${NIGHTMETA.hint}</span><span class="mprog" data-mprog></span></div>
+    ${sub('兩顆不同的藥', '', NIGHT)}
+  </div>`;
+  return h;
+}
+
+// ---------- 版2 全攤票列 ----------
+function v2(){
+  const tk = (m, bg) => `
+    <div class="tk tick" style="background:${bg}">
+      <div><div class="nm">${m.nm}</div><div class="nt2 ${m.warn?'':'soft'}">${m.nt}</div></div>
+      <div class="ck">✓</div>
+    </div>`;
+  let h = '';
+  for (const m of MEALS){
+    h += `<div class="anchorBar"><span class="pillTag" style="background:${m.c}">${m.name}前</span><i>${m.hint} · 3 顆</i><button class="batch">全部吃了</button></div>`;
+    h += PRE.map(x=>tk(x,m.bg)).join('');
+    h += `<div class="anchorBar"><span class="pillTag" style="background:${m.c}">${m.name}後</span><i>1 顆</i></div>`;
+    h += POST.map(x=>tk(x,m.bg)).join('');
+    if (m.key==='ln'){
+      h += `<div class="anchorBar"><span class="pillTag" style="background:${CAREMETA.c}">照護</span><i>午餐後</i></div>`;
+      h += tk(DRESS, CAREMETA.bg);
+    }
+  }
+  h += `<div class="anchorBar"><span class="pillTag" style="background:${NIGHTMETA.c}">睡前</span><i>${NIGHTMETA.hint} · 2 顆</i><button class="batch">全部吃了</button></div>`;
+  h += NIGHT.map(x=>tk(x,NIGHTMETA.bg)).join('');
+  return `<div class="v2">${h}</div>`;
+}
+
+// ---------- 版3 聚焦現在 ----------
+function v3(){
+  const acc = (meta, label, cnt, inner, open=false) => `
+    <div class="acc mealWatch ${open?'open':''}" style="background:${meta.bg}">
+      <div class="accHead"><span class="anchor">${label}</span><span class="cnt" data-mprog>${cnt}</span><span class="arrow">›</span></div>
+      <div class="accBody">${inner}</div>
+    </div>`;
+  let h = `<div class="nowCard mealWatch" style="background:${MEALS[0].bg}">
+    <div class="nowKick"><span class="live"></span><b>現在 · 早餐前</b></div>
+    <div class="nowTitle">早餐前要吃 3 顆</div>
+    ${PRE.map(row).join('')}
+    <div class="subHead" style="margin-top:9px"><b></b><button class="batch">全部吃了</button></div>
+  </div>`;
+  h += acc(MEALS[0], '早餐後', '1 項', POST.map(row).join(''));
+  h += acc(MEALS[1], '午餐（餐前 3＋餐後 1）', '4 項', sub('餐前 30 分','3 顆',PRE)+sub('餐後','1 顆',POST));
+  h += acc(CAREMETA, '中午 · 傷口換敷料', '1 項', row(DRESS));
+  h += acc(MEALS[2], '晚餐（餐前 3＋餐後 1）', '4 項', sub('餐前 30 分','3 顆',PRE)+sub('餐後','1 顆',POST));
+  h += acc(NIGHTMETA, '睡前', '2 項', NIGHT.map(row).join(''));
+  return h;
+}
+
+// ---------- 組頁 ----------
+const cards = [
+  {tag:'版 1 · 餐卡分組', title:'一餐一張卡，餐前餐後分小節', build:v1,
+   desc:'早餐／午餐／晚餐／睡前各一張時段色大卡，卡內分「餐前 30 分（3 顆）」「餐後（1 顆）」小節；換敷料自成綠色照護卡插在午餐後。可逐顆勾，也可「全部吃了」一把勾整組；整卡完成整卡變灰。最貼「到了這餐、照這張卡做」的真實動作。'},
+  {tag:'版 2 · 全攤票列', title:'15 項全部攤開，錨點標籤分段', build:v2,
+   desc:'不收合、不聚合：每顆藥一張小票，用「早餐前／早餐後／照護／睡前」色標籤分段，段標上有「全部吃了」。今天總量一眼見底（15 項就是 15 項），但頁面很長——這版的價值是誠實呈現長度，讓你感受要不要收。'},
+  {tag:'版 3 · 聚焦現在', title:'現在時段展開，其他收成一條', build:v3,
+   desc:'最上面永遠是「現在 · 早餐前」聚焦卡（紅點呼吸提示），只攤開當下要做的 3 顆；其他時段收成一條條可展開的橫欄（點欄展開）。頁面最短、干擾最小，「現在要做什麼」最強，但想預覽晚上的藥要多點一下。'},
+];
+const root = document.getElementById('root');
+root.innerHTML = cards.map(c=>`
+  <div class="card">
+    <span class="tag">${c.tag}</span>
+    <p class="title">${c.title}</p>
+    <div class="stage">
+      <div class="secHead"><b>今日用藥＋照護</b><span class="prog" data-prog></span></div>
+      ${c.build()}
+    </div>
+    <p class="desc">${c.desc}</p>
+  </div>`).join('');
+
+// ---------- 互動 ----------
+document.querySelectorAll('.stage').forEach(stage=>{
+  const prog = stage.querySelector('[data-prog]');
+  const update = ()=>{
+    const all = stage.querySelectorAll('.tick');
+    prog.textContent = `${stage.querySelectorAll('.tick.done').length} / ${all.length} 完成`;
+    // 整卡/整欄完成 → 變灰；同步小進度
+    stage.querySelectorAll('.mealWatch').forEach(mc=>{
+      const t = mc.querySelectorAll('.tick'), d = mc.querySelectorAll('.tick.done');
+      mc.classList.toggle('allDone', t.length>0 && t.length===d.length);
+      const mp = mc.querySelector('[data-mprog]');
+      if (mp) mp.textContent = `${d.length} / ${t.length}`;
+    });
+  };
+  stage.querySelectorAll('.tick').forEach(t=>t.addEventListener('click', e=>{
+    t.classList.toggle('done'); update();
+  }));
+  stage.querySelectorAll('.batch').forEach(b=>b.addEventListener('click', e=>{
+    e.stopPropagation();
+    const scope = b.closest('.group') || b.closest('.nowCard') || (()=>{ // v2：從段標到下一段標之間的票
+      const rows=[]; let el=b.closest('.anchorBar').nextElementSibling;
+      while(el && !el.classList.contains('anchorBar')){ if(el.classList.contains('tick')) rows.push(el); el=el.nextElementSibling; }
+      return {querySelectorAll:s=>rows};
+    })();
+    scope.querySelectorAll('.tick').forEach(t=>t.classList.add('done'));
+    update();
+  }));
+  stage.querySelectorAll('.accHead').forEach(h=>h.addEventListener('click', ()=>h.parentElement.classList.toggle('open')));
+  update();
+});
+</script>
+</body>
+</html>

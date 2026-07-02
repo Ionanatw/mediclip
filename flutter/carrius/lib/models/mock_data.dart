@@ -81,6 +81,72 @@ class MockData {
         DocumentRecord('護理站口頭交代筆記', '出院當天', '6/10', 1, ['注意事項']),
       ];
 
+  // ---- 首頁「今天要做的」餐錨點時段流（鴿王指定模擬：三餐各餐前3+餐後1、睡前2、中午換敷料） ----
+
+  static List<CareTask> _preMeds() => [
+        CareTask('胃藥 40mg', '不可與胃散胃乳同服，隔 2 小時', fullName: '艾美拉唑膜衣錠 40 毫克', warn: true),
+        CareTask('血壓藥 5mg', '不可自行停藥', fullName: '氨氯地平錠 5 毫克', warn: true),
+        CareTask('抗生素 250mg', '整顆吞服，不可剝半', fullName: '阿莫西林膠囊 250 毫克'),
+      ];
+
+  static List<CareTask> _postMeds() => [
+        CareTask('鐵劑 100mg', '避免與茶、咖啡同服', fullName: '葡萄糖酸亞鐵錠 100 毫克'),
+      ];
+
+  static DaySlot _meal(String id, String title, String hint, SlotTint tint) => DaySlot(
+        id: id,
+        title: title,
+        hint: hint,
+        tint: tint,
+        nowLabel: '$title前',
+        nowTitle: '$title前要吃 3 顆',
+        groups: [
+          CareGroup('餐前 30 分', '3 顆', _preMeds()),
+          CareGroup('餐後', '1 顆', _postMeds()),
+        ],
+      );
+
+  static List<DaySlot> daySlots() => [
+        _meal('bk', '早餐', '約 07:30', SlotTint.breakfast),
+        _meal('ln', '午餐', '約 12:00', SlotTint.lunch),
+        DaySlot(
+          id: 'care',
+          title: '中午 · 傷口換敷料',
+          hint: '午餐後',
+          tint: SlotTint.care,
+          nowLabel: '中午 · 照護',
+          nowTitle: '中午要換敷料',
+          groups: [
+            CareGroup('照護', '2 項', [
+              CareTask('更換紗布', '紗布＋生理食鹽水'),
+              CareTask('檢查傷口紅腫', '紅腫熱痛要回報', warn: true),
+            ]),
+          ],
+        ),
+        _meal('dn', '晚餐', '約 18:30', SlotTint.dinner),
+        DaySlot(
+          id: 'nt',
+          title: '睡前',
+          hint: '約 21:30',
+          tint: SlotTint.night,
+          nowLabel: '睡前',
+          nowTitle: '睡前要吃 2 顆',
+          groups: [
+            CareGroup('兩顆不同的藥', '', [
+              CareTask('止吐藥 8mg', '想吐時可提前吃', fullName: '昂丹司瓊錠 8 毫克'),
+              CareTask('軟便劑 1 包', '配一整杯水', fullName: '氧化鎂粉 500 毫克'),
+            ]),
+          ],
+        ),
+      ];
+
+  /// 不綁時段的「今天隨時」項（承接原 checklist 的飲食／活動）。
+  static List<CareTask> anytimeTasks() => [
+        CareTask('三餐全熟食', '化療期間避免生食'),
+        CareTask('喝水 2000ml', '目前約 1200ml'),
+        CareTask('散步 20 分鐘', '傍晚涼一點再去'),
+      ];
+
   static List<HappyTask> happyTasks() => [
         HappyTask('478 呼吸練習', '3 分鐘', 2, HappyKind.breathing, done: true),
         HappyTask('寫下一件感恩的事', '感恩日記', 2, HappyKind.gratitude),
@@ -110,23 +176,24 @@ class MockData {
           GardenActivity(icon: Icons.flag_outlined, tint: _blue, title: '寫個小目標', guide: '今天想完成的一件小事', chem: '多巴胺', sun: 2, kind: HappyKind.goal),
         ]),
         GardenActivityGroup('想被在乎、被連結', '和在乎的人靠近一點', [
-          GardenActivity(icon: Icons.chat_bubble_outline, tint: _pink, title: '跟家人說說話', guide: '傳一則訊息或打給他', chem: '催產素', sun: 2, kind: HappyKind.share),
-          GardenActivity(icon: Icons.volunteer_activism_outlined, tint: _purple, title: '給自己一個擁抱', guide: '雙手環抱 20 秒', chem: '催產素', sun: 1, kind: HappyKind.exercise),
-          GardenActivity(icon: Icons.menu_book_outlined, tint: _green, title: '寫一件感恩', guide: '今天讓你鬆口氣的小事', chem: '血清素', sun: 2, kind: HappyKind.gratitude),
-          GardenActivity(icon: Icons.photo_outlined, tint: _amber, title: '翻一張老照片', guide: '想一段溫暖的回憶', chem: '催產素', sun: 1, kind: HappyKind.exercise),
+          GardenActivity(icon: Icons.chat_bubble_outline, tint: _pink, title: '跟家人說說話', guide: '傳一張暖暖小卡給他', chem: '催產素', sun: 2, kind: HappyKind.familyTalk),
+          GardenActivity(icon: Icons.volunteer_activism_outlined, tint: _purple, title: '給自己一個擁抱', guide: '雙手環抱 20 秒', chem: '催產素', sun: 1, kind: HappyKind.hug),
+          GardenActivity(icon: Icons.eco_outlined, tint: _green, title: '感謝自己', guide: '寫一句，樹會替你記得', chem: '血清素', sun: 2, kind: HappyKind.gratitude),
         ]),
       ];
 
-  static final moodCards = [
-    MoodCard('你照顧別人的樣子，也值得被好好照顧。', 'Carrius'),
-    MoodCard('今天只要做到「夠好」就可以了，不用滿分。', 'Carrius'),
-    MoodCard('休息不是偷懶，是為了走更長的路。', 'Carrius'),
+  /// 跟家人說說話：暖暖小卡備選文案（長輩早安圖的溫暖語感，直接傳出去不突兀）
+  static const familyCardTexts = [
+    '早安，平安就是福。今天也要好好吃飯、好好休息',
+    '天氣多變，記得添件衣裳。你的平安，是我最大的心願',
+    '想你了。願你今天福氣滿滿，笑口常開',
   ];
 
+  /// 感謝自己：可換題的引導（聚焦「今天的自己」）
   static const gratitudePrompts = [
-    '今天有什麼小事讓你鬆了一口氣？',
-    '誰今天幫了你一把？',
-    '今天的自己哪裡做得不錯？',
+    '今天的自己，哪裡做得不錯？',
+    '今天你為家人撐住了什麼？謝謝自己',
+    '哪一件小事，讓你鬆了一口氣？',
   ];
 
   static CareSession session() => CareSession(

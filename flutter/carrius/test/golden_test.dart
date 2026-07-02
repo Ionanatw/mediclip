@@ -21,7 +21,6 @@ import 'package:carrius/screens/upload_screen.dart';
 import 'package:carrius/screens/followup_screen.dart';
 import 'package:carrius/screens/results_screen.dart';
 import 'package:carrius/screens/med_card_screen.dart';
-import 'package:carrius/screens/checklist_screen.dart';
 import 'package:carrius/screens/poster_screen.dart';
 import 'package:carrius/screens/settings_screen.dart';
 import 'package:carrius/screens/breathing_screen.dart';
@@ -30,6 +29,9 @@ import 'package:carrius/screens/observe_breath_screen.dart';
 import 'package:carrius/screens/micro_move_screen.dart';
 import 'package:carrius/screens/sunbathe_screen.dart';
 import 'package:carrius/screens/goal_screen.dart';
+import 'package:carrius/screens/gratitude_screen.dart';
+import 'package:carrius/screens/hug_screen.dart';
+import 'package:carrius/screens/family_talk_screen.dart';
 
 const phoneSize = Size(393, 852);
 
@@ -100,7 +102,17 @@ void main() {
     await shoot(tester, '02-email-identity', _frame(EmailGateScreen(state: s2, onContinue: () {})));
 
     final h = homeState();
-    await shoot(tester, '03-home', _frame(HomeScreen(state: h, onOpenGarden: () {}, onOpenChecklist: () {}, onOpenSettings: () {}, nowHour: 9), tabBar: true, state: h));
+    await shoot(tester, '03-home', _frame(HomeScreen(state: h, onOpenGarden: () {}, onOpenSettings: () {}, nowHour: 9), tabBar: true, state: h), size: const Size(393, 1500));
+
+    // 晚餐前狀態：白天時段做完自動灰收合、「現在」卡換晚餐藍
+    final hEve = homeState();
+    for (final slot in hEve.daySlots.take(3)) {
+      for (final t in slot.tasks) {
+        t.done = true;
+      }
+    }
+    hEve.anytimeTasks[0].done = true;
+    await shoot(tester, '31-home-evening', _frame(HomeScreen(state: hEve, onOpenGarden: () {}, onOpenSettings: () {}, nowHour: 18), tabBar: true, state: hEve), size: const Size(393, 1500));
 
     final up = homeState()..pickedCount = 3;
     await shoot(tester, '04-upload', _frame(UploadScreen(state: up, onClose: () {}, onStart: () {})));
@@ -116,8 +128,6 @@ void main() {
 
     final cal = homeState()..tab = AppTab.calendar;
     await shoot(tester, '08-calendar', _frame(CalendarScreen(state: cal), tabBar: true, state: cal));
-
-    await shoot(tester, '09-checklist', _frame(ChecklistScreen(state: homeState(), onClose: () {})));
 
     await shoot(tester, '10-poster', _frame(PosterScreen(state: homeState(), onClose: () {})));
 
@@ -142,7 +152,7 @@ void main() {
     await shoot(tester, '12-settings', _frame(SettingsScreen(state: homeState())));
 
     final g = homeState()..tab = AppTab.garden;
-    await shoot(tester, '13-garden', _frame(GardenScreen(state: g, onBreathing: (_) {}, onGratitude: () {}, onMoodCard: () {}, onBodyScan: (_) {}, onObserveBreath: (_) {}, onMicroMove: (_) {}, onSunbathe: (_) {}, onGoal: (_) {}), tabBar: true, state: g));
+    await shoot(tester, '13-garden', _frame(GardenScreen(state: g, onBreathing: (_) {}, onGratitude: (_) {}, onBodyScan: (_) {}, onObserveBreath: (_) {}, onMicroMove: (_) {}, onSunbathe: (_) {}, onGoal: (_) {}, onHug: (_) {}, onFamilyTalk: (_) {}), tabBar: true, state: g));
 
     await shoot(tester, '14-breathing', _frame(BreathingScreen(onClose: () {})));
 
@@ -152,14 +162,16 @@ void main() {
     await shoot(tester, '26-sunbathe', _frame(SunbatheScreen(onClose: () {})));
     await shoot(tester, '27-goal', _frame(GoalScreen(onClose: () {})));
 
-    await shoot(tester, '15-moodcard', _frame(MoodCardScreen(onClose: () {})));
+    await shoot(tester, '28-gratitude', _frame(GratitudeScreen(state: homeState(), onClose: () {})));
+    await shoot(tester, '29-hug', _frame(HugScreen(onClose: () {})));
+    await shoot(tester, '30-familytalk', _frame(FamilyTalkScreen(onClose: () {})));
   });
 
   testWidgets('dark samples', (tester) async {
     final h = homeState();
-    await shoot(tester, 'dark-home', _frame(HomeScreen(state: h, onOpenGarden: () {}, onOpenChecklist: () {}, onOpenSettings: () {}, nowHour: 9), palette: Palette.dark, tabBar: true, state: h));
+    await shoot(tester, 'dark-home', _frame(HomeScreen(state: h, onOpenGarden: () {}, onOpenSettings: () {}, nowHour: 9), palette: Palette.dark, tabBar: true, state: h), size: const Size(393, 1500));
     final g = homeState()..tab = AppTab.garden;
-    await shoot(tester, 'dark-garden', _frame(GardenScreen(state: g, onBreathing: (_) {}, onGratitude: () {}, onMoodCard: () {}, onBodyScan: (_) {}, onObserveBreath: (_) {}, onMicroMove: (_) {}, onSunbathe: (_) {}, onGoal: (_) {}), palette: Palette.dark, tabBar: true, state: g));
+    await shoot(tester, 'dark-garden', _frame(GardenScreen(state: g, onBreathing: (_) {}, onGratitude: (_) {}, onBodyScan: (_) {}, onObserveBreath: (_) {}, onMicroMove: (_) {}, onSunbathe: (_) {}, onGoal: (_) {}, onHug: (_) {}, onFamilyTalk: (_) {}), palette: Palette.dark, tabBar: true, state: g));
 
     // 補齊深色覆蓋（稽核項 E：原本只測 2 張）
     final cal = homeState()..tab = AppTab.calendar;
@@ -173,7 +185,6 @@ void main() {
     final up = homeState()..pickedCount = 3;
     await shoot(tester, 'dark-upload', _frame(UploadScreen(state: up, onClose: () {}, onStart: () {}), palette: Palette.dark), size: const Size(393, 1000));
     await shoot(tester, 'dark-poster', _frame(PosterScreen(state: homeState(), onClose: () {}), palette: Palette.dark), size: const Size(393, 1000));
-    await shoot(tester, 'dark-checklist', _frame(ChecklistScreen(state: homeState(), onClose: () {}), palette: Palette.dark), size: const Size(393, 1000));
     await shoot(tester, 'dark-breathing', _frame(BreathingScreen(onClose: () {}), palette: Palette.dark));
   });
 

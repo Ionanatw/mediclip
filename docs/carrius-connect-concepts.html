@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>連結 3 — 互動設計比較</title>
+<style>
+  :root{
+    --cream:#FDFBF7; --plum:#3C315B; --plumDeep:#2A2342; --ink:#4A3F66; --lemon:#F1FF52;
+    --pink:#C75E8A; --pinkL:#F8DEE9; --pinkD:#A34067;
+    --purple:#6B5FC0; --purpleL:#E3DAF8; --purpleD:#544A9E;
+    --green:#2E8B72; --greenL:#DDF0E3; --greenD:#23705B;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#f4f0e9;font-family:"Noto Sans TC",-apple-system,system-ui,sans-serif;color:var(--plumDeep);padding:28px 18px 60px}
+  h1{font-size:21px;margin:0 0 4px;text-align:center}
+  .sub{text-align:center;color:#6b5f87;font-size:13.5px;margin:0 0 30px}
+  section{max-width:1180px;margin:0 auto 40px}
+  h2{font-size:17px;margin:0 0 2px;display:flex;align-items:center;gap:8px}
+  .swatch{width:14px;height:14px;border-radius:5px;display:inline-block}
+  .now{font-size:12.5px;color:#8a7d68;margin:2px 0 14px}
+  .now b{color:#b3552e}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:24px}
+  .card{background:#fff;border-radius:22px;padding:16px 16px 18px;box-shadow:0 10px 30px rgba(80,60,130,.10)}
+  .tag{display:inline-block;font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;margin-bottom:10px}
+  .title{font-size:15.5px;font-weight:900;margin:0 0 2px}
+  .desc{font-size:12.5px;color:#6b5f87;line-height:1.55;margin:8px 2px 0;min-height:76px}
+  .bone{font-size:11px;font-weight:800;color:#8a7d68;margin-top:6px}
+  .stage{position:relative;width:100%;aspect-ratio:240/420;border-radius:20px;overflow:hidden}
+  .cap{position:absolute;left:14px;right:14px;bottom:14px;text-align:center;font-size:12px;font-weight:700;color:var(--plum);line-height:1.4}
+  .reco{max-width:1180px;margin:0 auto;background:#fff;border-radius:22px;padding:18px 20px;box-shadow:0 10px 30px rgba(80,60,130,.10)}
+  .reco h3{margin:0 0 8px;font-size:15px}
+  .reco p{margin:4px 0;font-size:13px;color:#4A3F66;line-height:1.6}
+  .reco small{color:#8a7d68}
+
+  /* ===================== 感謝自己（綠） ===================== */
+  .gStage{background:linear-gradient(180deg,#F6FBF6,#E2F2E7 55%,#D5EBDC)}
+  .prompt{position:absolute;top:18px;left:50%;transform:translateX(-50%);white-space:nowrap;
+    font-size:11.5px;font-weight:800;color:var(--greenD);background:rgba(255,255,255,.75);
+    padding:5px 13px;border-radius:999px}
+  .inputStrip{position:absolute;left:20px;right:20px;bottom:52px;height:40px;border-radius:14px;
+    background:rgba(255,255,255,.85);box-shadow:0 3px 10px rgba(46,139,114,.10)}
+  .inputStrip::after{content:'今天，媽媽笑著吃完一整碗粥';position:absolute;left:12px;top:11px;font-size:11px;color:#5b8271}
+
+  /* G-A 小卡入罐 */
+  .gCard{position:absolute;left:50%;top:38%;width:130px;height:64px;margin-left:-65px;border-radius:14px;
+    background:#fff;box-shadow:0 6px 18px rgba(46,139,114,.20);
+    animation:gDrop 6s ease-in-out infinite}
+  .gCard::after{content:'媽媽笑著吃完一整碗粥';position:absolute;left:12px;right:12px;top:14px;
+    font-size:10.5px;line-height:1.5;color:var(--greenD);font-weight:700}
+  @keyframes gDrop{
+    0%{opacity:0;transform:translateY(-8px) scale(.96)}
+    12%{opacity:1;transform:translateY(0) scale(1)}
+    48%{opacity:1;transform:translateY(0) scale(1)}
+    72%{opacity:.9;transform:translateY(148px) scale(.22)}
+    76%{opacity:0;transform:translateY(160px) scale(.18)}
+    100%{opacity:0}
+  }
+  .jar{position:absolute;left:50%;bottom:64px;width:92px;height:74px;margin-left:-46px;
+    border:3px solid rgba(46,139,114,.4);border-radius:14px 14px 20px 20px;background:rgba(255,255,255,.35);
+    animation:jarGlow 6s ease-in-out infinite}
+  .jar::before{content:'';position:absolute;top:-12px;left:50%;width:44px;height:10px;margin-left:-22px;
+    border:3px solid rgba(46,139,114,.4);border-bottom:none;border-radius:8px 8px 0 0;background:rgba(255,255,255,.35)}
+  .jar i{position:absolute;width:16px;height:9px;border-radius:5px;background:var(--green);opacity:.4}
+  @keyframes jarGlow{0%,64%{box-shadow:none}74%{box-shadow:0 0 24px 6px rgba(46,139,114,.45)}90%,100%{box-shadow:none}}
+
+  /* G-B 星點升空 */
+  .gbStage{background:linear-gradient(180deg,#27453C,#33594C 60%,#3E6B5A)}
+  .gbStage .inputStrip{background:rgba(255,255,255,.92)}
+  .gbStage .cap{color:#EAF6EE}
+  .star{position:absolute;width:8px;height:8px;border-radius:50%;background:#FFF7D6;
+    box-shadow:0 0 12px 3px rgba(255,247,214,.55);animation:rise 7s ease-in-out infinite}
+  .star.old{animation:twk 3.4s ease-in-out infinite}
+  @keyframes rise{
+    0%{left:50%;top:74%;opacity:0;transform:scale(.5)}
+    10%{opacity:1;transform:scale(1)}
+    55%{left:62%;top:20%;opacity:1;transform:scale(1)}
+    70%,100%{left:62%;top:20%;opacity:.85;transform:scale(.9)}
+  }
+  @keyframes twk{0%,100%{opacity:.45}50%{opacity:.95}}
+
+  /* G-C 葉子上樹 */
+  .trunk{position:absolute;left:50%;top:30%;width:14px;height:16%;margin-left:-7px;border-radius:8px;background:#8A6B4A}
+  .canopy{position:absolute;left:50%;top:13%;width:44%;height:20%;margin-left:-22%;border-radius:50%;
+    background:radial-gradient(circle at 42% 36%,#9CCDB4,#6FAE90 70%);
+    animation:canopyPulse 5.5s ease-in-out infinite}
+  @keyframes canopyPulse{0%,58%{transform:scale(1)}68%{transform:scale(1.06);box-shadow:0 0 26px 4px rgba(111,174,144,.55)}80%,100%{transform:scale(1)}}
+  .leaf{position:absolute;left:50%;top:72%;width:22px;height:13px;margin-left:-11px;border-radius:50% 4px 50% 4px;
+    background:var(--green);animation:leafUp 5.5s ease-in-out infinite}
+  @keyframes leafUp{
+    0%,14%{opacity:0;top:72%;transform:rotate(0)}
+    22%{opacity:1}
+    62%{opacity:1;top:21%;transform:translateX(16px) rotate(140deg)}
+    66%,100%{opacity:0;top:20%;transform:translateX(16px) rotate(150deg)}
+  }
+
+  /* ===================== 給自己一個擁抱（紫） ===================== */
+  .pStage{background:linear-gradient(180deg,#F5F1FD,#E7DFFA 55%,#DDD2F5)}
+
+  /* P-A 雙光合攏 */
+  .armL,.armR{position:absolute;top:50%;width:130px;height:130px;margin-top:-65px;border-radius:50%;
+    background:radial-gradient(closest-side,rgba(255,255,255,.85),rgba(171,159,242,.55),transparent);filter:blur(2px)}
+  .armL{left:-30px;animation:hugL 7s ease-in-out infinite}
+  .armR{right:-30px;animation:hugR 7s ease-in-out infinite}
+  @keyframes hugL{0%,8%{transform:translateX(0)}48%{transform:translateX(62px)}74%{transform:translateX(62px)}100%{transform:translateX(0)}}
+  @keyframes hugR{0%,8%{transform:translateX(0)}48%{transform:translateX(-62px)}74%{transform:translateX(-62px)}100%{transform:translateX(0)}}
+  .core{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;
+    background:radial-gradient(closest-side,#FFF6E8,rgba(255,214,160,.65),transparent);
+    animation:coreWarm 7s ease-in-out infinite}
+  @keyframes coreWarm{0%,10%{opacity:.35;transform:scale(.9)}48%{opacity:1;transform:scale(1.15)}74%{opacity:1;transform:scale(1.1)}100%{opacity:.35;transform:scale(.9)}}
+
+  /* P-B 心跳光球 */
+  .heartOrb{position:absolute;left:50%;top:46%;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;
+    background:radial-gradient(closest-side,rgba(255,255,255,.9),rgba(199,94,138,.5),transparent);
+    animation:beat 1.5s ease-in-out infinite}
+  @keyframes beat{0%,55%,100%{transform:scale(1)}12%{transform:scale(1.12)}24%{transform:scale(1)}36%{transform:scale(1.09)}}
+  .beatRing{position:absolute;left:50%;top:46%;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;
+    border:2px solid rgba(199,94,138,.5);animation:ringOut 1.5s ease-out infinite}
+  @keyframes ringOut{0%,10%{transform:scale(1);opacity:.7}70%{transform:scale(1.7);opacity:0}100%{opacity:0}}
+
+  /* P-C 暖毯包裹 */
+  .blanket{position:absolute;inset:0;animation:wrapIn 8s ease-in-out infinite alternate}
+  @keyframes wrapIn{
+    0%{box-shadow:inset 0 0 44px 12px rgba(107,95,192,.16)}
+    100%{box-shadow:inset 0 0 120px 74px rgba(107,95,192,.42)}
+  }
+  .blanketCore{position:absolute;left:50%;top:46%;width:70px;height:70px;margin:-35px 0 0 -35px;border-radius:50%;
+    background:radial-gradient(closest-side,#FFF6E8,rgba(255,214,160,.5),transparent);
+    animation:slowBreath 8s ease-in-out infinite alternate}
+  @keyframes slowBreath{0%{transform:scale(.92);opacity:.6}100%{transform:scale(1.14);opacity:1}}
+
+  /* ===================== 跟家人說說話（粉） ===================== */
+  .fStage{background:linear-gradient(180deg,#FDF4F8,#F9E3EC 55%,#F4D5E3)}
+
+  /* F-A 開場白靈感 */
+  .bub{position:absolute;left:22px;right:38px;height:44px;border-radius:16px 16px 16px 5px;
+    background:rgba(255,255,255,.9);box-shadow:0 3px 10px rgba(199,94,138,.12);
+    font-size:11.5px;font-weight:700;color:var(--pinkD);display:flex;align-items:center;padding:0 13px;
+    opacity:.45;animation:pick 6.6s ease-in-out infinite}
+  @keyframes pick{
+    0%,4%{opacity:.45;transform:scale(1);box-shadow:0 3px 10px rgba(199,94,138,.12)}
+    10%{opacity:1;transform:scale(1.04);box-shadow:0 6px 20px rgba(199,94,138,.30)}
+    28%{opacity:1;transform:scale(1.04)}
+    36%,100%{opacity:.45;transform:scale(1)}
+  }
+  .sendPill{position:absolute;left:50%;bottom:52px;transform:translateX(-50%);white-space:nowrap;
+    padding:9px 22px;border-radius:999px;background:var(--lemon);color:#3A3A18;font-size:12px;font-weight:900;
+    box-shadow:0 5px 14px rgba(160,150,40,.35)}
+
+  /* F-B 兩球靠近 */
+  .youGlow{position:absolute;left:14%;top:58%;width:110px;height:110px;border-radius:50%;
+    background:radial-gradient(closest-side,rgba(255,255,255,.85),rgba(199,94,138,.5),transparent);
+    animation:meetA 7s ease-in-out infinite}
+  .themGlow{position:absolute;right:14%;top:22%;width:84px;height:84px;border-radius:50%;
+    background:radial-gradient(closest-side,rgba(255,255,255,.85),rgba(224,138,43,.5),transparent);
+    animation:meetB 7s ease-in-out infinite}
+  @keyframes meetA{0%,8%{transform:translate(0,0)}52%{transform:translate(46px,-52px)}76%{transform:translate(46px,-52px)}100%{transform:translate(0,0)}}
+  @keyframes meetB{0%,8%{transform:translate(0,0)}52%{transform:translate(-42px,48px)}76%{transform:translate(-42px,48px)}100%{transform:translate(0,0)}}
+  .meetRing{position:absolute;left:50%;top:44%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;
+    border:2px solid rgba(255,255,255,.9);opacity:0;animation:meetPing 7s ease-out infinite}
+  @keyframes meetPing{0%,50%{transform:scale(.6);opacity:0}56%{opacity:.9}72%{transform:scale(2.6);opacity:0}100%{opacity:0}}
+
+  /* F-C 心情小卡分享 */
+  .moodCard{position:absolute;left:26px;right:26px;top:20%;height:150px;border-radius:20px;
+    background:linear-gradient(135deg,#C75E8A,#8E7EE8);box-shadow:0 10px 26px rgba(142,126,232,.35);
+    display:flex;align-items:center;justify-content:center;padding:0 18px}
+  .moodCard span{color:#FFF;font-size:12.5px;font-weight:800;line-height:1.7;text-align:center}
+  .plane{position:absolute;left:50%;top:52%;animation:fly 5.5s ease-in-out infinite}
+  .plane svg{display:block}
+  @keyframes fly{
+    0%,20%{transform:translate(-8px,0) rotate(0);opacity:0}
+    28%{opacity:1}
+    62%{transform:translate(74px,-150px) rotate(18deg);opacity:1}
+    70%,100%{transform:translate(86px,-168px) rotate(20deg);opacity:0}
+  }
+</style>
+</head>
+<body>
+  <h1>連結 3 · 互動設計比較（會動的示意）</h1>
+  <p class="sub">每個活動挑一個方向 → 我做成 Flutter（動畫＋震動＋加☀完整版）。9 格都在 loop。</p>
+
+  <!-- ===================== 1. 感謝自己 ===================== -->
+  <section>
+    <h2><span class="swatch" style="background:var(--green)"></span>1｜感謝自己（寫一件感恩）· +2☀</h2>
+    <p class="now">現況：有輸入頁，但<b>存下來不加☀</b>、題目只有固定一句、存完沒有任何回饋。</p>
+    <div class="grid">
+
+      <div class="card">
+        <span class="tag" style="background:var(--greenL);color:var(--greenD)">1A · 累積感</span>
+        <p class="title">感恩小卡入罐</p>
+        <div class="stage gStage">
+          <div class="prompt">今天的自己哪裡做得不錯？</div>
+          <div class="gCard"></div>
+          <div class="jar">
+            <i style="left:14px;bottom:10px;transform:rotate(-8deg)"></i>
+            <i style="right:16px;bottom:22px;transform:rotate(12deg)"></i>
+          </div>
+          <div class="cap">存下來，收進你的感恩罐</div>
+        </div>
+        <p class="desc">題目可「換一題」（3 句輪換）。寫完按存，小卡縮小飄進底部玻璃罐，罐子亮一下＋成功震。罐子裡看得到過去的累積，回顧有實感。</p>
+        <p class="bone">骨架：文字輸入 ＋ 收納動畫</p>
+      </div>
+
+      <div class="card">
+        <span class="tag" style="background:var(--greenL);color:var(--greenD)">1B · 儀式感</span>
+        <p class="title">化成星點升空</p>
+        <div class="stage gbStage">
+          <div class="star old" style="left:24%;top:14%"></div>
+          <div class="star old" style="left:76%;top:28%;animation-delay:1.2s"></div>
+          <div class="star old" style="left:40%;top:9%;animation-delay:2.1s"></div>
+          <div class="star"></div>
+          <div class="inputStrip"></div>
+          <div class="cap">每一件感恩，都是一顆星</div>
+        </div>
+        <p class="desc">唯一走「暮色綠」底的方案。寫完存下，文字化成一顆光點升上夜空、留在那裡微微閃。天空累積你寫過的每一件事，很美，但整體視覺偏暗。</p>
+        <p class="bone">骨架：文字輸入 ＋ 升空動畫（深色底）</p>
+      </div>
+
+      <div class="card">
+        <span class="tag" style="background:var(--greenL);color:var(--greenD)">1C · 世界觀</span>
+        <p class="title">化成葉子回到樹上</p>
+        <div class="stage gStage">
+          <div class="trunk"></div>
+          <div class="canopy"></div>
+          <div class="leaf"></div>
+          <div class="inputStrip"></div>
+          <div class="cap">你的感恩，讓樹又綠了一點</div>
+        </div>
+        <p class="desc">畫面上就是你花園裡正在養的那棵樹（同款色塊樹）。寫完存下，文字化成一片葉子飄上樹冠，樹輕輕晃一下＋發光。感恩直接餵進花園世界觀，和「陽光值養樹」一體。</p>
+        <p class="bone">骨架：文字輸入 ＋ 復用 GardenTree 動畫</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== 2. 給自己一個擁抱 ===================== -->
+  <section>
+    <h2><span class="swatch" style="background:var(--purple)"></span>2｜給自己一個擁抱 · +1☀ · 20 秒</h2>
+    <p class="now">現況：<b>點卡片直接加☀</b>，完全沒有引導畫面（kind 錯用 exercise，重做時改為專屬 hug）。</p>
+    <div class="grid">
+
+      <div class="card">
+        <span class="tag" style="background:var(--purpleL);color:var(--purpleD)">2A · 光語言</span>
+        <p class="title">雙光合攏</p>
+        <div class="stage pStage">
+          <div class="armL"></div><div class="armR"></div>
+          <div class="core"></div>
+          <div class="cap">雙手環抱自己，跟著光慢慢收攏</div>
+        </div>
+        <p class="desc">兩團柔光從左右緩緩合攏，把中間一小團暖光包起來——就是「抱住自己」的抽象化。20 秒倒數，每 3 秒兩下輕震（像拍撫的節奏），結束成功震。和身體掃描的光暈語言同一家。</p>
+        <p class="bone">骨架：環境計時 20 秒（同曬太陽）＋ 拍撫震動</p>
+      </div>
+
+      <div class="card">
+        <span class="tag" style="background:var(--purpleL);color:var(--purpleD)">2B · 節奏感</span>
+        <p class="title">心跳光球</p>
+        <div class="stage pStage">
+          <div class="beatRing"></div>
+          <div class="heartOrb"></div>
+          <div class="cap">一手放胸口，跟著它輕輕拍</div>
+        </div>
+        <p class="desc">中央一顆光球用心跳節奏（噗-噗、停）脹縮，震動和節奏完全同步。引導把手放胸口、跟著節奏輕拍自己 20 秒。體感最強，但節奏快、偏「醒」不偏「柔」。</p>
+        <p class="bone">骨架：環境計時 20 秒 ＋ 心跳同步震動</p>
+      </div>
+
+      <div class="card">
+        <span class="tag" style="background:var(--purpleL);color:var(--purpleD)">2C · 包覆感</span>
+        <p class="title">暖毯包裹</p>
+        <div class="stage pStage">
+          <div class="blanket"></div>
+          <div class="blanketCore"></div>
+          <div class="cap">像被輕輕裹住，慢慢呼吸</div>
+        </div>
+        <p class="desc">整個畫面四周的柔紫慢慢向中心收攏，像被毯子裹住；中間一小團暖光跟著呼吸節奏微微脹縮。最安靜、最睡前，幾乎沒有「動作要求」，只是待著 20 秒。</p>
+        <p class="bone">骨架：環境計時 20 秒 ＋ 慢呼吸震動</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== 3. 跟家人說說話 ===================== -->
+  <section>
+    <h2><span class="swatch" style="background:var(--pink)"></span>3｜跟家人說說話 · +2☀</h2>
+    <p class="now">現況：開心情小卡頁、分享按 Coming Soon、<b>不加☀</b>（kind 錯用 share，重做時改為專屬 familyTalk）。特殊點：真正的行動發生在 App 外。</p>
+    <div class="grid">
+
+      <div class="card">
+        <span class="tag" style="background:var(--pinkL);color:var(--pinkD)">3A · 解痛點</span>
+        <p class="title">開場白靈感</p>
+        <div class="stage fStage">
+          <div class="bub" style="top:16%">今天有想到你</div>
+          <div class="bub" style="top:31%;animation-delay:2.2s">晚餐吃了什麼？</div>
+          <div class="bub" style="top:46%;animation-delay:4.4s">上次你說的那件事，後來呢？</div>
+          <div class="sendPill">我去說了</div>
+          <div class="cap">挑一句順眼的，去跟他說</div>
+        </div>
+        <p class="desc">很多人不是不想聯絡，是不知道說什麼。給 3 句輕鬆的開場白（可換一批），一鍵複製去傳。回來按「我去說了」領☀——誠實制，不驗證。直接解真痛點。</p>
+        <p class="bone">骨架：靈感卡 ＋ 自我回報領☀</p>
+      </div>
+
+      <div class="card">
+        <span class="tag" style="background:var(--pinkL);color:var(--pinkD)">3B · 光語言</span>
+        <p class="title">兩團光靠近</p>
+        <div class="stage fStage">
+          <div class="youGlow"></div>
+          <div class="themGlow"></div>
+          <div class="meetRing"></div>
+          <div class="cap">想著他，然後傳個訊息給他</div>
+        </div>
+        <p class="desc">粉光是你、暖橘光是他，兩團光慢慢靠近、碰在一起漾開一圈漣漪。先 15 秒「想著那個人」的儀式，再跳出「去傳訊息」按鈕。氛圍最美，但對「說什麼」沒有實際幫助。</p>
+        <p class="bone">骨架：短儀式 ＋ 自我回報領☀</p>
+      </div>
+
+      <div class="card">
+        <span class="tag" style="background:var(--pinkL);color:var(--pinkD)">3C · 低門檻</span>
+        <p class="title">心情小卡直送</p>
+        <div class="stage fStage">
+          <div class="moodCard"><span>你照顧別人的樣子，<br>也值得被好好照顧。</span></div>
+          <div class="plane">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+              <path d="M2 12L22 3L15 21L11.5 13.5L2 12Z" fill="#C75E8A" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="cap">不知道說什麼？把這張卡傳給他</div>
+        </div>
+        <p class="desc">升級現有心情小卡：可換卡（多句文案），按分享直接帶出系統分享（web 版複製文字），分享出去即算完成＋☀。門檻最低——連字都不用打，卡片替你開口。</p>
+        <p class="bone">骨架：現有 MoodCard 升級 ＋ 系統分享</p>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="reco">
+    <h3>德德的建議組合</h3>
+    <p><b>1C 葉子回到樹上</b>——感恩直接餵進花園世界觀，樹既是吉祥物也是回饋；<b>2A 雙光合攏</b>——延續身體掃描定調的光暈語言，拍撫震動有「被抱」的體感；<b>3A 開場白靈感</b>——三個活動裡唯一行動在 App 外，與其做氛圍不如解「不知道說什麼」的真痛點。</p>
+    <p><small>共通修正（不管選哪個都會做）：連結組 4 → 3（移除「翻一張老照片」）、三個活動完成都真的加☀、kind 補上 hug / familyTalk 專屬值、golden test 同步。另外請鴿王順便定名：「寫一件感恩」要不要改成交接說的「感謝自己」？</small></p>
+  </div>
+</body>
+</html>

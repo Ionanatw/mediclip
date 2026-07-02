@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>今日用藥 — 可勾選區塊三款比較</title>
+<style>
+  :root{
+    --cream:#FDFBF7; --plum:#3C315B; --plumDeep:#2A2342; --ink:#4A3F66;
+    --lav:#AB9FF2; --lavSoft:#EBE6FB;
+    --morn:#C2872E; --mornBg:#FFF1D9;
+    --eve:#3F7BC4; --eveBg:#DEEBFB;
+    --night:#6B5FC0; --nightBg:#E8E1FB;
+    --prn:#2E8B72; --prnBg:#DFF2E5;
+    --success:#4CAF87;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#f4f0e9;font-family:"Noto Sans TC",-apple-system,system-ui,sans-serif;color:var(--plumDeep);padding:28px 18px 60px}
+  h1{font-size:21px;margin:0 0 4px;text-align:center}
+  .sub{text-align:center;color:#6b5f87;font-size:13.5px;margin:0 0 8px}
+  .try{text-align:center;color:#b3552e;font-size:13px;font-weight:800;margin:0 0 26px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:26px;max-width:1240px;margin:0 auto}
+  .card{background:#fff;border-radius:22px;padding:16px 16px 18px;box-shadow:0 10px 30px rgba(80,60,130,.10)}
+  .tag{display:inline-block;font-size:11px;font-weight:800;color:#544A9E;background:var(--lavSoft);padding:3px 10px;border-radius:999px;margin-bottom:10px}
+  .title{font-size:15.5px;font-weight:900;margin:0 0 2px}
+  .desc{font-size:12.5px;color:#6b5f87;line-height:1.55;margin:10px 2px 0;min-height:96px}
+  .bone{font-size:11px;font-weight:800;color:#8a7d68;margin-top:6px}
+  .stage{position:relative;width:100%;min-height:520px;border-radius:20px;overflow:hidden;background:var(--cream);padding:14px 12px 16px}
+  .secHead{display:flex;align-items:baseline;justify-content:space-between;margin:0 2px 10px}
+  .secHead b{font-size:15px;color:var(--plumDeep)}
+  .prog{font-size:12px;font-weight:900;color:#6b5f87}
+
+  /* ---- 藥丸圖（純 CSS 示意） ---- */
+  .pill{position:relative;width:54px;height:26px;border-radius:999px;transform:rotate(-18deg);box-shadow:0 3px 8px rgba(60,49,91,.18)}
+  .pill.cap-purple{background:linear-gradient(90deg,#FFFDF8 50%,#AB9FF2 50%)}
+  .pill.tab-pink{width:34px;height:34px;border-radius:50%;background:#FFD9E8;transform:none}
+  .pill.ob-yellow{width:52px;height:24px;border-radius:12px;background:#F1FF52;transform:rotate(-10deg)}
+  .pill.tab-lav{width:34px;height:34px;border-radius:50%;background:#E2DFFE;transform:none}
+  .pill::after{content:attr(data-mark);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:rgba(42,35,66,.5);transform:rotate(0)}
+
+  /* 共用：點擊完成 → 無色相 */
+  .tick{transition:all .25s ease;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .tick .checkBadge{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;
+    background:var(--success);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:900;opacity:0;transform:scale(.5);transition:all .25s ease}
+  .tick.done{filter:grayscale(1);opacity:.55}
+  .tick.done .checkBadge{opacity:1;transform:scale(1);filter:none}
+
+  /* =========== A 繽紛磁磚格 =========== */
+  .tilesGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .tile{position:relative;border-radius:18px;padding:12px 12px 12px;min-height:150px;
+    display:flex;flex-direction:column;align-items:center;justify-content:space-between}
+  .tile .slot{font-size:11px;font-weight:900;padding:3px 10px;border-radius:999px;align-self:flex-start}
+  .tile .art{flex:1;display:flex;align-items:center;justify-content:center;padding:8px 0}
+  .tile .name{font-size:13px;font-weight:900;color:var(--plumDeep);margin-bottom:6px;text-align:center}
+  .tile .chip{font-size:11px;font-weight:800;color:var(--ink);background:rgba(255,255,255,.85);
+    padding:4px 12px;border-radius:999px;box-shadow:0 2px 6px rgba(60,49,91,.10)}
+
+  /* =========== B 時段泳道 =========== */
+  .lane{margin-bottom:12px}
+  .laneHead{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+  .laneHead .dot{width:26px;height:26px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:900}
+  .laneHead b{font-size:13px;color:var(--plumDeep)}
+  .laneHead span{font-size:11px;font-weight:800;color:#8a7d68;margin-left:auto}
+  .chipRow{display:flex;flex-direction:column;gap:7px}
+  .medChip{position:relative;display:flex;align-items:center;gap:10px;background:#fff;border-radius:14px;
+    padding:9px 12px;border-left:5px solid;box-shadow:0 3px 10px rgba(60,49,91,.07)}
+  .medChip .mini{transform:scale(.62);transform-origin:center;width:38px;height:34px;display:flex;align-items:center;justify-content:center;flex:none}
+  .medChip .t1{font-size:12.5px;font-weight:900;color:var(--plumDeep)}
+  .medChip .t2{font-size:10.5px;font-weight:600;color:#6b5f87}
+  .medChip .checkBadge{position:static;margin-left:auto;opacity:1;transform:none;background:#EDE9F8;color:#B9B0D8}
+  .medChip.done .checkBadge{background:var(--success);color:#fff}
+
+  /* =========== C 時間軸打卡 =========== */
+  .tl{position:relative;padding-left:80px}
+  .tl::before{content:'';position:absolute;left:58px;top:8px;bottom:8px;width:3px;border-radius:2px;background:#E5DFF5}
+  .tlRow{position:relative;margin-bottom:11px}
+  .tlTime{position:absolute;left:-80px;top:10px;width:46px;text-align:center}
+  .tlTime b{display:block;font-size:12px;color:var(--plumDeep)}
+  .tlTime span{font-size:9.5px;font-weight:800;color:#8a7d68}
+  .tlDot{position:absolute;left:-28px;top:16px;width:13px;height:13px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px currentColor}
+  .tlCard{position:relative;display:flex;align-items:center;gap:10px;border-radius:16px;padding:11px 12px}
+  .tlCard .mini{transform:scale(.68);width:40px;height:36px;display:flex;align-items:center;justify-content:center;flex:none}
+  .tlCard .t1{font-size:13px;font-weight:900;color:var(--plumDeep)}
+  .tlCard .t2{font-size:10.5px;font-weight:600;color:#5d5478}
+  .tlCard .box{margin-left:auto;width:30px;height:30px;border-radius:11px;border:2.5px solid rgba(60,49,91,.28);
+    display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;background:transparent;flex:none;transition:all .2s}
+  .tlCard.done .box{background:var(--success);border-color:var(--success)}
+  .tlCard .checkBadge{display:none}
+
+  .reco{max-width:1240px;margin:26px auto 0;background:#fff;border-radius:22px;padding:18px 20px;box-shadow:0 10px 30px rgba(80,60,130,.10)}
+  .reco h3{margin:0 0 8px;font-size:15px}
+  .reco p{margin:4px 0;font-size:13px;color:#4A3F66;line-height:1.6}
+</style>
+</head>
+<body>
+  <h1>今日用藥 · 可勾選區塊（三款）</h1>
+  <p class="sub">依時段（早餐前／晚餐後／睡前／依醫囑）呈現用藥細節，吃完點一下 → 變無色相＋打勾</p>
+  <p class="try">每一格都可以真的點：點藥卡試試看，再點一下可復原</p>
+
+  <div class="grid">
+
+    <!-- ============ A ============ -->
+    <div class="card">
+      <span class="tag">A · 繽紛磁磚（最貼你的參考圖）</span>
+      <p class="title">時段色磁磚格</p>
+      <div class="stage">
+        <div class="secHead"><b>今日用藥</b><span class="prog" data-prog>0 / 4 完成</span></div>
+        <div class="tilesGrid">
+          <div class="tile tick" style="background:linear-gradient(160deg,#FFF3DA,#FFE7BC)">
+            <span class="slot" style="background:rgba(255,255,255,.8);color:var(--morn)">早餐前 07:30</span>
+            <div class="art"><div class="pill ob-yellow" data-mark="PPI40"></div></div>
+            <div class="name">胃藥 40mg</div>
+            <div class="chip">飯前 30 分 · 1 顆</div>
+            <div class="checkBadge">✓</div>
+          </div>
+          <div class="tile tick" style="background:linear-gradient(160deg,#E2EEFC,#CBE0F8)">
+            <span class="slot" style="background:rgba(255,255,255,.8);color:var(--eve)">晚餐後 19:00</span>
+            <div class="art"><div class="pill cap-purple" data-mark="TM50"></div></div>
+            <div class="name">癒妥 50mg</div>
+            <div class="chip">配開水 · 1 顆</div>
+            <div class="checkBadge">✓</div>
+          </div>
+          <div class="tile tick" style="background:linear-gradient(160deg,#EBE4FC,#DCD2F7)">
+            <span class="slot" style="background:rgba(255,255,255,.8);color:var(--night)">睡前 21:30</span>
+            <div class="art"><div class="pill tab-pink" data-mark="OND8"></div></div>
+            <div class="name">止吐藥 8mg</div>
+            <div class="chip">想吐可提前 · 1 顆</div>
+            <div class="checkBadge">✓</div>
+          </div>
+          <div class="tile tick" style="background:linear-gradient(160deg,#E2F4E9,#CFEBDA)">
+            <span class="slot" style="background:rgba(255,255,255,.8);color:var(--prn)">依醫囑</span>
+            <div class="art"><div class="pill tab-lav" data-mark="GCSF"></div></div>
+            <div class="name">升白血球藥</div>
+            <div class="chip">醫囑日注射</div>
+            <div class="checkBadge">✓</div>
+          </div>
+        </div>
+      </div>
+      <p class="desc">每種藥一張磁磚：時段徽章＋藥品外觀＋劑量小藥丸 chip，整張都是點擊目標（大拇指友善）。時段用色相區分（早=暖黃、晚=藍、睡前=紫、依醫囑=綠），吃完整磚變灰。最有「收集打卡」的愉悅感，但藥超過 6 種時會變很長。</p>
+      <p class="bone">結構：Grid 磁磚 ＋ 整卡點擊 ＋ 灰階完成態</p>
+    </div>
+
+    <!-- ============ B ============ -->
+    <div class="card">
+      <span class="tag">B · 時段泳道</span>
+      <p class="title">早／晚／睡前分組清單</p>
+      <div class="stage">
+        <div class="secHead"><b>今日用藥</b><span class="prog" data-prog>0 / 4 完成</span></div>
+        <div class="lane">
+          <div class="laneHead"><div class="dot" style="background:var(--mornBg);color:var(--morn)">早</div><b>早上</b><span>早餐前 30 分鐘</span></div>
+          <div class="chipRow">
+            <div class="medChip tick" style="border-color:var(--morn)">
+              <div class="mini"><div class="pill ob-yellow" data-mark="PPI40"></div></div>
+              <div><div class="t1">胃藥 40mg</div><div class="t2">07:30 · 飯前 30 分 · 1 顆</div></div>
+              <div class="checkBadge">✓</div>
+            </div>
+          </div>
+        </div>
+        <div class="lane">
+          <div class="laneHead"><div class="dot" style="background:var(--eveBg);color:var(--eve)">晚</div><b>晚上</b><span>晚餐後</span></div>
+          <div class="chipRow">
+            <div class="medChip tick" style="border-color:var(--eve)">
+              <div class="mini"><div class="pill cap-purple" data-mark="TM50"></div></div>
+              <div><div class="t1">癒妥 50mg</div><div class="t2">19:00 · 配開水 · 不可配柚子</div></div>
+              <div class="checkBadge">✓</div>
+            </div>
+          </div>
+        </div>
+        <div class="lane">
+          <div class="laneHead"><div class="dot" style="background:var(--nightBg);color:var(--night)">睡</div><b>睡前</b><span>想吐時可提前</span></div>
+          <div class="chipRow">
+            <div class="medChip tick" style="border-color:var(--night)">
+              <div class="mini"><div class="pill tab-pink" data-mark="OND8"></div></div>
+              <div><div class="t1">止吐藥 8mg</div><div class="t2">21:30 · 1 顆</div></div>
+              <div class="checkBadge">✓</div>
+            </div>
+          </div>
+        </div>
+        <div class="lane">
+          <div class="laneHead"><div class="dot" style="background:var(--prnBg);color:var(--prn)">囑</div><b>依醫囑</b><span>非每天</span></div>
+          <div class="chipRow">
+            <div class="medChip tick" style="border-color:var(--prn)">
+              <div class="mini"><div class="pill tab-lav" data-mark="GCSF"></div></div>
+              <div><div class="t1">升白血球藥 300mcg</div><div class="t2">醫囑日皮下注射</div></div>
+              <div class="checkBadge">✓</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="desc">先分時段、再列藥：一天的節奏（早→晚→睡前→依醫囑）一眼掃完，「現在這個時段要吃什麼」最清楚。每列左緣色條＝時段色，右側勾圈點擊完成後整列變灰。藥多也不亂（同時段往下疊），是三款裡資訊密度和擴充性最好的。</p>
+      <p class="bone">結構：時段分組 ＋ 列式勾選 ＋ 灰階完成態</p>
+    </div>
+
+    <!-- ============ C ============ -->
+    <div class="card">
+      <span class="tag">C · 時間軸打卡</span>
+      <p class="title">今天的服藥時間軸</p>
+      <div class="stage">
+        <div class="secHead"><b>今日用藥</b><span class="prog" data-prog>0 / 4 完成</span></div>
+        <div class="tl">
+          <div class="tlRow">
+            <div class="tlTime"><b>07:30</b><span>早餐前</span></div>
+            <div class="tlDot" style="color:var(--morn);background:var(--morn)"></div>
+            <div class="tlCard tick done-target" style="background:var(--mornBg)">
+              <div class="mini"><div class="pill ob-yellow" data-mark="PPI40"></div></div>
+              <div><div class="t1">胃藥 40mg</div><div class="t2">飯前 30 分 · 不可配胃散</div></div>
+              <div class="box">✓</div>
+            </div>
+          </div>
+          <div class="tlRow">
+            <div class="tlTime"><b>19:00</b><span>晚餐後</span></div>
+            <div class="tlDot" style="color:var(--eve);background:var(--eve)"></div>
+            <div class="tlCard tick" style="background:var(--eveBg)">
+              <div class="mini"><div class="pill cap-purple" data-mark="TM50"></div></div>
+              <div><div class="t1">癒妥 50mg</div><div class="t2">配開水 · 不可配柚子</div></div>
+              <div class="box">✓</div>
+            </div>
+          </div>
+          <div class="tlRow">
+            <div class="tlTime"><b>21:30</b><span>睡前</span></div>
+            <div class="tlDot" style="color:var(--night);background:var(--night)"></div>
+            <div class="tlCard tick" style="background:var(--nightBg)">
+              <div class="mini"><div class="pill tab-pink" data-mark="OND8"></div></div>
+              <div><div class="t1">止吐藥 8mg</div><div class="t2">想吐時可提前吃</div></div>
+              <div class="box">✓</div>
+            </div>
+          </div>
+          <div class="tlRow">
+            <div class="tlTime"><b>—</b><span>依醫囑</span></div>
+            <div class="tlDot" style="color:var(--prn);background:var(--prn)"></div>
+            <div class="tlCard tick" style="background:var(--prnBg)">
+              <div class="mini"><div class="pill tab-lav" data-mark="GCSF"></div></div>
+              <div><div class="t1">升白血球藥 300mcg</div><div class="t2">醫囑日皮下注射</div></div>
+              <div class="box">✓</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="desc">左邊一條時間軸（07:30 → 19:00 → 21:30 → 依醫囑），像今天的服藥行程表：「下一個是什麼時候」最直覺，和上方回診倒數 hero 卡的「時間感」語言一致。右側方框勾選，完成整列變灰、時間軸留下走過的軌跡。缺點是左欄吃掉一些寬度，藥名長要換行。</p>
+      <p class="bone">結構：垂直時間軸 ＋ 方框勾選 ＋ 灰階完成態</p>
+    </div>
+  </div>
+
+  <div class="reco">
+    <h3>德德的建議</h3>
+    <p><b>B 時段泳道</b>——你第 1 點要的是「一目了然今天要做什麼」：B 直接把一天的服藥節奏變成頁面結構，而且第 3 點 checklist 搬上首頁後（傷口/飲食/活動），可以沿用同一套「分組＋勾選＋變灰」語言，整個首頁會是一致的系統。A 最好看但藥一多就佔版面；C 的時間軸語言好，但寬度侷促、和 checklist 不好共用。</p>
+    <p style="color:#8a7d68;font-size:12px">共通行為（選哪款都做）：點擊＝toggle（誤點再點一下復原）、完成震動、進度數字同步、資料仍是 mock 的 4 種藥。確認後我再一起排第 1、3、4 點的首頁資訊架構。</p>
+  </div>
+
+<script>
+  document.querySelectorAll('.stage').forEach(stage => {
+    const prog = stage.querySelector('[data-prog]');
+    const ticks = stage.querySelectorAll('.tick');
+    const update = () => {
+      const done = stage.querySelectorAll('.tick.done').length;
+      prog.textContent = `${done} / ${ticks.length} 完成`;
+    };
+    ticks.forEach(t => t.addEventListener('click', () => { t.classList.toggle('done'); update(); }));
+    update();
+  });
+</script>
+</body>
+</html>
