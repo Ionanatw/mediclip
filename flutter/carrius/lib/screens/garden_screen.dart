@@ -13,15 +13,25 @@ const _sunOrange = Color(0xFFE08A2B);
 
 class GardenScreen extends StatelessWidget {
   final AppState state;
-  final VoidCallback onBreathing;
+  final void Function(GardenActivity) onBreathing;
   final VoidCallback onGratitude;
   final VoidCallback onMoodCard;
+  final void Function(GardenActivity) onBodyScan;
+  final void Function(GardenActivity) onObserveBreath;
+  final void Function(GardenActivity) onMicroMove;
+  final void Function(GardenActivity) onSunbathe;
+  final void Function(GardenActivity) onGoal;
   const GardenScreen({
     super.key,
     required this.state,
     required this.onBreathing,
     required this.onGratitude,
     required this.onMoodCard,
+    required this.onBodyScan,
+    required this.onObserveBreath,
+    required this.onMicroMove,
+    required this.onSunbathe,
+    required this.onGoal,
   });
 
   @override
@@ -31,13 +41,19 @@ class GardenScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(0, 12, 0, 150),
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 18),
-          child: PageHeader(kicker: '快樂花園', title: '照顧家人，也照顧自己'),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Expanded(child: PageHeader(kicker: '快樂花園', title: '照顧家人，也照顧自己')),
+              _hapticToggle(p),
+            ],
+          ),
         ),
         const SizedBox(height: 14),
         _streakCard(p),
-        const SizedBox(height: 8),
+        const SizedBox(height: 24),
         _treeScene(p),
         for (final g in groups) ...[
           const SizedBox(height: 18),
@@ -48,6 +64,23 @@ class GardenScreen extends StatelessWidget {
         const SizedBox(height: 18),
         _recap(p),
       ],
+    );
+  }
+
+  // 震動開關（花園頁右上）：開＝薰衣草、關＝灰；開啟時回饋一下
+  Widget _hapticToggle(Palette p) {
+    final on = state.hapticsEnabled;
+    return GestureDetector(
+      onTap: state.toggleHaptics,
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: on ? CD.accentSoft : p.surface3,
+          borderRadius: BorderRadius.circular(13),
+        ),
+        child: Icon(on ? Icons.vibration : Icons.smartphone, size: 20, color: on ? CD.accent : p.text3),
+      ),
     );
   }
 
@@ -172,10 +205,10 @@ class GardenScreen extends StatelessWidget {
           ),
           // 樹（吉祥物）
           Positioned(
-            top: 24,
+            top: 20,
             left: 0,
             right: 0,
-            child: SizedBox(height: 200, child: GardenTree(species: cur, stage: state.stage)),
+            child: SizedBox(height: 196, child: GardenTree(species: cur, stage: state.stage)),
           ),
           // 溫柔文案
           Positioned(
@@ -228,7 +261,7 @@ class GardenScreen extends StatelessWidget {
   Widget _rail(BuildContext context, GardenActivityGroup g) {
     // 右緣漸層遮罩：把最右卡片淡出，暗示「還有更多、可橫滑」（取代硬切在字中間）。
     return SizedBox(
-      height: 138,
+      height: 120,
       child: ShaderMask(
         shaderCallback: (rect) => const LinearGradient(
           begin: Alignment.centerLeft,
@@ -276,13 +309,7 @@ class GardenScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(a.title, style: CDText.title(13.5, color: p.text), maxLines: 1, overflow: TextOverflow.ellipsis),
-            const SizedBox(height: 3),
-            Expanded(
-              child: Text(a.guide,
-                  style: CDText.body(10.5, weight: FontWeight.w600, color: p.text2, height: 1.35),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis),
-            ),
+            const Spacer(),
             Row(
               children: [
                 if (done)
@@ -314,14 +341,6 @@ class GardenScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                const SizedBox(width: 6),
-                if (!done)
-                  Flexible(
-                    child: Text(a.chem,
-                        style: CDText.body(9.5, weight: FontWeight.w800, color: p.text3),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis),
-                  ),
               ],
             ),
           ],
@@ -334,13 +353,28 @@ class GardenScreen extends StatelessWidget {
     switch (a.kind) {
       case HappyKind.breathing:
         Haptics.light();
-        onBreathing();
+        onBreathing(a);
       case HappyKind.gratitude:
         Haptics.light();
         onGratitude();
       case HappyKind.share:
         Haptics.light();
         onMoodCard();
+      case HappyKind.bodyScan:
+        Haptics.light();
+        onBodyScan(a);
+      case HappyKind.observeBreath:
+        Haptics.light();
+        onObserveBreath(a);
+      case HappyKind.microMove:
+        Haptics.light();
+        onMicroMove(a);
+      case HappyKind.sunbathe:
+        Haptics.light();
+        onSunbathe(a);
+      case HappyKind.goal:
+        Haptics.light();
+        onGoal(a);
       case HappyKind.exercise:
       case HappyKind.challenge:
         state.completeActivity(a.title, a.sun);
@@ -406,8 +440,9 @@ class _ScenePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final w = size.width, h = size.height;
     // 天空漸層
-    final skyTop = dark ? const Color(0xFF272233) : const Color(0xFFF3ECFF);
-    final skyMid = dark ? const Color(0xFF2A2622) : const Color(0xFFFBF4EC);
+    // 頂端＝頁面奶油底（淡出，不在打卡卡下緣壓一條濃色帶），暖意集中在中下與樹周圍
+    final skyTop = dark ? const Color(0xFF1C1C1C) : const Color(0xFFFDFBF7);
+    final skyMid = dark ? const Color(0xFF2A2530) : const Color(0xFFF4ECFF);
     final skyBot = dark ? const Color(0xFF1C1C1C) : const Color(0xFFFDFBF7);
     canvas.drawRect(
       Offset.zero & size,
@@ -415,16 +450,16 @@ class _ScenePainter extends CustomPainter {
         ..shader = LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [skyTop, skyMid, skyBot],
-          stops: const [0, 0.55, 1],
+          colors: [skyTop, skyTop, skyMid, skyBot],
+          stops: const [0, 0.30, 0.64, 1],
         ).createShader(Offset.zero & size),
     );
-    // 柔和太陽光暈
+    // 柔和太陽光暈（下移＋縮小；頂端保留一整段純奶油，光暈不貼打卡卡）
     final glow = dark ? const Color(0xFF4A3F2A) : const Color(0xFFFFEFD6);
     final glowInner = dark ? const Color(0xFF5A4A2E) : const Color(0xFFFFE3B8);
-    final cx = w / 2, cy = h * 0.40;
-    canvas.drawCircle(Offset(cx, cy), w * 0.34, Paint()..color = glow.withValues(alpha: 0.7));
-    canvas.drawCircle(Offset(cx, cy), w * 0.23, Paint()..color = glowInner.withValues(alpha: 0.55));
+    final cx = w / 2, cy = h * 0.58;
+    canvas.drawCircle(Offset(cx, cy), w * 0.28, Paint()..color = glow.withValues(alpha: 0.7));
+    canvas.drawCircle(Offset(cx, cy), w * 0.18, Paint()..color = glowInner.withValues(alpha: 0.55));
     // 小山丘曲線（兩層）
     final hill1 = dark ? const Color(0xFF24302A) : const Color(0xFFEAF3EA);
     final hill2 = dark ? const Color(0xFF1F2A24) : const Color(0xFFDCEEDF);

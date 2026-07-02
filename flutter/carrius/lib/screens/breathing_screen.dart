@@ -9,7 +9,8 @@ import '../design/illustrations/backgrounds.dart';
 /// 吸氣 4 秒（圓放大＋震動漸強）→ 屏息 7 秒（心跳輕點）→ 吐氣 8 秒（圓縮小＋震動漸弱）
 class BreathingScreen extends StatefulWidget {
   final VoidCallback onClose;
-  const BreathingScreen({super.key, required this.onClose});
+  final VoidCallback? onComplete;
+  const BreathingScreen({super.key, required this.onClose, this.onComplete});
 
   @override
   State<BreathingScreen> createState() => _BreathingScreenState();
@@ -135,47 +136,54 @@ class _BreathingScreenState extends State<BreathingScreen> with SingleTickerProv
                 ),
               ),
               const Spacer(),
-              AnimatedBuilder(
-                animation: _orb,
-                builder: (context, _) {
-                  return SizedBox(
-                    width: 280,
-                    height: 280,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Transform.scale(
-                          scale: _orb.value * 1.18,
-                          child: Container(width: 250, height: 250, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.14), shape: BoxShape.circle)),
-                        ),
-                        Transform.scale(
-                          scale: _orb.value,
-                          child: Container(
-                            width: 220,
-                            height: 220,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: RadialGradient(colors: [
-                                const Color(0xFFFFE9F2).withValues(alpha: 0.95),
-                                const Color(0xFFFFC9DF).withValues(alpha: 0.55),
-                              ]),
-                            ),
-                          ),
-                        ),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
+              // 超大倒數數字在上（不疊圓）；階段字固定在呼吸圓中心
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: 144,
+                    child: (_phase != _Phase.ready && _phase != _Phase.done)
+                        ? Text('$_countdown',
+                            style: CDText.display(132, color: CD.plumDeep),
+                            strutStyle: const StrutStyle(height: 1.05, forceStrutHeight: true))
+                        : const SizedBox.shrink(),
+                  ),
+                  const SizedBox(height: 8),
+                  AnimatedBuilder(
+                    animation: _orb,
+                    builder: (context, _) {
+                      return SizedBox(
+                        width: 300,
+                        height: 300,
+                        child: Stack(
+                          alignment: Alignment.center,
                           children: [
-                            Text(_phase.label, style: CDText.display(26, color: CD.plumDeep)),
-                            if (_phase != _Phase.ready && _phase != _Phase.done) ...[
-                              const SizedBox(height: 6),
-                              Text('$_countdown', style: CDText.display(20, color: CD.plumDeep.withValues(alpha: 0.6))),
-                            ],
+                            Transform.scale(
+                              scale: _orb.value * 1.18,
+                              child: Container(width: 244, height: 244, decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.14), shape: BoxShape.circle)),
+                            ),
+                            Transform.scale(
+                              scale: _orb.value,
+                              child: Container(
+                                width: 214,
+                                height: 214,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: RadialGradient(colors: [
+                                    const Color(0xFFFFE9F2).withValues(alpha: 0.95),
+                                    const Color(0xFFFFC9DF).withValues(alpha: 0.55),
+                                  ]),
+                                ),
+                              ),
+                            ),
+                            // 階段字固定在圓心，不隨呼吸縮放
+                            Text(_phase.label, style: CDText.display(34, color: CD.plumDeep)),
                           ],
                         ),
-                      ],
-                    ),
-                  );
-                },
+                      );
+                    },
+                  ),
+                ],
               ),
               const Spacer(),
               Padding(
@@ -205,7 +213,14 @@ class _BreathingScreenState extends State<BreathingScreen> with SingleTickerProv
         children: [
           Text('做得很好，把這份平靜帶回去', style: CDText.body(14, weight: FontWeight.w500, color: CD.cream.withValues(alpha: 0.9))),
           const SizedBox(height: 14),
-          PillButton(title: '收下 +2 陽光', style: PillStyle.lemon, onTap: widget.onClose),
+          PillButton(
+            title: '收下 +2 陽光',
+            style: PillStyle.lemon,
+            onTap: () {
+              widget.onComplete?.call();
+              widget.onClose();
+            },
+          ),
         ],
       );
     }

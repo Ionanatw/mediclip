@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>身體掃描 — 抽象示範比較</title>
+<style>
+  :root{
+    --bgTop:#FFFDF8; --bgBot:#F1ECFD;
+    --lavL:#E2DFFE; --lav:#AB9FF2; --lavD:#8E7EE8; --hi:#E6E2FE;
+    --plum:#3C315B; --plumDeep:#2A2342; --lemon:#F1FF52;
+    --ink:#4A3F66;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#efe9fb;font-family:"Noto Sans TC",-apple-system,system-ui,sans-serif;color:var(--plumDeep);padding:28px 18px 60px}
+  h1{font-size:21px;margin:0 0 4px;text-align:center}
+  .sub{text-align:center;color:#6b5f87;font-size:13.5px;margin:0 0 26px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:26px;max-width:1180px;margin:0 auto}
+  .card{background:#fff;border-radius:22px;padding:16px 16px 18px;box-shadow:0 10px 30px rgba(80,60,130,.12)}
+  .tag{display:inline-block;font-size:11px;font-weight:800;color:var(--lavD);background:var(--lavL);padding:3px 10px;border-radius:999px;margin-bottom:10px}
+  .title{font-size:15.5px;font-weight:900;margin:0 0 2px}
+  .desc{font-size:12.5px;color:#6b5f87;line-height:1.5;margin:8px 2px 0;min-height:54px}
+  /* phone stage */
+  .stage{position:relative;width:100%;aspect-ratio:240/420;border-radius:20px;overflow:hidden;
+    background:linear-gradient(180deg,var(--bgTop),var(--bgBot))}
+  .cap{position:absolute;left:0;right:0;bottom:16px;text-align:center;font-size:12px;font-weight:700;color:var(--plum)}
+
+  /* ---- A 模糊光暈人形 ---- */
+  .A .aura{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:160px;height:320px;
+    background:radial-gradient(closest-side,rgba(171,159,242,.30),transparent);filter:blur(6px)}
+  .A .figure{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);filter:blur(9px);opacity:.62}
+  .A .scan{position:absolute;left:-10%;right:-10%;height:66px;border-radius:40px;
+    background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(255,255,255,.85),rgba(230,226,254,.35),transparent);
+    filter:blur(4px);animation:descA 6.5s ease-in-out infinite}
+  @keyframes descA{0%{top:-50px;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:380px;opacity:0}}
+
+  /* ---- B 光柱 + 行進光點 ---- */
+  .B .pillar{position:absolute;left:50%;top:52px;transform:translateX(-50%);width:18px;height:316px;border-radius:999px;
+    background:linear-gradient(180deg,var(--lavL),var(--lav),var(--lavD));opacity:.55}
+  .B .tick{position:absolute;left:50%;transform:translateX(-50%);width:30px;height:3px;border-radius:2px;background:rgba(60,49,91,.18)}
+  .B .node{position:absolute;left:50%;top:52px;width:42px;height:42px;margin-left:-21px;border-radius:50%;
+    background:radial-gradient(closest-side,#fff,var(--lav));
+    box-shadow:0 0 26px 6px rgba(171,159,242,.75);animation:descB 6.5s ease-in-out infinite}
+  @keyframes descB{0%{transform:translateY(-6px);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(284px);opacity:0}}
+
+  /* ---- C 星座人形 ---- */
+  .C .dot{position:absolute;width:9px;height:9px;border-radius:50%;background:var(--lav);
+    margin:-4.5px 0 0 -4.5px;animation:twinkle 6s ease-in-out infinite}
+  @keyframes twinkle{0%{opacity:.22;box-shadow:none;transform:scale(1)}
+    7%{opacity:1;box-shadow:0 0 14px 3px rgba(171,159,242,.8);transform:scale(1.5)}
+    22%{opacity:.5;box-shadow:none;transform:scale(1)}100%{opacity:.22}}
+
+  /* ---- D 雲朵堆疊身體（模糊）---- */
+  .D .blob{position:absolute;left:50%;transform:translateX(-50%);border-radius:50%;
+    background:var(--lav);filter:blur(7px);animation:glowStep 6s ease-in-out infinite}
+  @keyframes glowStep{0%{opacity:.30;transform:translateX(-50%) scale(1)}
+    7%{opacity:.95;transform:translateX(-50%) scale(1.08)}
+    22%{opacity:.5}100%{opacity:.30}}
+
+  /* ---- E 純光暈下行 ---- */
+  .E .trail{position:absolute;left:50%;top:30px;transform:translateX(-50%);width:6px;height:340px;border-radius:999px;
+    background:linear-gradient(180deg,transparent,rgba(171,159,242,.25),transparent)}
+  .E .orb{position:absolute;left:50%;top:30px;width:96px;height:96px;margin-left:-48px;border-radius:50%;
+    background:radial-gradient(closest-side,rgba(255,255,255,.9),rgba(171,159,242,.55),transparent);
+    filter:blur(2px);animation:descE 7s ease-in-out infinite}
+  @keyframes descE{0%{transform:translateY(-10px);opacity:0}12%{opacity:1}88%{opacity:1}100%{transform:translateY(250px);opacity:0}}
+
+  /* ---- F 目前：6 區段 ---- */
+  .F .seg{position:absolute;left:50%;transform:translateX(-50%);width:150px;height:34px;border-radius:18px;
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--plum);
+    background:var(--lavL);animation:segStep 6s ease-in-out infinite}
+  @keyframes segStep{0%{opacity:.3;width:150px;box-shadow:none}
+    7%{opacity:1;width:166px;box-shadow:0 0 22px 2px rgba(171,159,242,.6);background:linear-gradient(135deg,#D9D2FB,#B4A7F4)}
+    22%{opacity:.6;width:150px;box-shadow:none}100%{opacity:.3}}
+</style>
+</head>
+<body>
+  <h1>身體掃描 · 抽象示範（會動的 mid-scan）</h1>
+  <p class="sub">挑一個方向 → 我做成 Flutter（可完全動畫＋到位震動同步）。每格都在 loop：注意力由上往下掃。</p>
+  <div class="grid" id="grid"></div>
+
+<script>
+const cards = [
+  {tag:'A · 你的提案', title:'模糊光暈人形', desc:'重度模糊的人形藏在光暈裡，只「隱約」感覺到一個人；一道柔光由上往下掃過。最貼近你說的方向。',
+   build: s=>{
+     s.insertAdjacentHTML('beforeend', `
+       <div class="aura"></div>
+       <svg class="figure" width="120" height="300" viewBox="0 0 120 300">
+         <g fill="#AB9FF2">
+           <circle cx="60" cy="40" r="30"/>
+           <rect x="38" y="66" width="44" height="150" rx="40"/>
+           <rect x="14" y="84" width="20" height="110" rx="10"/>
+           <rect x="86" y="84" width="20" height="110" rx="10"/>
+           <rect x="42" y="200" width="14" height="92" rx="7"/>
+           <rect x="64" y="200" width="14" height="92" rx="7"/>
+         </g>
+       </svg>
+       <div class="scan"></div>
+       <div class="cap">把注意力放到胸口，讓它鬆下來</div>`);
+   }},
+  {tag:'B · 能量通道', title:'光柱 + 行進光點', desc:'一條柔光通道，一顆發光的光點順著往下移動。完全抽象、最乾淨，動起來很順。',
+   build: s=>{
+     let ticks='';
+     [60,110,150,195,260,330].forEach(t=> ticks+=`<div class="tick" style="top:${t}px"></div>`);
+     s.insertAdjacentHTML('beforeend', `
+       <div class="pillar"></div>${ticks}
+       <div class="node"></div>
+       <div class="cap">把注意力放到胸口，讓它鬆下來</div>`);
+   }},
+  {tag:'C · 點構成', title:'星座人形', desc:'用淡淡的光點鬆散排成人的輪廓，掃描時逐排亮起。像把人「點」出來，不是畫出來。',
+   build: s=>{
+     const pts=[[60,40],[44,74],[76,74],[30,96],[90,96],[48,120],[72,120],[44,168],[76,168],[40,214],[80,214],[44,268],[76,268]];
+     // delay by vertical order
+     const sorted=[...pts].sort((a,b)=>a[1]-b[1]);
+     pts.forEach(p=>{
+       const order=sorted.findIndex(q=>q[0]===p[0]&&q[1]===p[1]);
+       s.insertAdjacentHTML('beforeend',
+         `<div class="dot" style="left:${p[0]/120*100}%;top:${p[1]}px;animation-delay:${(order*0.42).toFixed(2)}s"></div>`);
+     });
+     s.insertAdjacentHTML('beforeend', `<div class="cap">把注意力放到胸口，讓它鬆下來</div>`);
+   }},
+  {tag:'D · 雲朵身體', title:'雲朵堆疊（模糊）', desc:'幾團模糊的軟雲依寬窄疊成身體輪廓，逐團亮起。比人形更柔、又能意會是身體。',
+   build: s=>{
+     // [topPx, w, h]
+     const blobs=[[40,58,58],[92,118,70],[150,128,76],[206,104,72],[270,80,96],[348,70,60]];
+     blobs.forEach((b,i)=>{
+       s.insertAdjacentHTML('beforeend',
+         `<div class="blob" style="top:${b[0]}px;width:${b[1]}px;height:${b[2]}px;animation-delay:${(i*0.9).toFixed(2)}s"></div>`);
+     });
+     s.insertAdjacentHTML('beforeend', `<div class="cap">把注意力放到胸口，讓它鬆下來</div>`);
+   }},
+  {tag:'E · 最簡', title:'純光暈下行', desc:'不畫任何身體，只有一團柔光順著一條淡淡的軸線往下走。最極簡、最不具象。',
+   build: s=>{
+     s.insertAdjacentHTML('beforeend', `
+       <div class="trail"></div>
+       <div class="orb"></div>
+       <div class="cap">把注意力放到胸口，讓它鬆下來</div>`);
+   }},
+  {tag:'F · 目前線上版', title:'6 區段（對照）', desc:'現在 live 上的版本：6 個帶字的區段逐段亮起。清楚但較像清單，放這裡當對照。',
+   build: s=>{
+     const labels=['頭頂','肩膀','胸口','腹部','雙腿','腳底'];
+     labels.forEach((l,i)=>{
+       s.insertAdjacentHTML('beforeend',
+         `<div class="seg" style="top:${52+i*58}px;animation-delay:${(i*1).toFixed(2)}s">${l}</div>`);
+     });
+     s.insertAdjacentHTML('beforeend', `<div class="cap">把注意力放到胸口，讓它鬆下來</div>`);
+   }},
+];
+const grid=document.getElementById('grid');
+cards.forEach((c,idx)=>{
+  const el=document.createElement('div');
+  el.className='card';
+  el.innerHTML=`<span class="tag">${c.tag}</span><div class="title">${c.title}</div>
+    <div class="stage ${'ABCDEF'[idx]}"></div><div class="desc">${c.desc}</div>`;
+  grid.appendChild(el);
+  c.build(el.querySelector('.stage'));
+});
+</script>
+</body>
+</html>

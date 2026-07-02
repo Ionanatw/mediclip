@@ -23,33 +23,42 @@ class HapticDebug {
 /// Flutter 標準 HapticFeedback 在 iOS 走 Taptic Engine、Android 走 VibrationEffect。
 /// 呼吸的連續漸強曲線在 Android 受馬達硬體限制，故以「視覺主導＋節點震動」呈現。
 class Haptics {
+  /// 全域震動開關（花園頁可切換；關閉時所有震動與 web 視覺提示都不觸發）。
+  static bool enabled = true;
+
   static void light() {
+    if (!enabled) return;
     HapticFeedback.lightImpact();
     HapticDebug.pulse('輕擊');
   }
 
   static void soft() {
+    if (!enabled) return;
     HapticFeedback.selectionClick();
     HapticDebug.pulse('選取');
   }
 
   static void success() {
+    if (!enabled) return;
     HapticFeedback.mediumImpact();
     HapticDebug.pulse('完成');
   }
 
   static void warning() {
+    if (!enabled) return;
     HapticFeedback.heavyImpact();
     HapticDebug.pulse('警告');
   }
 
   static void selectionTick() {
+    if (!enabled) return;
     HapticFeedback.selectionClick();
     HapticDebug.pulse('選取');
   }
 
   /// 樹升級：漸強三連震
   static Future<void> levelUp() async {
+    if (!enabled) return;
     for (var i = 0; i < 3; i++) {
       HapticFeedback.mediumImpact();
       HapticDebug.pulse('升級 ${i + 1}/3');
@@ -59,6 +68,7 @@ class Haptics {
 
   /// 拉回注意力：兩短一長
   static Future<void> attention() async {
+    if (!enabled) return;
     HapticFeedback.mediumImpact();
     HapticDebug.pulse('提醒');
     await Future.delayed(const Duration(milliseconds: 220));
@@ -83,6 +93,7 @@ class Haptics {
 
   static void _ticks(double seconds, {bool ramp = false, bool light = false, bool down = false}) {
     stopBreathing();
+    if (!enabled) return;
     var t = 0;
     final total = seconds.round();
     _breathTimer = Timer.periodic(const Duration(seconds: 1), (timer) {

@@ -1,0 +1,138 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>活動插畫 · 向量 vs Gemini 比一張</title>
+<style>
+:root{--bg:#F7F5F0;--ink:#3C315B;--muted:#857f78;--line:rgba(60,49,91,.12)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC",system-ui,sans-serif}
+.wrap{max-width:920px;margin:0 auto;padding:30px 22px 60px}
+h1{font-size:22px;font-weight:600;margin:0 0 6px}header p{margin:0;color:var(--muted);font-size:14px;line-height:1.7}
+.card{margin-top:24px;padding-top:18px;border-top:.5px solid var(--line)}
+.card h2{font-size:17px;font-weight:600;margin:0 0 12px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.lbl{font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.frame{border-radius:14px;overflow:hidden;border:.5px solid var(--line);background:#FFFDF8;aspect-ratio:1}
+.frame svg{display:block;width:100%;height:100%}
+.placeholder{display:flex;align-items:center;justify-content:center;text-align:center;color:#b6b0bd;font-size:13px;line-height:1.6;border-style:dashed}
+.na{display:flex;align-items:center;justify-content:center;height:100%;color:#bbb}
+textarea{width:100%;height:96px;border:.5px solid var(--line);border-radius:10px;padding:10px 12px;font:13px/1.6 ui-monospace,monospace;color:var(--ink);background:#fff;resize:vertical}
+footer{margin-top:34px;font-size:12px;color:var(--muted);text-align:center}
+@media(max-width:680px){.cols{grid-template-columns:1fr}}
+</style></head><body><div class="wrap">
+<header><h1>活動插畫 · 向量 vs Gemini 比一張</h1><p>左＝我用畫樹那套色塊向量管線產的（可直接落 Flutter、可深色、輕量）；右＝你用下方 prompt 在 Gemini 產的點陣版。並排比氣質、一致性、可用性，再決定全 9 個活動走哪條。</p></header>
+<section class="card">
+    <h2>曬太陽散步</h2>
+    <div class="cols">
+      <div class="col">
+        <div class="lbl">我的向量版（色塊・可直接落 Flutter）</div>
+        <div class="frame"><svg viewBox="0 0 320 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" role="img"><title>曬太陽散步</title><desc>溫暖扁平色塊插畫：大大的柔和太陽、由深到淺堆疊的綠色小山丘與一條蜿蜒小路，一個無臉的薰衣草色柔剪影正在路上散步。</desc>
+<rect x="0" y="0" width="320" height="320" fill="#FFFDF8"/>
+<circle cx="210" cy="96" r="96" fill="#FBF6C9" opacity="0.55"/>
+<circle cx="210" cy="96" r="72" fill="#F4E98A" opacity="0.7"/>
+<circle cx="210" cy="96" r="50" fill="#F1FF52"/>
+<circle cx="210" cy="96" r="50" fill="#E08A2B" opacity="0.14"/>
+<circle cx="196" cy="84" r="15" fill="#FFFDF8" opacity="0.5"/>
+<path d="M0 252 Q66 220 138 236 Q214 253 320 224 L320 320 L0 320 Z" fill="#CBEBD6"/>
+<path d="M0 282 Q88 254 178 274 Q252 290 320 268 L320 320 L0 320 Z" fill="#A6D8AE"/>
+<path d="M0 308 Q86 296 172 306 Q252 315 320 302 L320 320 L0 320 Z" fill="#8FD3A6"/>
+<path d="M150 250 Q180 270 152 286 Q120 304 156 320 L176 320 Q146 302 174 288 Q202 272 172 252 Z" fill="#FFFDF8" opacity="0.92"/>
+<ellipse cx="128" cy="262" rx="13" ry="3.4" fill="#AB9FF2" opacity="0.18"/>
+<g>
+<path d="M126 226 Q116 232 118 246 Q120 258 128 260 Q138 256 137 240 Q136 228 126 226 Z" fill="#AB9FF2"/>
+<path d="M122 256 Q118 270 119 284 L126 284 Q128 270 129 258 Z" fill="#AB9FF2"/>
+<path d="M129 256 Q134 268 139 280 L145 277 Q139 266 135 254 Z" fill="#9588E0"/>
+<circle cx="127" cy="214" r="11" fill="#AB9FF2"/>
+</g>
+<g stroke="#AB9FF2" stroke-width="2.2" stroke-linecap="round" opacity="0.85">
+<line x1="58" y1="56" x2="58" y2="68"/>
+<line x1="52" y1="62" x2="64" y2="62"/>
+<line x1="54.5" y1="58.5" x2="61.5" y2="65.5"/>
+<line x1="61.5" y1="58.5" x2="54.5" y2="65.5"/>
+</g>
+<g stroke="#F4C24A" stroke-width="2" stroke-linecap="round" opacity="0.7">
+<line x1="276" y1="190" x2="276" y2="200"/>
+<line x1="271" y1="195" x2="281" y2="195"/>
+</g>
+<circle cx="40" cy="150" r="4.5" fill="#E2DFFE" opacity="0.9"/>
+<circle cx="262" cy="240" r="3.6" fill="#E2DFFE" opacity="0.8"/>
+</svg></div>
+      </div>
+      <div class="col">
+        <div class="lbl">Gemini 點陣版（你產，貼下面 prompt）</div>
+        <div class="frame placeholder">在 Gemini 產好後拖進這格比對<br>(或自行並排)</div>
+      </div>
+    </div>
+    <div class="lbl" style="margin-top:14px">Gemini prompt（點一下全選複製）</div>
+    <textarea readonly onclick="this.select()">Flat vector illustration for a healing wellness app, square. A faceless soft lavender silhouette of a person taking a calm walk under a big warm sun, gentle rolling green hills and a winding cream path. Soft pastel palette: lavender (#AB9FF2), cream (#FFFDF8), soft green (#8FD3A6), lemon yellow (#F1FF52), warm orange (#E08A2B). Completely flat shapes, NO gradients, NO outlines, minimal, cute but mature, NO text, NO facial features.</textarea>
+  </section><section class="card">
+    <h2>身體掃描</h2>
+    <div class="cols">
+      <div class="col">
+        <div class="lbl">我的向量版（色塊・可直接落 Flutter）</div>
+        <div class="frame"><svg viewBox="0 0 320 320" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" role="img"><title>身體掃描正念冥想</title><desc>一個平躺放鬆的無臉柔剪影人形，一道柔和的掃描光帶由上而下掃過身體，周圍幾顆寧靜光點。扁平色塊風格。</desc>
+
+<rect x="0" y="0" width="320" height="320" fill="#FFFDF8"/>
+
+
+<ellipse cx="160" cy="162" rx="140" ry="120" fill="#F4F1FE"/>
+<ellipse cx="160" cy="168" rx="106" ry="88" fill="#ECE8FE" opacity="0.7"/>
+
+
+<rect x="40" y="216" width="240" height="32" rx="16" fill="#E2DFFE"/>
+<rect x="40" y="216" width="240" height="16" rx="8" fill="#D6D1FB"/>
+
+
+<g>
+  
+  <path d="M104 192
+           q2 -22 30 -24 q22 -2 38 0 q26 2 44 4 q34 3 50 7 q14 4 14 13
+           q0 9 -14 13 q-16 4 -50 7 q-18 2 -44 4 q-16 2 -38 0 q-28 -2 -30 -24
+           q-1 -5 0 -10 Z" fill="#AB9FF2"/>
+
+  
+  <ellipse cx="146" cy="200" rx="40" ry="13" fill="#C9C0F8" opacity="0.8"/>
+
+  
+  <ellipse cx="266" cy="194" rx="9" ry="7.5" fill="#B6ABF5"/>
+  <ellipse cx="266" cy="208" rx="9" ry="7.5" fill="#B0A4F3"/>
+
+  
+  <circle cx="72" cy="200" r="23" fill="#AB9FF2"/>
+  <circle cx="65" cy="193" r="11" fill="#C9C0F8"/>
+</g>
+
+
+<g>
+  
+  <ellipse cx="150" cy="200" rx="22" ry="34" fill="#F1FF52" opacity="0.15"/>
+  <ellipse cx="150" cy="200" rx="13" ry="32" fill="#F1FF52" opacity="0.22"/>
+  
+  <rect x="144" y="166" width="12" height="70" rx="6" fill="#F1FF52" opacity="0.36"/>
+  
+  <rect x="148" y="166" width="4" height="70" rx="2" fill="#FBFFC0" opacity="0.95"/>
+  
+  <circle cx="150" cy="168" r="5.5" fill="#F1FF52" opacity="0.9"/>
+  <circle cx="150" cy="167" r="2.5" fill="#FFFFFF" opacity="0.95"/>
+  
+  <circle cx="150" cy="234" r="4" fill="#F1FF52" opacity="0.5"/>
+</g>
+
+
+<circle cx="74" cy="92" r="6" fill="#E2DFFE"/>
+<circle cx="116" cy="70" r="3.5" fill="#C9C0F8"/>
+<circle cx="160" cy="58" r="4.5" fill="#E2DFFE"/>
+<circle cx="208" cy="70" r="3.5" fill="#AB9FF2" opacity="0.55"/>
+<circle cx="248" cy="92" r="5" fill="#E2DFFE"/>
+<circle cx="268" cy="128" r="3.5" fill="#AB9FF2" opacity="0.5"/>
+<circle cx="56" cy="128" r="4" fill="#C9C0F8"/>
+<circle cx="224" cy="54" r="3" fill="#F1FF52" opacity="0.6"/>
+
+</svg></div>
+      </div>
+      <div class="col">
+        <div class="lbl">Gemini 點陣版（你產，貼下面 prompt）</div>
+        <div class="frame placeholder">在 Gemini 產好後拖進這格比對<br>(或自行並排)</div>
+      </div>
+    </div>
+    <div class="lbl" style="margin-top:14px">Gemini prompt（點一下全選複製）</div>
+    <textarea readonly onclick="this.select()">Flat vector illustration for a mindfulness app, square. A faceless soft lavender silhouette of a person lying down relaxed on a mat, with a gentle vertical lemon-yellow scanning light band moving down the body (body-scan meditation). A few calm floating light dots around. Soft pastel palette: lavender (#AB9FF2 / #E2DFFE), cream (#FFFDF8), lemon yellow (#F1FF52). Completely flat shapes, NO gradients, NO outlines, serene, NO text, NO facial features.</textarea>
+  </section>
+<footer>Carrius / CareDoc — 設計探索稿。向量＝一致＋可動畫；點陣＝豐富但難一致、不可變色。</footer>
+</div></body></html>

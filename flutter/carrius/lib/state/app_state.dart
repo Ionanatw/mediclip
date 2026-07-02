@@ -22,6 +22,15 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// 全域震動開關（花園頁可切換；關閉時全 app 不震動）
+  bool hapticsEnabled = true;
+  void toggleHaptics() {
+    hapticsEnabled = !hapticsEnabled;
+    Haptics.enabled = hapticsEnabled;
+    if (hapticsEnabled) Haptics.light(); // 開啟時回饋一下，讓使用者確認
+    notifyListeners();
+  }
+
   // 文件分頁的分段（0=文件清單，1=藥品圖鑑）；首頁「識別卡」可深連到圖鑑
   int documentsTab = 0;
   void setDocumentsTab(int i) {

@@ -25,6 +25,11 @@ import 'package:carrius/screens/checklist_screen.dart';
 import 'package:carrius/screens/poster_screen.dart';
 import 'package:carrius/screens/settings_screen.dart';
 import 'package:carrius/screens/breathing_screen.dart';
+import 'package:carrius/screens/body_scan_screen.dart';
+import 'package:carrius/screens/observe_breath_screen.dart';
+import 'package:carrius/screens/micro_move_screen.dart';
+import 'package:carrius/screens/sunbathe_screen.dart';
+import 'package:carrius/screens/goal_screen.dart';
 
 const phoneSize = Size(393, 852);
 
@@ -137,9 +142,15 @@ void main() {
     await shoot(tester, '12-settings', _frame(SettingsScreen(state: homeState())));
 
     final g = homeState()..tab = AppTab.garden;
-    await shoot(tester, '13-garden', _frame(GardenScreen(state: g, onBreathing: () {}, onGratitude: () {}, onMoodCard: () {}), tabBar: true, state: g));
+    await shoot(tester, '13-garden', _frame(GardenScreen(state: g, onBreathing: (_) {}, onGratitude: () {}, onMoodCard: () {}, onBodyScan: (_) {}, onObserveBreath: (_) {}, onMicroMove: (_) {}, onSunbathe: (_) {}, onGoal: (_) {}), tabBar: true, state: g));
 
     await shoot(tester, '14-breathing', _frame(BreathingScreen(onClose: () {})));
+
+    await shoot(tester, '23-bodyscan', _frame(BodyScanScreen(onClose: () {})));
+    await shoot(tester, '24-observe', _frame(ObserveBreathScreen(onClose: () {})));
+    await shoot(tester, '25-micromove', _frame(MicroMoveScreen(onClose: () {})));
+    await shoot(tester, '26-sunbathe', _frame(SunbatheScreen(onClose: () {})));
+    await shoot(tester, '27-goal', _frame(GoalScreen(onClose: () {})));
 
     await shoot(tester, '15-moodcard', _frame(MoodCardScreen(onClose: () {})));
   });
@@ -148,7 +159,7 @@ void main() {
     final h = homeState();
     await shoot(tester, 'dark-home', _frame(HomeScreen(state: h, onOpenGarden: () {}, onOpenChecklist: () {}, onOpenSettings: () {}, nowHour: 9), palette: Palette.dark, tabBar: true, state: h));
     final g = homeState()..tab = AppTab.garden;
-    await shoot(tester, 'dark-garden', _frame(GardenScreen(state: g, onBreathing: () {}, onGratitude: () {}, onMoodCard: () {}), palette: Palette.dark, tabBar: true, state: g));
+    await shoot(tester, 'dark-garden', _frame(GardenScreen(state: g, onBreathing: (_) {}, onGratitude: () {}, onMoodCard: () {}, onBodyScan: (_) {}, onObserveBreath: (_) {}, onMicroMove: (_) {}, onSunbathe: (_) {}, onGoal: (_) {}), palette: Palette.dark, tabBar: true, state: g));
 
     // 補齊深色覆蓋（稽核項 E：原本只測 2 張）
     final cal = homeState()..tab = AppTab.calendar;

@@ -78,7 +78,7 @@ class ChecklistItem {
   ChecklistItem(this.category, this.title, {this.detail, this.done = false});
 }
 
-enum HappyKind { breathing, gratitude, exercise, challenge, share }
+enum HappyKind { breathing, gratitude, exercise, challenge, share, bodyScan, observeBreath, microMove, sunbathe, goal }
 
 class HappyTask {
   final String title, subtitle;

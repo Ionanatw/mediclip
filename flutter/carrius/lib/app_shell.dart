@@ -20,6 +20,11 @@ import 'screens/checklist_screen.dart';
 import 'screens/poster_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/breathing_screen.dart';
+import 'screens/body_scan_screen.dart';
+import 'screens/observe_breath_screen.dart';
+import 'screens/micro_move_screen.dart';
+import 'screens/sunbathe_screen.dart';
+import 'screens/goal_screen.dart';
 
 enum _Onboard { welcome, email }
 
@@ -105,9 +110,20 @@ class _AppShellState extends State<AppShell> {
       case AppTab.garden:
         return GardenScreen(
           state: state,
-          onBreathing: () => _openSheet(BreathingScreen(onClose: _closeSheet)),
+          onBreathing: (a) => _openSheet(BreathingScreen(
+              onClose: _closeSheet, onComplete: () => state.completeActivity(a.title, a.sun))),
           onGratitude: () => _openSheet(GratitudeScreen(state: state, onClose: _closeSheet)),
           onMoodCard: () => _openSheet(MoodCardScreen(onClose: _closeSheet)),
+          onBodyScan: (a) => _openSheet(BodyScanScreen(
+              onClose: _closeSheet, onComplete: () => state.completeActivity(a.title, a.sun))),
+          onObserveBreath: (a) => _openSheet(ObserveBreathScreen(
+              onClose: _closeSheet, onComplete: () => state.completeActivity(a.title, a.sun))),
+          onMicroMove: (a) => _openSheet(MicroMoveScreen(
+              onClose: _closeSheet, onComplete: () => state.completeActivity(a.title, a.sun))),
+          onSunbathe: (a) => _openSheet(SunbatheScreen(
+              onClose: _closeSheet, onComplete: () => state.completeActivity(a.title, a.sun))),
+          onGoal: (a) => _openSheet(GoalScreen(
+              onClose: _closeSheet, onComplete: () => state.completeActivity(a.title, a.sun))),
         );
       case AppTab.settings:
         return SettingsScreen(state: state);

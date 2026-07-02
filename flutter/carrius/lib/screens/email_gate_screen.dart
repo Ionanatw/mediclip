@@ -18,7 +18,9 @@ class EmailGateScreen extends StatefulWidget {
 class _EmailGateScreenState extends State<EmailGateScreen> {
   late final TextEditingController _ctrl = TextEditingController(text: widget.state.email);
 
-  bool get _canContinue => widget.state.role != null && _ctrl.text.contains('@');
+  // 測試略過：輸入 11111 即可繼續（免真 email），其餘需含 @
+  bool get _canContinue =>
+      widget.state.role != null && (_ctrl.text.contains('@') || _ctrl.text.trim() == '11111');
 
   @override
   Widget build(BuildContext context) {

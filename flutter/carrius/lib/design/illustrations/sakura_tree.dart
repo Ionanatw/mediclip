@@ -40,21 +40,48 @@ enum TreeSpecies {
   static const idle14d = '我還在這裡。';
 }
 
-/// 樹種美術配色（描邊塗鴉風）。⚠️ 佔位，待鴿王拍板樹概念後替換，架構不變。
+/// 樹種美術配色（抽象色塊風）。2026-06-19 定案：色塊堆疊、去描邊、Phantom 色。
+/// 新增品種 = 加一筆 enum + 一組 TreePalette（JSON-config 精神）。
 class TreePalette {
-  final Color canopy, canopyInner, accentDot, fruit;
+  /// canopy=最深色塊底、mid/light/inner 由深到淺、accent=lavender 點綴色塊、
+  /// accentDot=亮點色、trunk=樹幹、fruit=結果（橘子用）。
+  final Color canopy, canopyMid, canopyLight, canopyInner, accent, accentDot, trunk, fruit;
   const TreePalette({
     required this.canopy,
+    required this.canopyMid,
+    required this.canopyLight,
     required this.canopyInner,
+    required this.accent,
     required this.accentDot,
+    this.trunk = const Color(0xFF7A5C4F),
     this.fruit = const Color(0x00000000),
   });
 
-  static const sakura = TreePalette(canopy: CD.pink, canopyInner: CD.pinkLight, accentDot: CD.pinkHot);
+  static const sakura = TreePalette(
+    canopy: Color(0xFFFFB7D5),
+    canopyMid: Color(0xFFFFCBE0),
+    canopyLight: Color(0xFFFFDDEA),
+    canopyInner: Color(0xFFFFF0F5),
+    accent: Color(0xFFEBE3FB),
+    accentDot: Color(0xFFFF7EB0),
+  );
   static const tea = TreePalette(
-      canopy: Color(0xFF8FD3A6), canopyInner: Color(0xFFCFEDD9), accentDot: CD.cream);
+    canopy: Color(0xFF8FD3A6),
+    canopyMid: Color(0xFFA9DEBC),
+    canopyLight: Color(0xFFCBEBD6),
+    canopyInner: Color(0xFFECF8F0),
+    accent: Color(0xFFDDEFE4),
+    accentDot: Color(0xFFFFFFFF),
+  );
   static const orange = TreePalette(
-      canopy: Color(0xFF8ACB97), canopyInner: Color(0xFFC9E8CC), accentDot: Color(0xFFFFFFFF), fruit: Color(0xFFFF9D42));
+    canopy: Color(0xFF8ACB97),
+    canopyMid: Color(0xFFA6D8AE),
+    canopyLight: Color(0xFFC9E8CC),
+    canopyInner: Color(0xFFEAF6EA),
+    accent: Color(0xFFE2DFFE),
+    accentDot: Color(0xFFFFFFFF),
+    fruit: Color(0xFFFF9D42),
+  );
 
   static TreePalette of(TreeSpecies s) => switch (s) {
         TreeSpecies.sakura => sakura,
@@ -63,7 +90,7 @@ class TreePalette {
       };
 }
 
-/// 養成樹（描邊錯位塗鴉風）。依品種換配色與結果裝飾。
+/// 養成樹（抽象色塊風）。依品種換配色與結果裝飾。
 class GardenTree extends StatelessWidget {
   final TreeSpecies species;
   final TreeStage stage;
@@ -84,6 +111,9 @@ class SakuraTree extends StatelessWidget {
   Widget build(BuildContext context) => GardenTree(species: TreeSpecies.sakura, stage: stage);
 }
 
+/// 色塊層次（由深到淺 + lavender accent）
+enum _Layer { deep, mid, light, inner, accent }
+
 class _TreePainter extends CustomPainter {
   final TreeSpecies species;
   final TreeStage stage;
@@ -92,7 +122,6 @@ class _TreePainter extends CustomPainter {
   TreePalette get pal => TreePalette.of(species);
 
   static const double _design = 300;
-  static const double _lineW = 9;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -101,12 +130,7 @@ class _TreePainter extends CustomPainter {
     canvas.translate((size.width - s) / 2, (size.height - s) / 2);
     canvas.scale(s / _design);
 
-    _strokePath(canvas, _groundPath(), width: 4.5);
-
-    if (stage.index >= TreeStage.growing.index) {
-      _sparkle(canvas, const Offset(52, 70), 11);
-      _sparkle(canvas, const Offset(252, 46), 8);
-    }
+    _shadow(canvas);
 
     switch (stage) {
       case TreeStage.seed:
@@ -116,117 +140,145 @@ class _TreePainter extends CustomPainter {
       case TreeStage.sapling:
         _drawSapling(canvas);
       case TreeStage.growing:
+        _drawTree(canvas, full: false);
       case TreeStage.bloom:
-        _drawTree(canvas, full: stage == TreeStage.bloom);
+        _drawTree(canvas, full: true);
     }
     canvas.restore();
   }
 
   // ---- 共用 ----
-  Paint get _plumStroke => Paint()
-    ..style = PaintingStyle.stroke
-    ..color = CD.plum
-    ..strokeCap = StrokeCap.round
-    ..strokeJoin = StrokeJoin.round
-    ..strokeWidth = _lineW;
+  void _fill(Canvas c, Path p, Color color) => c.drawPath(p, Paint()..color = color);
 
-  void _strokePath(Canvas c, Path p, {double width = _lineW}) {
-    c.drawPath(p, _plumStroke..strokeWidth = width);
+  void _blob(Canvas c, double cx, double cy, double rx, double ry, Color color) =>
+      _fill(c, _cloudPath(cx, cy, rx, ry), color);
+
+  /// 地面柔影（lavender 低透明），給樹一點重量、不畫硬地線
+  void _shadow(Canvas c) {
+    final w = switch (stage) {
+      TreeStage.seed => 34.0,
+      TreeStage.sprout => 30.0,
+      TreeStage.sapling => 46.0,
+      TreeStage.growing => 64.0,
+      TreeStage.bloom => 82.0,
+    };
+    c.drawOval(
+      Rect.fromCenter(center: const Offset(150, 252), width: w, height: w * 0.26),
+      Paint()..color = const Color(0xFFC7BDF6).withValues(alpha: 0.18),
+    );
   }
 
-  /// 錯位填色：往右上偏移後填，再回原位描邊由呼叫端負責
-  void _fillOffset(Canvas c, Path p, Color color, {double dx = 9, double dy = -8}) {
-    c.save();
-    c.translate(dx, dy);
-    c.drawPath(p, Paint()..color = color);
-    c.restore();
-  }
-
-  Path _groundPath() {
+  /// 樹幹色塊（有機錐形，無描邊）
+  Path _trunkPath(double topY, double halfBase, {double halfTop = 6}) {
     return Path()
-      ..moveTo(80, 252)
-      ..quadraticBezierTo(150, 262, 220, 252);
+      ..moveTo(150 - halfBase, 250)
+      ..cubicTo(150 - halfBase + 1, 250 - (250 - topY) * 0.45, 150 - halfTop - 2, topY + 12, 150 - halfTop, topY)
+      ..lineTo(150 + halfTop, topY)
+      ..cubicTo(150 + halfTop + 2, topY + 12, 150 + halfBase - 1, 250 - (250 - topY) * 0.45, 150 + halfBase, 250)
+      ..close();
   }
 
   void _drawSeed(Canvas c) {
-    final mound = Path()
-      ..moveTo(110, 252)
-      ..quadraticBezierTo(150, 222, 190, 252);
-    _fillOffset(c, mound, CD.accentSoft, dx: 5, dy: -4);
-    _strokePath(c, mound, width: 5);
-    final seed = Path()..addOval(const Rect.fromLTWH(138, 196, 26, 32));
-    _fillOffset(c, seed, pal.canopy, dx: 4, dy: -4);
-    _strokePath(c, seed, width: 5);
+    _blob(c, 150, 246, 30, 12, pal.accent); // 土堆
+    _blob(c, 150, 224, 15, 19, pal.canopy); // 飽滿種子莢
+    _blob(c, 150, 220, 9, 12, pal.canopyLight);
+    c.drawCircle(const Offset(150, 214), 2.6, Paint()..color = pal.accentDot);
   }
 
   void _drawSprout(Canvas c) {
-    final stem = Path()
-      ..moveTo(150, 250)
-      ..lineTo(150, 192);
-    _strokePath(c, stem, width: 7);
-    _leaf(c, const Offset(150, 210), -1, 42);
-    _leaf(c, const Offset(150, 196), 1, 50);
+    _fill(c, _trunkPath(212, 4, halfTop: 3), const Color(0xFF8FBF86)); // 嫩莖
+    _blob(c, 132, 210, 18, 13, const Color(0xFF8FD3A6)); // 左葉
+    _blob(c, 168, 206, 18, 13, const Color(0xFF8FD3A6)); // 右葉
+    _blob(c, 134, 208, 10, 7, const Color(0xFFCBEBD6));
+    _blob(c, 166, 204, 10, 7, const Color(0xFFCBEBD6));
   }
 
   void _drawSapling(Canvas c) {
-    final trunk = Path()
-      ..moveTo(150, 250)
-      ..cubicTo(151, 220, 145, 185, 147, 150);
-    _strokePath(c, trunk, width: 8);
-    _leaf(c, const Offset(148, 190), -1, 46);
-    _leaf(c, const Offset(148, 168), 1, 52);
-    final bud = _cloudPath(148, 132, 34, 26);
-    _fillOffset(c, bud, pal.canopyInner, dx: 6, dy: -6);
-    _strokePath(c, bud, width: 5);
+    _fill(c, _trunkPath(186, 6, halfTop: 4), pal.trunk);
+    // 迷你花冠雲（約大樹 1/4）
+    _blob(c, 150, 176, 36, 28, pal.canopy);
+    _blob(c, 132, 184, 16, 13, pal.accent);
+    _blob(c, 160, 168, 26, 19, pal.canopyLight);
+    _blob(c, 152, 174, 15, 11, pal.canopyInner);
+    c.drawCircle(const Offset(150, 172), 2.4, Paint()..color = pal.accentDot);
   }
 
   void _drawTree(Canvas c, {required bool full}) {
-    final trunk = Path()
-      ..moveTo(150, 250)
-      ..cubicTo(152, 215, 142, 165, 144, 128);
-    _strokePath(c, trunk, width: 11);
-    final b1 = Path()
-      ..moveTo(146, 188)
-      ..cubicTo(132, 176, 118, 166, 102, 162);
-    _strokePath(c, b1, width: 7);
-    final b2 = Path()
-      ..moveTo(147, 170)
-      ..cubicTo(163, 156, 180, 148, 196, 146);
-    _strokePath(c, b2, width: 7);
-
-    final canopy = _cloudPath(150, 96, 86, 56);
-    _fillOffset(c, canopy, pal.canopy);
-    _strokePath(c, canopy, width: 5.5);
-    final inner = _cloudPath(158, 88, 44, 28);
-    _fillOffset(c, inner, pal.canopyInner, dx: 6, dy: -6);
-
-    for (final pt in const [Offset(116, 102), Offset(184, 76), Offset(150, 118)]) {
-      c.drawCircle(pt, 3.5, Paint()..color = pal.accentDot);
-    }
-
-    if (full) _decorate(c);
-  }
-
-  /// 大樹結果裝飾，依品種：櫻花＝花瓣、茶樹＝白花點、橘子＝橘子果實
-  void _decorate(Canvas c) {
-    switch (species) {
-      case TreeSpecies.sakura:
-        for (final pt in const [Offset(104, 88), Offset(170, 60), Offset(196, 104)]) {
-          _blossom(c, pt);
-        }
-        _petal(c, const Offset(232, 176), 0.4);
-        _petal(c, const Offset(70, 196), -0.5);
-      case TreeSpecies.tea:
-        for (final pt in const [Offset(104, 88), Offset(170, 60), Offset(196, 104), Offset(138, 78)]) {
-          _teaFlower(c, pt);
-        }
-      case TreeSpecies.orange:
-        for (final pt in const [Offset(108, 96), Offset(176, 70), Offset(196, 110)]) {
-          _orangeFruit(c, pt);
-        }
+    if (full) {
+      _fill(c, _trunkPath(150, 11), pal.trunk);
+      _canopy(c, const [
+        (150.0, 112.0, 84.0, 58.0, _Layer.deep),
+        (112.0, 140.0, 28.0, 24.0, _Layer.accent),
+        (178.0, 100.0, 66.0, 48.0, _Layer.mid),
+        (198.0, 128.0, 22.0, 18.0, _Layer.accent),
+        (150.0, 84.0, 64.0, 44.0, _Layer.light),
+        (152.0, 96.0, 40.0, 28.0, _Layer.inner),
+      ]);
+      _decorate(c, full: true);
+    } else {
+      _fill(c, _trunkPath(160, 9), pal.trunk);
+      _canopy(c, const [
+        (150.0, 150.0, 56.0, 42.0, _Layer.deep),
+        (120.0, 158.0, 21.0, 18.0, _Layer.accent),
+        (184.0, 156.0, 26.0, 22.0, _Layer.mid),
+        (150.0, 134.0, 38.0, 26.0, _Layer.light),
+        (150.0, 144.0, 22.0, 16.0, _Layer.inner),
+      ]);
+      _decorate(c, full: false);
+      _sparkle(c, const Offset(64, 96), 9);
+      _sparkle(c, const Offset(238, 120), 7);
     }
   }
 
+  void _canopy(Canvas c, List<(double, double, double, double, _Layer)> blobs) {
+    for (final b in blobs) {
+      final color = switch (b.$5) {
+        _Layer.deep => pal.canopy,
+        _Layer.mid => pal.canopyMid,
+        _Layer.light => pal.canopyLight,
+        _Layer.inner => pal.canopyInner,
+        _Layer.accent => pal.accent,
+      };
+      _blob(c, b.$1, b.$2, b.$3, b.$4, color);
+    }
+  }
+
+  /// 亮點 / accent 點 / 結果 / 飄落花瓣（全色塊、無描邊）
+  void _decorate(Canvas c, {required bool full}) {
+    // 單一柔光（偏上、離中心），不畫左右對稱粉點＝不會被看成眼睛（無臉）
+    final hl = full ? const Offset(132, 88) : const Offset(134, 130);
+    c.drawCircle(hl, full ? 15 : 10, Paint()..color = pal.canopyInner.withValues(alpha: 0.5));
+    if (species == TreeSpecies.orange) {
+      final fruits = full
+          ? const [Offset(120, 120), Offset(184, 96), Offset(196, 134)]
+          : const [Offset(132, 150), Offset(172, 140)];
+      for (final p in fruits) {
+        c.drawCircle(p, full ? 8 : 6, Paint()..color = pal.fruit);
+        c.drawCircle(p.translate(-2.2, -2.4), full ? 2 : 1.6, Paint()..color = CD.cream.withValues(alpha: 0.7));
+      }
+    }
+    if (full) {
+      _petal(c, const Offset(238, 178), 0.5);
+      _petal(c, const Offset(74, 196), -0.6);
+      _petal(c, const Offset(214, 214), 0.2);
+    }
+  }
+
+  /// 飄落小瓣（色塊）
+  void _petal(Canvas c, Offset center, double rotation) {
+    final p = Path()
+      ..moveTo(0, 0)
+      ..quadraticBezierTo(10, -2, 8, 9)
+      ..quadraticBezierTo(-2, 11, 0, 0)
+      ..close();
+    c.save();
+    c.translate(center.dx, center.dy);
+    c.rotate(rotation);
+    c.drawPath(p, Paint()..color = species == TreeSpecies.sakura ? pal.canopy : pal.canopyMid);
+    c.restore();
+  }
+
+  /// 有機色塊（7 個起伏的閉合 blob）
   Path _cloudPath(double cx, double cy, double rx, double ry) {
     const bumps = 7;
     final pts = <Offset>[];
@@ -247,74 +299,6 @@ class _TreePainter extends CustomPainter {
     return p..close();
   }
 
-  void _leaf(Canvas c, Offset from, double dir, double len) {
-    final tip = Offset(from.dx + dir * len, from.dy - len * 0.62);
-    final p = Path()
-      ..moveTo(from.dx, from.dy)
-      ..quadraticBezierTo(from.dx + dir * len * 0.15, from.dy - len * 0.72, tip.dx, tip.dy)
-      ..quadraticBezierTo(from.dx + dir * len * 0.78, from.dy - len * 0.05, from.dx, from.dy)
-      ..close();
-    c.save();
-    c.translate(4 * dir, -4);
-    c.drawPath(p, Paint()..color = CD.success.withValues(alpha: 0.85));
-    c.restore();
-    c.drawPath(p, _plumStroke..strokeWidth = 4.5);
-  }
-
-  void _blossom(Canvas c, Offset center) {
-    final petalStroke = Paint()
-      ..style = PaintingStyle.stroke
-      ..color = CD.plum
-      ..strokeWidth = 2.4;
-    for (var i = 0; i < 5; i++) {
-      final a = i / 5 * 2 * math.pi - math.pi / 2;
-      final o = Offset(center.dx + math.cos(a) * 6, center.dy + math.sin(a) * 6);
-      c.drawCircle(o, 4.6, Paint()..color = CD.cream);
-      c.drawCircle(o, 4.6, petalStroke);
-    }
-    c.drawCircle(center, 2.4, Paint()..color = CD.lemon);
-  }
-
-  /// 茶樹小白花（五瓣，黃蕊，較櫻花小巧）
-  void _teaFlower(Canvas c, Offset center) {
-    final stroke = Paint()
-      ..style = PaintingStyle.stroke
-      ..color = CD.plum
-      ..strokeWidth = 2;
-    for (var i = 0; i < 5; i++) {
-      final a = i / 5 * 2 * math.pi - math.pi / 2;
-      final o = Offset(center.dx + math.cos(a) * 4.4, center.dy + math.sin(a) * 4.4);
-      c.drawCircle(o, 3.4, Paint()..color = CD.cream);
-      c.drawCircle(o, 3.4, stroke);
-    }
-    c.drawCircle(center, 2, Paint()..color = CD.caution);
-  }
-
-  /// 橘子果實（橘圓 + 描邊 + 高光）
-  void _orangeFruit(Canvas c, Offset center) {
-    c.drawCircle(center, 8, Paint()..color = pal.fruit);
-    c.drawCircle(
-        center,
-        8,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..color = CD.plum
-          ..strokeWidth = 2.6);
-    c.drawCircle(center.translate(-2.4, -2.6), 2, Paint()..color = CD.cream.withValues(alpha: 0.7));
-  }
-
-  void _petal(Canvas c, Offset center, double rotation) {
-    final p = Path()
-      ..moveTo(0, 0)
-      ..quadraticBezierTo(11, -2, 9, 9)
-      ..quadraticBezierTo(-2, 11, 0, 0);
-    c.save();
-    c.translate(center.dx, center.dy);
-    c.rotate(rotation);
-    c.drawPath(p, Paint()..color = pal.canopy);
-    c.restore();
-  }
-
   void _sparkle(Canvas c, Offset center, double r) {
     final p = Path();
     for (var i = 0; i < 4; i++) {
@@ -326,12 +310,13 @@ class _TreePainter extends CustomPainter {
       p.lineTo(center.dx - ca * r, center.dy - sa * r);
     }
     c.drawPath(
-        p,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..color = CD.accent
-          ..strokeCap = StrokeCap.round
-          ..strokeWidth = 2.6);
+      p,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..color = const Color(0xFFAB9FF2)
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = 2.4,
+    );
   }
 
   @override
